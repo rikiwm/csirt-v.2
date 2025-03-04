@@ -1,0 +1,16 @@
+@props(['child'=>''])
+  <div class="d-none d-lg-block">
+        <li class="nav-item dropdown dropdown-hover dropdown-subitem">
+            <a class="py-1 dropdown-item ps-1 border-radius-md" href="{{ route('show', $child->slug) }}">
+                <div class="w-100 d-flex align-items-center justify-content-between">
+                    <h6 class="pt-1 dropdown-header text-dark font-weight-semibold d-flex justify-content-cente align-items-center">{{ $child->name }}</h6>
+                </div>
+            </a>
+        </li>
+    </div>
+    <div class="d-lg-none">
+        <h6 class="dropdown-header align-items-center"></h6>
+        <a href="{{ route('show', $child->slug) }}" class="dropdown-item border-radius-md text-dark font-weight-semibold d-flex">
+          <span>{{ $child->name }}</span>
+        </a>
+    </div>
