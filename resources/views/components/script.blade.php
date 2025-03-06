@@ -9,7 +9,7 @@
 <script src="{{ asset('frontend/js/plugins/tilt.min.js') }}"></script>
 <script src="{{ asset('frontend/js/plugins/choices.min.js') }}"></script>
 <script src="{{ asset('frontend/js/material-kit.min.js')}}" type="text/javascript"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
 <!-- ========== Js Section ========== -->
 
 <script>

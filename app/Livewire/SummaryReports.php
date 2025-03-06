@@ -122,10 +122,10 @@ class SummaryReports extends Component implements HasForms, HasTable
             ]);
     }
 
-    public function avgresponsetime($ticketId)
+    public function avgresponsetime($ticketId= null)
     {
-        $averageResponseTime = Ticket::where('tickets.id', $ticketId)
-        ->where('status', 'closed')
+        $averageResponseTime = Ticket::where('status', 'closed')
+            ->where('tickets.id', $ticketId)
             ->join('ticket_massages as first_message', function ($join) {
                 $join->on('tickets.id', '=', 'first_message.ticket_id')
                     ->whereRaw('first_message.id = (
@@ -157,7 +157,8 @@ class SummaryReports extends Component implements HasForms, HasTable
     public function render()
     {
         try {
-            $avg = $this->avgresponsetime('avg_response_time');
+            $avg = $this->avgClosed();
+
         } catch (\Exception $e) {
             $avg = 'Kosong';
         }
@@ -165,5 +166,37 @@ class SummaryReports extends Component implements HasForms, HasTable
         $total = Ticket::query()->select('id')->count();
 
         return view('livewire.summary-reports', compact('avg', 'total'));
+    }
+
+    private function avgClosed($ticketId= null)
+    {
+        $averageResponseTime = Ticket::where('status', 'closed')
+            ->join('ticket_massages as first_message', function ($join) {
+                $year = Carbon::now()->format('Y') ?? date('Y');
+                $join->on('tickets.id', '=', 'first_message.ticket_id')
+                    ->whereRaw('first_message.id = (
+                    SELECT MIN(id)
+                    FROM ticket_massages
+                    WHERE ticket_massages.ticket_id = tickets.id
+                    OR YEAR(first_message.created_at) = ' . $year . '
+                    )');
+            })
+            ->join('ticket_massages as first_reply', function ($join) {
+                $year = Carbon::now()->format('Y') ?? date('Y');
+                $join->on('tickets.id', '=', 'first_reply.ticket_id')
+                    ->whereRaw('first_reply.id = (
+                        SELECT MIN(id) FROM ticket_massages
+                        WHERE ticket_massages.ticket_id = tickets.id
+                        AND ticket_massages.user_id != first_message.user_id
+
+                    )');
+            })
+            ->select(DB::raw('AVG(TIMESTAMPDIFF(SECOND, first_message.created_at, first_reply.created_at)) as avg_response_time'))
+            ->value('avg_response_time');
+// dd($averageResponseTime->toSql(), $averageResponseTime->getBindings());
+        if ($averageResponseTime === null) {
+            return 'N/A';
+        }
+        return gmdate("i:s", $averageResponseTime);
     }
 }

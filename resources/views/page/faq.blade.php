@@ -1,26 +1,31 @@
-<x-layouts.app class="">
-    <div class="relative mt-0 mb-0 page-header min-vh-65 ms-1 me-1 mt-lg-2 ms-lg-2 mb-lg-0 me-lg-1 rounded-4"
-    style="background-image: url('https://csirt.padang.go.id/storage/image-property/mzvRlMVfbLiChlEzB1g9WIYZTEeuURXj5nI7iM9W.jpg');" loading="lazy">
-        <span class="mask bg-gradient-faded-dark-blue opacity-5"></span>
+<x-layouts.app>
+    <x-slot name="header">
+        <x-page.hero-page >
+            <x-slot name="descpage">
+                <x-page.hero-content name="{{$title }}" desc="{{$title}}"/>
+            </x-slot>
+        </x-page.hero-page>
+    </x-slot>
+
+    <section>
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="mx-auto my-auto text-center col-lg-12 col-10">
-                  <div class="pt-3 text-white display-4 font-weight-light ls-1" style="font-family: 'MinePlayer', sans-serif; font-weight: 100; letter-spacing: 0.1rem;">
-                      {{ $title ?? '' }}
-                  </div>
+            <div class=" row">
+                <div class="mx-auto col-md-8 col-10 text-dark">
+                    <div class="mb-2 rounded-4 card blur blur-rounded shadow-blur mt-n6" style="z-index: 10;">
+                        <div class="p-1 card card-plain">
+                            <div class="py-3 py-md-4 card-body">
+                                <div class="gap-2 justify-content-center d-flex align-items-center">
+                                    <span class="text-center badge bg-gradient-faded-dark-blue-vertical"><a class="mx-2 text-white " href="#" target="_blank">Author</a></span>
+                                    <span class="text-center badge bg-gradient-faded-dark-blue-vertical"><a class="mx-2 text-white " href="#" target="_blank">Created</a></span>
+                                    <span class="text-center badge bg-gradient-faded-dark-blue-vertical"><a class="mx-2 text-white " href="#" target="_blank">share</a></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="my-5 row">
-                    <div class="mx-auto my-auto text-center text-white border-radius-xl py-lg-2 bg-gradient-faded-dark-blue-vertical card-plain col-lg-7 col-11"data-aos="fade-zoom-in"
-                    data-aos-easing="ease-in-back"
-                    data-aos-delay="50"
-                    data-aos-offset="0">
-                        <h2 class="text-white ">Frequently Asked Questions</h2>
-                        <p>A lot of people don&#39;t appreciate the moment until it’s passed. I&#39;m not trying my hardest, and I&#39;m not trying to do </p>
-                  </div>
-                  </div>
-              </div>
+            </div>
         </div>
-      </div>
+    </section>
 
       <div class="card">
         <div class="card-body">
@@ -29,7 +34,6 @@
                 data-aos-easing="ease-in-back"
                 data-aos-delay="50"
                 data-aos-offset="0">
-
                   <div class="row">
                     <div class="mx-auto col-md-10">
                       <div class="accordion" id="accordionRental">

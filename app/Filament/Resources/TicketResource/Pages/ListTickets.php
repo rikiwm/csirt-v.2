@@ -65,7 +65,7 @@ class ListTickets extends ListRecords
     public function getTabs(): array
     {
         {
-            if (auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen')) {
+            if (auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen')) {
                 $tabs = [
                     'Open' => Tab::make()->icon('heroicon-m-lock-open')->badge(Ticket::query()->where('status', 'open')->count())->badgeColor('primary')
                     ->query(fn ($query) => $query->where('status', 'open')),

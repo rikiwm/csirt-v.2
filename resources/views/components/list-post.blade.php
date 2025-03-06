@@ -15,21 +15,10 @@
                 {{ Str::limit($data->title ?? '', 88, preserveWords: true) }}
             </a>
         </h5>
-        {{-- <p class="mb-1 text-sm text-dark">
-            @foreach ($data['content'] as $item)
-            @if ($item['type'] == 'paragraph')
-            {!! Str::limit($item['data']['content'] ?? '', 48, preserveWords: true) !!}
-            @endif
-            @endforeach
-        </p> --}}
         <span class="mb-1 badge bg-dark-subtle">{{$data->categori->name}}</span>
         <div class="author">
             <div class="my-auto name ps-1">
-                <p class="mb-0 text-xs text-secondary">{{$data->created_at->diffForHumans()}}</p>
-                {{-- <p class="mb-0 text-sm text-darker font-weight-bold">Jhon </p>
-                <div class="stats">
-                    <p class="mb-0 text-xs text-secondary">Anon</p>
-                </div> --}}
+                <p class="mb-0 text-xs text-secondary">{{$data->created_at->diffForHumans()}}</p>x
             </div>
         </div>
         </div>

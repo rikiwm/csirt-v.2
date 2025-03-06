@@ -1,9 +1,9 @@
 
 @props(['messages' => '', 'record' => '','statuse' => ''])
 <div @foreach ($messages as $message)
-<div class="py-2">
+<div class="py-2" >
     <x-filament-tables::container>
-        <x-filament::card>
+        <x-filament::card >
             <div class="flex items-start gap-3" @if ($message->user_id == auth()->user()->id) style="direction: rtl" @else style="direction: ltr" @endif >
                 <img class="items-center h-8 mt-2 rounded-full me-2" src="https://cdn1.iconfinder.com/data/icons/people-avatar-flat-2/128/1-07-512.png" alt="Jese image" loading="lazy">
                 <div class="flex flex-col w-full max-w-[320px] leading-1.5 p-4 border-gray-100 bg-white rounded-e-xl rounded-es-xl dark:bg-gray-800 rounded-lg">

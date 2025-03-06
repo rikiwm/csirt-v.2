@@ -85,71 +85,58 @@
         </div>
     </header> --}}
     {{-- @dd($category); --}}
-    <div class="relative mt-0 mb-0 page-header min-vh-55 ms-1 me-1 mt-lg-2 ms-lg-2 mb-lg-0 me-lg-1 rounded-4"
-    style="background-image: url('https://csirt.padang.go.id/storage/image-property/mzvRlMVfbLiChlEzB1g9WIYZTEeuURXj5nI7iM9W.jpg');" loading="lazy">
-        <span class="mask bg-gradient-faded-dark-blue opacity-6"></span>
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="mx-auto my-auto text-center col-lg-12 col-10">
-                  <div class="text-white display-4 font-weight-light ls-1" style="font-family: 'MinePlayer', sans-serif; font-weight: 100; letter-spacing: 0.1rem;">
-                      {{ $title ?? '' }}
-                  </div>
-                </div>
-                <div class="mx-auto my-auto text-center col-lg-7 col-11">
-                  <p class="mt-3 text-white text-md">
-                      {{-- {{ $category->description->first  ?? ''}} --}}
-                  </div>
-              </div>
-        </div>
-      </div>
+
+    <x-slot name="header">
+      <x-page.hero-page >
+        <x-slot name="descpage">
+            <x-page.hero-content name="{{$title ?? 'Title'}}" desc="{{$description ?? 'Title'}}"/>
+        </x-slot>
+      </x-page.hero-page>
+    </x-slot>
+
     <div class="p-0 mx-4 card card-body blur blur-rounded-lg shadow-blur mx-md-7 mt-n8 ">
         <section class="py-3 mx-4">
-            <div class="container"
-            data-aos="fade-zoom-in"
-            data-aos-easing="ease-in-back"
-            data-aos-delay="50"
-            data-aos-offset="0">
-              <div class="row">
-                <div class="mx-auto mb-2 text-center col-12 col-lg-8">
-                  <span class="mb-0 badge badge-info">Top Article</span>
-                  <h2>Is featured</h2>
-                  <p class="text-dark">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur quam maxime illum eum tempora dicta ducimus inventore voluptatum! Facere commodi ratione consectetur accusantium quaerat aliquid vel, esse veniam fugit mollitia..
-                  </p>
-                  <a href="" class="mt-2 text-sm justify-content-end icon-move-right d-flex align-items-center">read
-                    <i class="material-symbols-rounded me-2">east</i>
-                      </a>
-                </div>
-              </div>
-              <hr class="horizontal dark d-md-block d-none ">
-              <div class="row">
-                <div class="col-12 col-lg-10">
-                    <livewire:list-post
-                    :dataobject="collect($data)"
-                    title="{{$title ?? ''}}"/>
-                </div>
-
-                <div class="col-lg-2 col-6">
-                    <div class="row">
-                        <div class="col-auto mb-3 position-relative mb-sm-0">
-                            @foreach ($category as $cat)
-                            <div class="card card-plain">
-                                <div class="pt-0 card-body">
-                                <h6 class="mb-0 font-weight-bolder d-flex align-items-center">{{$cat->name ?? ''}}
-                                </h6>
-                                <span class="mt-0 mb-0 text-xs">{{$cat->description ?? ''}}</span>
-                                </div>
-                                <hr class="p-0 mt-0 horizontal dark d-md-block d-none">
-                            </div>
-                            @endforeach
-                            </div>
+            <div class="container"data-aos="fade-zoom-in"data-aos-easing="ease-in-back"data-aos-delay="50"data-aos-offset="0">
+                <div class="row">
+                    <div class="mx-auto mb-2 text-center col-12 col-lg-8">
+                    <span class="mb-0 badge badge-info">Top Article</span>
+                    <h2>Is featured</h2>
+                    <p class="text-dark">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur quam maxime illum eum tempora dicta ducimus inventore voluptatum! Facere commodi ratione consectetur accusantium quaerat aliquid vel, esse veniam fugit mollitia..
+                    </p>
+                    <a href="" class="mt-2 text-sm justify-content-end icon-move-right d-flex align-items-center">read
+                        <i class="material-symbols-rounded me-2">east</i>
+                        </a>
                     </div>
                 </div>
+                <hr class="horizontal dark d-md-block d-none">
+                <div class="row">
+                    <div class="col-12 col-lg-10">
+                        <livewire:list-post
+                        :dataobject="collect($data)"
+                        title="{{$title ?? ''}}"/>
+                    </div>
 
-              </div>
+                    <div class="col-lg-2 col-6">
+                        <div class="row">
+                            <div class="col-auto mb-3 position-relative mb-sm-0">
+                                @foreach ($category as $cat)
+                                <div class="card card-plain">
+                                    <div class="pt-0 card-body">
+                                        <h6 class="mb-0 font-weight-bolder d-flex align-items-center">{{$cat->name ?? ''}}
+                                        </h6>
+                                        <span class="mt-0 mb-0 text-xs">{{$cat->description ?? ''}}</span>
+                                    </div>
+                                    <hr class="p-0 mt-0 horizontal dark d-md-block d-none">
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </section>
-          <hr class="my-4 horizontal dark">
+        </section>
+        <hr class="my-4 horizontal dark">
 
         <section class="py-4 my-2">
           <div class="container">
@@ -222,6 +209,7 @@
             </div>
           </div> --}}
         </section>
+
     </div>
 
     {{-- <section class="wrapper bg-light">

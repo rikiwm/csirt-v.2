@@ -12,6 +12,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Str;
 use Filament\Notifications\Actions\Action;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 class CreateTicket extends CreateRecord
 {
@@ -38,6 +39,11 @@ class CreateTicket extends CreateRecord
                 $query->whereIn('name', ['super_admin', 'agen']);
             })->get();
             if ($recipients->isNotEmpty()) {
+                $details = [
+                    'name' => 'John Doe',
+                    'message' => 'Tiket Baru'
+                ];
+                $this->sendMail($recipients, $details);
                 return Notification::make()
                             ->title('Ticket Created')
                             ->body('A new ticket has been created.')
@@ -69,7 +75,7 @@ class CreateTicket extends CreateRecord
         Notification::make()
         ->title('Ticket Created')
         ->body('A new ticket has been created.')
-        ->danger()
+        ->success()
         ->send();
 
     }
@@ -80,6 +86,12 @@ class CreateTicket extends CreateRecord
             ->body('Input Not Valid, please try again.')
             ->danger()
             ->send();
+    }
+
+    protected function sendMail($recipients, $details): void
+    {
+        Mail::to($recipients)->queue(new \App\Mail\TicketCreateMail($details));
+
     }
 
 

@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 // Route::get('/test', [HomeController::class, 'test'])->name('test');
-Route::prefix('/')->group(function () {
-    Route::get('/faq', [StaticController::class, 'faq'])->name('faq');
-});
+// Route::prefix('/')->group(function () {
+//     Route::get('/faq', [StaticController::class, 'faq'])->name('faq');
+// });
 Route::prefix('/')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/{slug}', [HomeController::class, 'show'])->name('show');

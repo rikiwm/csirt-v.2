@@ -3,9 +3,7 @@
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Laravel') }}</title>
-    {{-- @livewireStyles
-    @livewireScripts --}}
-    <link rel="icon" type="image/x-icon" href="{{ asset('frontend/img/icons8-laravel-16.png') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('frontend/img/cslogo.png') }}" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="Cache-Control" content="max-age=3600, must-revalidate">
@@ -17,7 +15,6 @@
     <link href="https://fonts.cdnfonts.com/css/pixies" rel="stylesheet">
     <link href="https://fonts.cdnfonts.com/css/mineplayer" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 </head>
@@ -52,7 +49,6 @@
         }
 
     </style>
-
 
 <body class="bg-white index-page"
         style="background-image: url('{{ asset('frontend/img/blue.png') }}');
@@ -93,18 +89,30 @@
                         </li>
                     </ul>
                     @endif
-
                 </x-slot>
             </x-navbar>
             <!-- End Navbar -->
           </div>
         </div>
     </div>
-    @if(Request::url('/') == url('/'))
-        <x-hero :name="$hero"/>
-    @endif
+
+    <!-- ========== Start hero  ========== -->
+        @if(Request::url('/') == url('/'))
+            <x-hero :name="$hero"/>
+        @else
+            {{ $header }}
+        @endif
+    <!-- ========== End hero  ========== -->
+
+    <!-- ========== Start Section Content ========== -->
         {{ $slot}}
-    <x-footer :setting="$copyright" :address="$alamat" :footer="$footer" appname="{{ $appname ?? env('APP_NAME') }}"/>
+    <!-- ========== End Section Content ========== -->
+
+    <!-- ========== Start footer ========== -->
+        <x-footer :setting="$copyright" :address="$alamat" :footer="$footer" appname="{{ $appname ?? env('APP_NAME') }}"/>
+    <!-- ========== End footer ========== -->
+@livewireScripts()
     <x-script />
 </body>
 </html>
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. Explicabo porro, eveniet tempore doloribus temporibus nam veritatis perspiciatis ut veniam nemo, numquam, facilis recusandae cum natus neque modi libero! Recusandae, deserunt?

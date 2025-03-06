@@ -1,11 +1,8 @@
-@props(['name' => '', 'content' => ''])
+@props(['name' => '', 'content' => '', 'bg' => 'frontend/img/bg4.mp4', 'class' => 'min-vh-90'])
 <header class="">
-    <div class="relative mt-0 mb-0 page-header min-vh-95 ms-1 me-1 mt-lg-2 ms-lg-2 mb-lg-0 me-lg-1 rounded-4" >
-        <video src="{{asset('frontend/img/bg4.mp4')}}" autoplay="true" muted="true"  loop style="background-size: cover;" class="mask bg-gradient-dark opacity-3">
-       </video>
-    <!-- <div class="relative mt-0 mb-0 page-header min-vh-95 ms-1 me-1 mt-lg-2 ms-lg-2 mb-lg-0 me-lg-1 rounded-4"
-    style="background-image: url('https://static.vecteezy.com/system/resources/previews/019/954/786/non_2x/modern-cybersecurity-technology-background-with-world-globe-vector.jpg')"> -->
-      <span class="mask bg-gradient-faded-dark-vertical opacity-3"></span>
+    <div class="relative mt-0 mb-0 page-header {{ $class }} ms-1 me-1 mt-lg-2 ms-lg-2 mb-lg-0 me-lg-1 rounded-4" >
+        <x-hero-bg :background="$bg"/>
+
       <div class="container ">
         <div class="row justify-content-center">
           <div class="mx-auto my-auto text-center col-lg-12 col-10"
@@ -36,7 +33,7 @@
         </div>
           </div>
         </div>
-
       </div>
+
     </div>
 </header>

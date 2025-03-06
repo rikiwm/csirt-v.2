@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Mail\TicketCreateMail;
 use App\Models\Ticket;
 use App\Models\TicketMassage;
 use App\Models\User;
@@ -17,6 +18,7 @@ use Livewire\Component;
 use Filament\Resources\TicketResource\Pages\ViewTicket;
 use Illuminate\Support\Facades\Log;
 use Filament\Forms\Components\ToggleButtons;
+use Illuminate\Support\Facades\Mail;
 
 class ReplyTicket extends Component implements HasForms
 {
@@ -73,9 +75,15 @@ class ReplyTicket extends Component implements HasForms
                 'message' => $this->form->getState()['message'],
             ]);
             $data = $this->form->getState()['message'];
+
             $this->form->fill([]); // rempve
+            $details = [
+                'name' => 'John Doe',
+                'message' => $data
+            ];
             if ($user->hasRole('agen') || $user->hasRole('super_admin')) {
                 $recipient = User::find($this->record->users_id);
+                Mail::to($recipient)->queue(new TicketCreateMail($details)); // tomail admin
                 if ($this->record->agent_id == null) {
                     $recorde = Ticket::find($this->record->id);
                     $recorde->agent_id = $user->id;
@@ -84,6 +92,8 @@ class ReplyTicket extends Component implements HasForms
                 }
             } else {
                 $recipient = User::find($this->record->agent_id);
+                Mail::to($recipient)->queue(new TicketCreateMail($details)); //tomail user
+
             }
             if ($recipient) {
                 Notification::make()
@@ -112,8 +122,11 @@ class ReplyTicket extends Component implements HasForms
     }
 
 
+
     public function render()
     {
         return view('livewire.reply-ticket');
     }
+
+
 }

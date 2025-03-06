@@ -57,10 +57,10 @@ class HomeController extends Controller
             if ($menu->type === 'place') {
                 throw new \InvalidArgumentException('Unsupported menu type: '.$menu->type);
             }
-            if ($menu->type === 'link' && $menu->slug === 'faq') {
-                $url = Str::replace(Request::url(),'', $menu->slug);
-                return redirect()->route('faq');
-            }
+            // if ($menu->type === 'link' && $menu->slug === 'faq') {
+            //     $url = Str::replace(Request::url(),'', $menu->slug);
+            //     return redirect()->route('faq');
+            // }
             if ($menu->type === 'link') {
                 $url = Str::replace(Request::url(),'', $menu->slug);
                 return redirect('https://'.$url );

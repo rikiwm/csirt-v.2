@@ -11,17 +11,18 @@ use Livewire\Component;
 
 
 #[Lazy()]
+#[Computed(persist: true)]
 class ListPost extends Component
 {
 
     public $categori;
-
     #[Url()]
     public $categori_id = '';
     public $search = '';
     public $dataobject = null;
     public ?string $title = null;
-    public $limit = 6;
+    #[Url()]
+    public $limit = 3;
     public $menu_id = null;
     public $isActive = false;
 
@@ -41,10 +42,10 @@ class ListPost extends Component
 
     public function loadMore()
     {
-        $this->limit += 6;
-        if ($this->limit > $this->dataobject->count()) {
-            $this->limit = $this->dataobject->count();
-            session()->flash('limit', 'limit');
+        $this->limit += 3;
+
+        if ($this->dataobject->count() < $this->limit ) {
+            $this->render();
         }
     }
 
@@ -56,7 +57,8 @@ class ListPost extends Component
     public function render()
     {
         $this->categori = Categori::all();
-        $data = Post::query()->where('is_active', true)->where('menu_id',$this->menu_id)->limit($this->limit);
+        $data = Post::query()->where('is_active', true)->where('menu_id',$this->menu_id);
+        $count= $data->count();
         if ($this->categori_id) {
             $data->where('categori_id', $this->categori_id);
         }
@@ -67,12 +69,13 @@ class ListPost extends Component
             $this->resetForm();
         }
 
-        $this->dataobject = $data->get();
+        $this->dataobject = $data->limit($this->limit)->get();
         return view('livewire.list-post',
             [
                 'categori' => $this->categori,
                 'dataobject' => $this->dataobject,
                 'title' => $this->title,
+                'count' => $count,
                 'limit' => $this->limit
             ]);
     }

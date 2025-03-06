@@ -207,7 +207,8 @@ class TicketResource extends Resource
                 })
                 ->searchable()->numeric(),
                 TextColumn::make('types.name')->sortable()->label('Insident')->badge()->searchable()->lineClamp(2)->icon('heroicon-m-tag'),
-                TextColumn::make('status')->sortable()->label('Status')->badge()
+                TextColumn::make('status')->sortable()->label('Status')
+                ->badge()
                 ->color(fn (string $state): string => match ($state) {
                     'open' => 'success',
                     'in_progress' => 'info',
@@ -220,9 +221,14 @@ class TicketResource extends Resource
                     }),
                 TextColumn::make('useragen.name')->label('Assign By')->searchable(),
                 TextColumn::make('is_verified')
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    '' => '',
+                    '0' => 'danger',
+                    '1' => 'success',
+                })
                        ->label('Verified')
                        ->sortable()
-                       ->badge()
                        ->searchable()
                        ->formatStateUsing(fn($state) => $state === null ? 'Not Processed' : ($state ? 'Verified' : 'Unverified')),
             ])
@@ -398,8 +404,12 @@ class TicketResource extends Resource
                                     ])
 
                                 ])->columns(2),
-                                ComponentsSection::make('Ticket Response')->description($infolist->record->updated_at)->relationship('messages')->collapsible()
-                                ->persistCollapsed()->icon('heroicon-m-chat-bubble-left')
+                                ComponentsSection::make('Ticket Response')
+                                ->description($infolist->record->updated_at)
+                                ->relationship('messages')
+                                ->collapsible()
+                                ->persistCollapsed()
+                                ->icon('heroicon-m-chat-bubble-left')
                                 ->grow(false)
                                     ->schema([
                                         View::make('filament.pages.ticket.ticket-chat')
