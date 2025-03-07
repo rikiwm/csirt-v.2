@@ -10,10 +10,19 @@ class ListController extends Controller
     //
     public function list($slug)
     {
-        $data = cache()->remember("post_{$slug}", 60, function() use ($slug) {
-            return Post::where('slug', $slug)->firstOrFail();
-        });
+        try {
+            $data = cache()->remember("post_{$slug}", 60, function() use ($slug) {
+                return Post::where('slug', $slug)->first();
+            });
 
-        return view('page.list-show', compact('slug', 'data'));
+            if (!$data) {
+                abort(404, 'Post not found');
+            }
+
+            return view('page.list-show', compact('slug', 'data'));
+        } catch (\Exception $e) {
+            return redirect()->back();
+            // return response()->view('errors.custom', [], 500);
+        }
     }
 }
