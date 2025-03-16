@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Ticket;
 use App\Models\Type;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -20,7 +21,11 @@ use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
 class SummaryReports extends Component implements HasForms, HasTable
 {
@@ -118,7 +123,20 @@ class SummaryReports extends Component implements HasForms, HasTable
                 // ...
             ])
             ->bulkActions([
-                // ...
+                BulkActionGroup::make([
+                    BulkAction::make('Export')
+                    ->label('Export To PDF')
+                        ->icon('heroicon-m-arrow-down-tray')
+                        ->openUrlInNewTab()
+                        ->deselectRecordsAfterCompletion()
+                        ->action(function (Collection $tickets) {
+                            return response()->streamDownload(function () use ($tickets) {
+                                echo Pdf::loadHTML(
+                                    Blade::render('filament.pages.ticket.ticket-print',compact('tickets'))
+                                )->stream();
+                            }, 'users.pdf');
+                        }),
+                ]),
             ]);
     }
 
@@ -163,9 +181,15 @@ class SummaryReports extends Component implements HasForms, HasTable
             $avg = 'Kosong';
         }
 
-        $total = Ticket::query()->select('id')->count();
+        $tickets = Ticket::query()->select('id', 'status', 'is_verified')->get();
 
-        return view('livewire.summary-reports', compact('avg', 'total'));
+        $total = $tickets->count();
+        $closed = $tickets->where('status', 'closed')->count();
+        $open = $tickets->where('status', 'open')->count();
+        $valid = $tickets->where('is_verified', true)->count();
+        $invalid = $tickets->where('is_verified', false)->count();
+
+        return view('livewire.summary-reports', compact('avg', 'total','closed','open','valid','invalid'));
     }
 
     private function avgClosed($ticketId= null)

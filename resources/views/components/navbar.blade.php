@@ -7,7 +7,7 @@
             title="Designed and Coded by Creative Tim"
             data-placement="bottom">
             <div class="d-flex align-items-center text-dark">
-                <img class="w-8 img-fluid d-none d-lg-block" src="{{ asset('frontend/img/cslogo.png') }}" alt="web-logo" >
+                <img class="w-8 img-fluid d-none d-lg-block" src="{{ asset('frontend/img/cslogo.png') }}" alt="web-logo" loading="lazy" >
                 {{-- <i class="material-symbols-rounded me-1" aria-hidden="true">shield_with_house</i> --}}
                 PADANG-
                 <abbr class="text-dark-50" >CSIRT</abbr>

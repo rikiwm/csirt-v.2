@@ -6,8 +6,8 @@
                 <x-content-heading :level="$item['data']['level'] ?? 'h2'" :title="$item['data']['title'] ?? ''" :uppercase="$item['data']['uppercase'] ?? false" />
             @elseif ($item['type'] === 'paragraph')
                 <x-content-paragraph :content="$item['data']['content'] ?? ''" />
-            @elseif ($item['type'] === 'image')
-                <x-content-item :content="$item['data']['content'] ?? ''" />
+            @elseif ($item['type'] === 'images')
+                <x-content-img :content="$item['data']['image'] ?? ''" />
             @endif
         @endforeach
     </div>

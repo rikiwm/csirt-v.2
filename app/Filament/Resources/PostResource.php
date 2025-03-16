@@ -38,7 +38,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction;
 
 class PostResource extends Resource
@@ -57,7 +59,7 @@ class PostResource extends Resource
                                  TextInput::make('title')
                                         ->label('Heading')
                                         ->required(),
-                                    Select::make('level')
+                                Select::make('level')
                                         ->options([
                                             'h1' => 'Heading 1',
                                             'h2' => 'Heading 2',
@@ -66,15 +68,46 @@ class PostResource extends Resource
                                             'h5' => 'Heading 5',
                                             'h6' => 'Heading 6',
                                         ]),
-                    Checkbox::make('uppercase')
+                Checkbox::make('uppercase')
                         ->columnSpanFull(),
                 ]),
 
             ]),
 
-                Block::make('paragraph')->schema([
+            Block::make('paragraph')->schema([
                 RichEditor::make('content')
-                    ->toolbarButtons(['bold', 'italic']),
+                    ->toolbarButtons([
+                        'blockquote',
+                        'bold',
+                        'bulletList',
+                        'codeBlock',
+                        'h2',
+                        'h3',
+                        'italic',
+                        'link',
+                        'orderedList',
+                        'redo',
+                        'strike',
+                        'underline',
+                    ]),
+            ]),
+
+            Block::make('images')->schema([
+                FileUpload::make('image')
+                ->disk('public')
+                ->directory('post_image')
+                ->visibility('public')
+                ->multiple()
+                ->acceptedFileTypes(['application/pdf','jpg','jpeg','png'])
+                ->rules(['mimetypes:image/jpeg,image/png,application/pdf'])
+                ->image()
+                ->imageEditor()
+                ->imageEditorAspectRatios([
+                    null,
+                    '16:9',
+                    '4:3',
+                    '1:1',
+                ])
             ]),
 
         ])
@@ -105,13 +138,6 @@ class PostResource extends Resource
                                         $set('sub_title', $menu->name); // Set hasil query
                                     }
                                 }),
-
-                            // ->createOptionForm([
-                            //     Forms\Components\TextInput::make('title')
-                            //         ->required(),
-                            //     Forms\Components\TextInput::make('desc')
-                            //         ->required()
-                            // ]),
                         ]),
                     Wizard\Step::make('Description')
                         ->schema([

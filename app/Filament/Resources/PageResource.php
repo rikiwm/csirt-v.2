@@ -72,7 +72,39 @@ class PageResource extends Resource
 
                 Block::make('paragraph')->schema([
                 RichEditor::make('content')
-                    ->toolbarButtons(['bold', 'italic']),
+                    ->toolbarButtons([
+                        'blockquote',
+                        'bold',
+                        'bulletList',
+                        'codeBlock',
+                        'h2',
+                        'h3',
+                        'italic',
+                        'link',
+                        'orderedList',
+                        'redo',
+                        'strike',
+                        'underline',
+                ]),
+
+            ]),
+            Block::make('images')->schema([
+                FileUpload::make('image')
+                ->disk('public')
+                ->directory('page_image')
+                ->visibility('public')
+                ->multiple()
+                ->maxFiles(2)
+                ->acceptedFileTypes(['application/pdf','jpg','jpeg','png'])
+                ->rules(['mimetypes:image/jpeg,image/png,application/pdf'])
+                ->image()
+                ->imageEditor()
+                ->imageEditorAspectRatios([
+                    null,
+                    '16:9',
+                    '4:3',
+                    '1:1',
+                ])
             ]),
 
         ])
@@ -168,10 +200,12 @@ class PageResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make()->label(false),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make()
                 ]),
             ]);
     }

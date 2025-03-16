@@ -30,10 +30,7 @@
       <div class="card">
         <div class="card-body">
             <section class="py-4">
-                <div class="container"data-aos="fade-zoom-in"
-                data-aos-easing="ease-in-back"
-                data-aos-delay="50"
-                data-aos-offset="0">
+                <div class="container">
                   <div class="row">
                     <div class="mx-auto col-md-10">
                       <div class="accordion" id="accordionRental">

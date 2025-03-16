@@ -191,7 +191,7 @@ class TicketResource extends Resource
                 TextColumn::make('users.name')->label('Nama')->sortable()->searchable(),
                 TextColumn::make('users.email')->label('Email')->sortable()->searchable(),
                 TextColumn::make('created_at')->sortable()->date()->dateTimeTooltip(),
-                TextColumn::make('subject')->sortable()->searchable(),
+                TextColumn::make('subject')->sortable()->searchable()->limit(40),
                 TextColumn::make('priority')->label('Priority')->badge()
                 ->color(fn (string $state): string => match ($state) {
                     'low' => 'info',

@@ -12,6 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         //
+        $middleware->alias([
+            'webTrackVisitors' => App\Http\Middleware\WebTrackVisitors::class,
+            'postTrackVisitors' => App\Http\Middleware\PostTrackVisitors::class
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

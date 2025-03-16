@@ -10,26 +10,22 @@ use Filament\Actions\Action;
 use Filament\Pages\Page;
 use Illuminate\Contracts\View\View;
 
+
 class SummaryReport extends Page
 {
     use HasPageShield;
     protected static string $view = 'filament.pages.summary-report';
-    protected ?string $heading = 'Summaary';
+    protected ?string $heading = 'Summary Report Ticket';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort = 5;
 
 
 
-    // public function getFooter(): ?View
-    // {
-    //     return view('filament.pages.tabel-summary');
-    // }
-
     protected function getHeaderActions(): array
     {
         return [
             Action::make('Print')
-                ->label('Print')
+                ->label('Export All to PDF')
                 ->icon('heroicon-o-printer')
                 ->color('gray')
                 ->url('/app/summary-report/print',shouldOpenInNewTab: true)
@@ -44,6 +40,13 @@ class SummaryReport extends Page
     {
         return [
             ResponTimeAgenWidget::class
+        ];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            // TicketCount::class
         ];
     }
 

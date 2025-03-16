@@ -1,27 +1,3 @@
-{{-- <table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Status</th>
-            <th>Created At</th>
-            <th>Updated At</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($tickets as $ticket)
-            <tr>
-                <td>{{ $ticket->id }}</td>
-                <td>{{ $ticket->title }}</td>
-                <td>{{ $ticket->description }}</td>
-                <td>{{ $ticket->status }}</td>
-                <td>{{ $ticket->created_at }}</td>
-                <td>{{ $ticket->updated_at }}</td>
-            </tr>
-        @endforeach
-    </tbody>
-</table> --}}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -257,9 +233,6 @@
     </main>
 
 
-<script>
-    window.print();
-</script>
 </body>
 
 </html>

@@ -41,18 +41,19 @@ class UserResource extends Resource
             ->columns([
                 //
                 TextColumn::make('name'),
-                TextColumn::make('roles.name')->sortable()->searchable()->badge(),
-                TextColumn::make('email')->sortable()->searchable()->icon('heroicon-m-envelope-open')->copyable()
-                ->copyMessage(' email copied'),
-                TextColumn::make('email_verified_at')->icon('heroicon-m-check-circle'),
-                TextColumn::make('created_at'),
-                TextColumn::make('updated_at'),
+                TextColumn::make('roles.name')->sortable()->searchable()->badge()->label('Role'),
+                TextColumn::make('email')->sortable()->searchable()->icon('heroicon-m-envelope-open')->copyable()->copyMessage(' email copied'),
+                TextColumn::make('email_verified_at')->date()->dateTimeTooltip()->icon('heroicon-m-check-circle')->color('success'),
+                TextColumn::make('created_at')->date()->dateTimeTooltip(),
+                TextColumn::make('updated_at')->since()->dateTimeTooltip(),
+
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+
+                Tables\Actions\EditAction::make()->label(false),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

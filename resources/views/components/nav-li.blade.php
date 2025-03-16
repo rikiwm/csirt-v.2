@@ -1,6 +1,6 @@
 @props(['item' => ''])
 <li class="mx-2 nav-item dropdown dropdown-hover">
-    <a href="{{ route('show', $item->slug) }}" class="cursor-pointer justify-content-start nav-link d-flex align-items-center font-weight-semibold"
+    <a @if ($item->children->isNotEmpty()) @else  href="{{ route('show', $item->slug) }}" wire:navigate @endif class="cursor-pointer justify-content-start nav-link d-flex align-items-center font-weight-semibold"
         @if ($item->children->isNotEmpty())id="dropdownMenuPages"
         data-bs-toggle="dropdown"
         aria-expanded="false"
@@ -8,7 +8,7 @@
         <i class="material-symbols-rounded opacity-6 me-1 text-md">{{ $item->icon }}</i>
         {{ $item->name }}
         <img src="{{ asset('frontend/img/down-arrow-dark.svg') }}"
-        alt="down-arrow"
+        alt="down-arrow" loading="lazy"
         class="d-block d-lg-none arrow ms-auto ms-md-2">
     </a>
     @if ($item->children->isNotEmpty())

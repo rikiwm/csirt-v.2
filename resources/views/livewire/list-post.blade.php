@@ -26,7 +26,7 @@
     </div>
     <div class="row">
     @foreach ($dataobject as $item)
-        <x-list-post :data="$item" :title="$title" :limit="$limit" />
+        <x-list-post :data="$item" :title="$title" :limit="$limit"  />
         @endforeach
     </div>
     {{-- search --}}

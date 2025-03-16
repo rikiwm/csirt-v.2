@@ -1,5 +1,5 @@
 <x-layouts.app >
-    <div class="p-0 mx-4 card card-body blur blur-rounded-lg shadow-blur mx-md-7 mt-n8" style="z-index: 10;">
+    <div class="p-0 mx-4 card card-body blur blur-rounded-lg shadow-blur mx-md-7 mt-n7" style="z-index: 10;">
         <x-section-component :section="$section" class="text-center" >
             <x-slot name="content" >
 
@@ -22,7 +22,6 @@
                     <code>
                         Model view : {{  $section['value'][1]['data']['model-view'] ?? null }}
                     </code>
-
                       {{-- description --}}
                     <div class="row">
                         <div class="col-md-3 position-relative">
@@ -73,75 +72,6 @@
 
             </x-slot>
         </x-section-component>
-
-        {{-- <section class="pt-3 pb-4" id="count-stats">
-          <div class="container" data-aos="fade-zoom-in"
-          data-aos-easing="ease-in-back"
-          data-aos-delay="50"
-          data-aos-offset="0">
-            <div class="row">
-              <div class="py-3 mx-auto col-lg-10 ">
-                <h2 class="text-center text-dark-blue opacity-8" style="font-family: 'Pixies', sans-serif; letter-spacing: 0rem; font-size: clamp(1rem, -0.4286rem + 4.5714vw, 2.5rem);">
-                    Trend CyberAttack in <span id="" year="">2o24</span>
-                </h2>
-                <hr class=" horizontal dark" style="height: 4px">
-              </div>
-              <div class="py-1 mx-auto col-lg-10 mt-n2">
-                <div class="row">
-                  <div class="col-md-3 position-relative">
-                    <div class="p-3 text-center ">
-                      <h1 class="text-gradient text-dark"><span id="state1" countTo="0">0</span></h1>
-                      <h5 class="mt-3">Scammpage</h5>
-                      <p class="text-sm font-weight-normal">website
-                        </p>
-                    </div>
-                    <hr class="horizontal dark">
-
-                    <hr class="vertical dark">
-                  </div>
-                  <div class="col-md-3 position-relative">
-                    <div class="p-3 text-center">
-                      <h1 class="text-gradient text-dark"><span id="state2" countTo="0">0</span></h1>
-                      <h5 class="mt-3">Phising</h5>
-                      <p class="text-sm font-weight-normal">website
-                      </p>
-                    </div>
-                    <hr class="horizontal dark">
-
-                    <hr class="vertical dark">
-                  </div>
-                  <div class="col-md-3 position-relative">
-                    <div class="p-3 text-center">
-                      <h1 class="text-gradient text-dark"><span id="state3" countTo="0">0</span></h1>
-                      <h5 class="mt-3">Phising</h5>
-                      <p class="text-sm font-weight-normal">
-                        website</p>
-                    </div>
-                    <hr class="horizontal dark">
-                    <hr class="vertical dark">
-
-                  </div>
-                  <div class="col-md-3">
-                    <div class="p-3 text-center">
-                      <h1 class="text-gradient text-dark"><span id="state4" countTo="0">0</span></h1>
-                      <h5 class="mt-3">Phising</h5>
-                      <p class="text-sm font-weight-normal">
-                        website</p>
-                    </div>
-                    <hr class="horizontal dark">
-                    <hr class="vertical dark">
-                  </div>
-
-                </div>
-                <div class="mx-auto row ">
-                    <div class="py-3 text-center col-12">
-                        <a href="http://127.0.0.1:8000/" target="_blank" class="btn btn-facebook btn-sm">Read all Report</a>
-                    </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section> --}}
 
         <!-- ========== Start Section2 ========== -->
         <x-section-component :section="$section2" class="text-start" >

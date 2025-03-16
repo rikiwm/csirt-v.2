@@ -75,8 +75,8 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
-                TicketChart::class,
                 TicketCount::class,
+                TicketChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,

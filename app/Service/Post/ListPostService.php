@@ -9,13 +9,14 @@ class ListPostService implements PostInterface
 {
     public function show($type, $slug, $id)
     {
+        $top = Post::query()->where('is_active', 1)->where('is_featured', 1)->orderBy('created_at','desc')->first();
         $data = Post::query()
                 ->whereHas('menu', fn ($q) => $q->where('type', 'list'))
                 ->where('is_active', 1)->orderBy('created_at','desc')
                 ->where('menu_id', $id)->get();
-
         return [
             'title' => $slug,
+            'top' => $top,
             'data' => $data,
             'view' => 'page.list',
         ];

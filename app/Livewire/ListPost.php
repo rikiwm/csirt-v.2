@@ -56,8 +56,10 @@ class ListPost extends Component
 
     public function render()
     {
+
         $this->categori = Categori::all();
-        $data = Post::query()->where('is_active', true)->where('menu_id',$this->menu_id);
+        $data = Post::query()->where('is_active', true)->where('menu_id',$this->menu_id)->orderBy('created_at','desc');
+
         $count= $data->count();
         if ($this->categori_id) {
             $data->where('categori_id', $this->categori_id);
@@ -76,7 +78,7 @@ class ListPost extends Component
                 'dataobject' => $this->dataobject,
                 'title' => $this->title,
                 'count' => $count,
-                'limit' => $this->limit
+                'limit' => $this->limit,
             ]);
     }
 }

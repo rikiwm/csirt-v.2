@@ -4,9 +4,10 @@ namespace App\View;
 
 use App\Models\Menu;
 use App\Models\SettingWeb;
+use App\Models\WebVisitor;
 use App\View\Components\footer;
-use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\Component;
 
 class AppLayout extends Component
@@ -14,31 +15,39 @@ class AppLayout extends Component
 
     public function render(): View
     {
-        $nav = cache()->remember('nav_menu', 60*60, function () {
+        $nav = Cache::remember('nav_menu', 60, function () {
             return Menu::where('parent_id', null)
                 ->with('children')->where('is_active', true)
                 ->orderBy('id')
                 ->get();
         });
 
-        $setting = cache()->remember('setting_copyright', 60*60, function () {
+        $setting = Cache::remember('setting_copyright', 60, function () {
             return SettingWeb::query()->where('key','copyright')->first();
         });
 
-        $kontak = cache()->remember('setting_address', 60*60, function () {
+        $kontak = Cache::remember('setting_address', 60, function () {
             return SettingWeb::query()->where('key','address')->first();
         });
-        $hero = cache()->remember('setting_hero', 60*60, function () {
+        $hero = Cache::remember('setting_hero', 60, function () {
             return SettingWeb::query()->where('key','hero-section')->first();
         });
 
         $footer = new footer();
+        $todayVisitors = WebVisitor::whereDate('visited_at', today())->count();
+        $monthlyVisitors = WebVisitor::whereMonth('visited_at', now()->month)
+                                    ->whereYear('visited_at', now()->year)
+                                    ->count();
+
+        $yearlyVisitors = WebVisitor::whereYear('visited_at', now()->year)->count();
+        $onlineVisitors = WebVisitor::where('isOnline', true)->count();
         return view('layouts.app',[
             'copyright'=> $setting,
             'alamat'=> $kontak,
             'hero'=> $hero,
             'footer'=> $footer,
-            'navbar' => $nav
+            'navbar' => $nav,
+            'visitor' => compact('todayVisitors', 'monthlyVisitors', 'yearlyVisitors', 'onlineVisitors')
         ]);
     }
 }

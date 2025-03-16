@@ -14,9 +14,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link href="https://fonts.cdnfonts.com/css/pixies" rel="stylesheet">
     <link href="https://fonts.cdnfonts.com/css/mineplayer" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    @livewireStyles
 </head>
     <style>
         @keyframes bounce {
@@ -45,9 +45,54 @@
         .navbar.shrink  {
         right: 0;
         left: 0;
-        width: 80%;
+        width: 86%;
         }
 
+    </style>
+    <style>
+        .swiper {
+            width: 100%;
+            max-width: 1200px;
+            height: auto;
+        }
+        .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .swiper-pagination-bullet {
+            background-color: white;
+            width: 10px;
+            height: 10px;
+        }
+        .swiper-button-next, .swiper-button-prev {
+            width: 30px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%; /* Bulat */
+        }
+        .swiper-button-next::after, .swiper-button-prev::after {
+            font-size: 14px;
+            color: white;
+        }
+        .swiper-thumbs {
+            max-width: 1200px;
+            margin-top: 10px;
+        }
+        .swiper-thumbs .swiper-slide {
+            width: 50px; /* Ukuran thumbnail */
+            height: auto;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+            cursor: pointer;
+        }
+        .swiper-thumbs .swiper-slide-thumb-active {
+            opacity: 1; /* Highlight thumbnail aktif */
+            border: 2px solid #007bff;
+            border-radius: 5px;
+        }
     </style>
 
 <body class="bg-white index-page"
@@ -73,7 +118,7 @@
                     @if (auth()->check())
                     <ul class="navbar-nav navbar-nav-hover ms-auto justify-content-center">
                         <li class="my-auto nav-item ms-3 ms-lg-4">
-                            <a href="/app/dashboard" class="p-1 mt-2 mb-0 rounded btn btn-facebook ms-1 btn-icon mt-md-0 ">
+                            <a href="/app" class="p-1 mt-2 mb-0 rounded btn btn-facebook ms-1 btn-icon mt-md-0 ">
                             <div class="mx-2 text-white d-flex align-items-center">Dashboard
                             </div>
                             </a>
@@ -95,12 +140,11 @@
           </div>
         </div>
     </div>
-
     <!-- ========== Start hero  ========== -->
         @if(Request::url('/') == url('/'))
-            <x-hero :name="$hero"/>
+            <x-home.hero :name="$hero"/>
         @else
-            {{ $header }}
+            {{ $header ?? '' }}
         @endif
     <!-- ========== End hero  ========== -->
 
@@ -109,10 +153,11 @@
     <!-- ========== End Section Content ========== -->
 
     <!-- ========== Start footer ========== -->
-        <x-footer :setting="$copyright" :address="$alamat" :footer="$footer" appname="{{ $appname ?? env('APP_NAME') }}"/>
+        <x-footer :setting="$copyright" :address="$alamat" :footer="$footer" :visitor="$visitor ?? null" appname="{{ $appname ?? env('APP_NAME') }}"/>
     <!-- ========== End footer ========== -->
-@livewireScripts()
+    @livewireScripts
     <x-script />
+    @stack('script')
 </body>
 </html>
-Lorem ipsum dolor sit, amet consectetur adipisicing elit. Explicabo porro, eveniet tempore doloribus temporibus nam veritatis perspiciatis ut veniam nemo, numquam, facilis recusandae cum natus neque modi libero! Recusandae, deserunt?
+{{-- Lorem ipsum dolor sit, amet consectetur adipisicing elit. Explicabo porro, eveniet tempore doloribus temporibus nam veritatis perspiciatis ut veniam nemo, numquam, facilis recusandae cum natus neque modi libero! Recusandae, deserunt? --}}

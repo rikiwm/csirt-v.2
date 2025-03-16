@@ -5,8 +5,8 @@
     'class' => 'text-center'
 ])
 <div>
-    <section class="pt-3 pb-4" id="count-stats">
-        <div class="container" data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="50" data-aos-offset="0">
+    <section class="pt-3 pb-4 pt-lg-4" id="count-stats">
+        <div class="container" >
           <div class="row">
 
             <div class="py-3 mx-auto col-lg-10 ">
@@ -30,9 +30,8 @@
                 <code>{{$section['key']}}</code>
                 <hr class=" horizontal dark" style="height: 3px">
             </div>
-
             <!-- ========== Start isicontent ========== -->
-                <div class="py-1 mx-auto col-lg-10 mt-n2">
+                <div class="py-1 mx-auto col-lg-10 mt-n3">
                     {{ $content }}
                     @if ($section['key'] === 'section-2')
                     @elseif ($section['key'] === 'section-3')

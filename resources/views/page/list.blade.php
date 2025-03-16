@@ -85,28 +85,28 @@
         </div>
     </header> --}}
     {{-- @dd($category); --}}
-
     <x-slot name="header">
       <x-page.hero-page >
         <x-slot name="descpage">
-            <x-page.hero-content name="{{$title ?? 'Title'}}" desc="{{$description ?? 'Title'}}"/>
+            <x-page.hero-content title="{{$title ?? 'Title'}}" desc="{{$description ?? 'Title'}}"/>
         </x-slot>
       </x-page.hero-page>
     </x-slot>
 
     <div class="p-0 mx-4 card card-body blur blur-rounded-lg shadow-blur mx-md-7 mt-n8 ">
         <section class="py-3 mx-4">
-            <div class="container"data-aos="fade-zoom-in"data-aos-easing="ease-in-back"data-aos-delay="50"data-aos-offset="0">
+            <div class="container">
                 <div class="row">
                     <div class="mx-auto mb-2 text-center col-12 col-lg-8">
-                    <span class="mb-0 badge badge-info">Top Article</span>
-                    <h2>Is featured</h2>
+                    <span class="mb-0 badge badge-info">Penting</span>
+                    <h2> {{ $top->title ?? '-' }}</h2>
                     <p class="text-dark">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur quam maxime illum eum tempora dicta ducimus inventore voluptatum! Facere commodi ratione consectetur accusantium quaerat aliquid vel, esse veniam fugit mollitia..
+                        {{-- @dd($top->content[1]['data']['content']) --}}
+                        {!! Str::limit($top->content[1]['data']['content'], 160) ?? '-' !!}
                     </p>
-                    <a href="" class="mt-2 text-sm justify-content-end icon-move-right d-flex align-items-center">read
-                        <i class="material-symbols-rounded me-2">east</i>
-                        </a>
+                    <a href="{{ route('post.detail', $top->slug ?? '') }}" class="mt-2 text-sm justify-content-end icon-move-right d-flex align-items-center">Baca
+                        <i class="material-symbols-rounded ms-2">east</i>
+                    </a>
                     </div>
                 </div>
                 <hr class="horizontal dark d-md-block d-none">
@@ -183,31 +183,6 @@
               </div>
             </div>
           <hr class="my-4 horizontal dark">
-
-          {{-- <div class="container mt-sm-5">
-            <div class="py-6 mb-3 bg-cover shadow-lg page-header py-md-5 my-sm-3 blur blur-rounded mx-n2 mx-lg-n6"
-              style="background-image: url('');"
-              loading="lazy">
-              <span class="mask bg-gradient-dark"></span>
-              <div class="container">
-                <div class="row">
-                  <div class="col-lg-6 ms-lg-5">
-                    <h4 class="text-white">Built by developers</h4>
-                    <h1 class="text-white">Complex</h1>
-                    <p class="text-white lead opacity-8">Lorem ipsum dolor sit, amet consectetur adipisicing elit.  you will find
-                      the
-                      full documentation. Play with the utility classes and you will create unlimited combinations for our
-                      components.</p>
-                    <a href="https://www.creative-tim.com/learning-lab/bootstrap/overview/material-kit"
-                      class="text-white icon-move-right">
-                      Read
-                      <i class="text-sm fas fa-arrow-right ms-1"></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> --}}
         </section>
 
     </div>

@@ -43,40 +43,99 @@
             </div>
         </x-filament::card>
     </div> --}}
-{{-----------------------------------------------------}}
+    {{-- ------------------------------------------------- --}}
     <div class="grid grid-flow-col grid-rows-3 gap-4 py-4">
         <x-filament::card>
-            <div class="grid gap-6 fi-wi-stats-overview-stats-ctn md:grid-cols-3">
+            <div class="grid gap-6 fi-wi-stats-overview-stats-ctn md:grid-cols-1">
                 <div class="d-flex align-items-center">
-                <div class="text-3xl font-semibold tracking-tight fi-wi-stats-overview-stat-value text-gray-950 dark:text-white">
-                    {{ $avg }} Menit
-                </div>
-                <div class="items-center flex-1 gap-x-2">
-                    <svg style="--c-500:var(--warning-500);"
-                    class="w-5 h-5 fi-wi-stats-overview-stat-description-icon text-custom-500"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                    aria-hidden="true" data-slot="icon">
-                    <path fill-rule="evenodd"
-                        d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 0 0 0-1.5h-3.25V5Z"
-                        clip-rule="evenodd"></path>
-                </svg>
-                </div>
-                </div>
-            </div>
-        </x-filament::card>
-        <x-filament::card>
-            <div class="grid gap-6 fi-wi-stats-overview-stats-ctn md:grid-cols-3">
-                <div
-                    class="text-3xl font-semibold tracking-tight fi-wi-stats-overview-stat-value text-gray-950 dark:text-white">
-                    {{ $avg }} Menit
+                    <div
+                        class="text-3xl font-semibold tracking-tight fi-wi-stats-overview-stat-value text-gray-950 dark:text-white">
+                        {{ $total }}
+                    </div>
+                    <div class="flex items-center gap-x-2">
+                        <span
+                            class="text-sm fi-wi-stats-overview-stat-description fi-color-custom text-custom-600 dark:text-custom-400 fi-color-warning"
+                            style="--c-400:var(--info-400);--c-600:var(--info-600);">
+                            Total Ticket
+                        </span>
+                        <svg style="--c-500:var(--info-500);"
+                            class="w-5 h-5 fi-wi-stats-overview-stat-description-icon text-custom-500"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
+                            data-slot="icon">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 0 0 0-1.5h-3.25V5Z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
                 </div>
             </div>
         </x-filament::card>
         <x-filament::card>
-            <div class="grid gap-6 fi-wi-stats-overview-stats-ctn md:grid-cols-3">
-                <div
-                    class="text-3xl font-semibold tracking-tight fi-wi-stats-overview-stat-value text-gray-950 dark:text-white">
-                    {{ $avg }} Menit
+            <div class="grid gap-6 fi-wi-stats-overview-stats-ctn md:grid-cols-1">
+                <div class="d-flex align-items-center">
+                    <div
+                        class="text-3xl font-semibold tracking-tight fi-wi-stats-overview-stat-value text-gray-950 dark:text-white">
+                        {{ $open }}
+                    </div>
+                    <div class="flex items-center gap-x-2">
+                        <span
+                            class="text-sm fi-wi-stats-overview-stat-description fi-color-custom text-custom-600 dark:text-custom-400 fi-color-warning"
+                            style="--c-400:var(--info-400);--c-600:var(--info-600);">
+                            Open
+                        </span>
+                        <svg style="--c-500:var(--info-500);"
+                            class="w-5 h-5 fi-wi-stats-overview-stat-description-icon text-custom-500"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                            aria-hidden="true" data-slot="icon">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 0 0 0-1.5h-3.25V5Z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </x-filament::card>
+        <x-filament::card>
+            <div class="grid gap-6 fi-wi-stats-overview-stats-ctn md:grid-cols-1">
+                <div class="d-flex align-items-center">
+                    <div
+                        class="text-3xl font-semibold tracking-tight fi-wi-stats-overview-stat-value text-gray-950 dark:text-white">
+                        {{ $closed }}
+                    </div>
+                    <span
+                        class="text-sm fi-wi-stats-overview-stat-description fi-color-custom text-custom-600 dark:text-custom-400 fi-color-warning"
+                        style="--c-400:var(--danger-400);--c-600:var(--danger-600);">
+                        Closed
+                    </span>
+                </div>
+            </div>
+        </x-filament::card>
+        <x-filament::card>
+            <div class="grid gap-6 fi-wi-stats-overview-stats-ctn md:grid-cols-2 grid-cols">
+                <div class="cols-span-1">
+                    <div
+                        class="text-3xl font-semibold tracking-tight fi-wi-stats-overview-stat-value text-gray-950 dark:text-white">
+                        {{ $invalid }}
+
+                    </div>
+                    <span
+                        class="text-sm fi-wi-stats-overview-stat-description fi-color-custom text-custom-600 dark:text-custom-400 fi-color-warning"
+                        style="--c-400:var(--info-400);--c-600:var(--info-600);">
+                        Valid
+                    </span>
+                </div>
+
+                <div class="cols-span-1">
+                    <div
+                        class="text-3xl font-semibold tracking-tight fi-wi-stats-overview-stat-value text-gray-950 dark:text-white">
+                        {{ $invalid }}
+
+                    </div>
+                    <span
+                        class="text-sm fi-wi-stats-overview-stat-description fi-color-custom text-custom-600 dark:text-custom-400 fi-color-warning"
+                        style="--c-400:var(--danger-400);--c-600:var(--danger-600);">
+                        Invalid
+                    </span>
                 </div>
             </div>
         </x-filament::card>
@@ -94,10 +153,10 @@
                     <div class="flex items-center gap-x-2">
                         <span
                             class="text-sm fi-wi-stats-overview-stat-description fi-color-custom text-custom-600 dark:text-custom-400 fi-color-warning"
-                            style="--c-400:var(--warning-400);--c-600:var(--warning-600);">
+                            style="--c-400:var(--info-400);--c-600:var(--info-600);">
                             Respon Time Average
                         </span>
-                        <svg style="--c-500:var(--warning-500);"
+                        <svg style="--c-500:var(--info-500);"
                             class="w-5 h-5 fi-wi-stats-overview-stat-description-icon text-custom-500"
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                             aria-hidden="true" data-slot="icon">

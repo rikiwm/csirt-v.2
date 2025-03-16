@@ -11,6 +11,7 @@ class PostFactory
 {
     public static function make($type): PostInterface
     {
+
         switch ($type) {
             case 'list':
                 return new ListPostService();

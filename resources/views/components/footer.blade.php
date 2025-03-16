@@ -1,16 +1,20 @@
-@props(['setting'=>'','address'=>'','footer'=>'','appname'=>''])
+@props(['setting'=>'','address'=>'','footer'=>'','appname'=>'','visitor'=>''])
 <div class="pt-4 mt-2 card card-body blur blur-rounded shadow-blur" style="z-index: 10;">
     <footer class="footer">
-        <div class="container">
-        <div class=" row">
-            <div class="mb-4 col-md-10 ms-auto">
+        <div class="px-lg-4 container-fluid">
+        <div class="row">
+            <div class="mx-auto mb-4 col-12 col-md-10">
                 <div>
-                    <a href="/" class="d-flex align-items-center ">
-                        <x-logo />
+                    <div class="flex-row d-flex align-items-center">
+                        <a href="/" class="">
+                            <x-logo />
+
+                        </a>
                         <h6 class="mb-2 ms-2 font-weight-bolder text-uppercase">
                             {{ $appname ??  env('APP_NAME') }}
                         </h6>
-                    </a>
+                    </div>
+
                     <!-- ========== Start FOOTER CONTENT ========== -->
                     <div class="mb-2">
                         <span class="text-capitalize">{{ $footer['value'][1]['data']['keys'] ?? null }}</span>
@@ -63,30 +67,6 @@
             </div>
             </div>
 
-            <div class="mb-4 col-md-2 col-sm-6 col-6">
-            <div>
-                <h6 class="text-sm">Resources</h6>
-                <ul class="flex-column ms-n3 nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="https://iradesign.io/" target="_blank">
-                    Illustrations
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="https://www.creative-tim.com/bits" target="_blank">
-                    Bits & Snippets
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="https://www.creative-tim.com/affiliates/new" target="_blank">
-                    Affiliate Program
-                    </a>
-                </li>
-                </ul>
-            </div>
-            </div>
 
             <div class="mb-4 col-md-2 col-sm-6 col-6">
             <div>
@@ -120,10 +100,10 @@
             </div>
             </div> --}}
 
-            <div class="mb-4 col-md-2 col-sm-6 col-6 me-auto">
+            <div class="mx-auto mb-4 col-md-2 col-sm-6 ">
                 <div>
-                    <h6 class="text-sm">Site Map</h6>
-                    <ul class="flex-column ms-n3 nav">
+                    <h6 class="text-sm text-lg-end me-2">Site Map</h6>
+                    <ul class="flex-column ms-n3 nav text-lg-end">
                     <li class="nav-item">
                         <a class="nav-link" href="#"
                         target="_blank">
@@ -142,11 +122,40 @@
                     Opensource
                         </a>
                     </li>
+
+                    </ul>
+                    <h6 class="text-sm text-lg-end me-2">Help & Support</h6>
+                    <ul class="flex-column ms-n3 nav text-lg-end">
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.creative-tim.com/contact-us" target="_blank">
+                        Contact Us
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.creative-tim.com/knowledge-center" target="_blank">
+                        Knowledge Center
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://services.creative-tim.com/?ref=ct-mk2-footer" target="_blank">
+                        Custom Development
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.creative-tim.com/sponsorships" target="_blank">
+                        Sponsorships
+                        </a>
+                    </li>
+
                     </ul>
                 </div>
             </div>
 
             <div class="col-12">
+
                 <div class="">
                     <ul class="justify-content-center d-flex ms-n3 nav">
                     <li class="nav-item">
@@ -170,12 +179,35 @@
                     </li>
                     </ul>
                 </div>
+
+                <div class="">
+                    <ul class="justify-content-center d-flex ms-n3 nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"
+                            target="_blank">
+                            Visitor : {{ $visitor['yearlyVisitors'] ?? null }}
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" target="_blank">
+                            Today : {{ $visitor['todayVisitors'] ?? null }}
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" target="_blank">
+                        Online : {{ $visitor['onlineVisitors'] ?? null }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
                 <div class="text-center">
                     <p class="my-1 text-sm text-dark font-weight-normal">
                     All rights reserved. Copyright ©
-                    <script>document.write(new Date().getFullYear())</script>
+                    {{ date('Y') ?? '2025' }}
                     {{ $footer[0]['value'][0]['data']['content'] ?? null }}
-                    by <a href="https://m3.material.io/develop/web" target="_blank">E-Govorment</a>.
+                    by <a href="" target="_blank">E-Govorment</a>.
                     </p>
                 </div>
             </div>

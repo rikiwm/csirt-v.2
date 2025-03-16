@@ -9,6 +9,7 @@ use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class TicketCount extends BaseWidget
 {
@@ -16,66 +17,75 @@ class TicketCount extends BaseWidget
 
 
 
+
     protected function getStats(): array
     {
-        $queri = Ticket::query();
         $startDate = $this->filters['startDate'] ?? null;
         $endDate = $this->filters['endDate'] ?? null;
-        // $year = $this->filters['year'] ?? null;
+
+        // Query dasar untuk Ticket
+        $baseQuery = Ticket::query()
+            ->when($startDate, fn (Builder $query) => $query->whereDate('created_at', '>=', $startDate))
+            ->when($endDate, fn (Builder $query) => $query->whereDate('created_at', '<=', $endDate))
+            ->when(
+                !auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'),
+                fn (Builder $query) => $query->where('users_id', auth()->id())
+            );
+       // Ambil data statistik berdasarkan minggu
+            $ticketCounts = DB::table('tickets')
+                ->selectRaw('
+                    WEEK(created_at) as week,
+                    SUM(CASE WHEN status = "open" THEN 1 ELSE 0 END) as open_count,
+                    SUM(CASE WHEN status = "closed" THEN 1 ELSE 0 END) as closed_count
+                ')
+                ->when($startDate, fn ($query) => $query->whereDate('created_at', '>=', $startDate))
+                ->when($endDate, fn ($query) => $query->whereDate('created_at', '<=', $endDate))
+                ->when(
+                    !auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'),
+                    fn ($query) => $query->where('users_id', auth()->id())
+                )
+                ->groupBy('week')
+                ->orderBy('week')
+                ->get()
+                ->keyBy('week');
+
+            // Siapkan array data chart untuk 12 minggu terakhir
+            $dataOpen = [];
+            $dataClosed = [];
+
+            for ($i = 1; $i <= 7; $i++) {
+                $dataOpen[] = $ticketCounts[$i]->open_count ?? 0;
+                $dataClosed[] = $ticketCounts[$i]->closed_count ?? 0;
+            }
+
+
         return [
-            Stat::make(
-                label: 'Total posts',
-                value:$queri
-            ->when($startDate, fn (Builder $query) => $query->whereDate('created_at', '>=', $startDate))
-            ->when($endDate, fn (Builder $query) => $query->whereDate('created_at', '<=', $endDate))
-            ->where(function($queri){
-            if (!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen')) {
-                    return $queri->where('users_id', auth()->id());
-                }
-            })
-            ->where('status', 'open')->count())
-            ->chart([7, 6, 5, 4, 2, 1])
-            ->label(false)
-            ->color('primary')
-            ->description('Open ') ->extraAttributes([
-                'class' => 'cursor-pointer',
-                'wire:click' => "\$dispatch('setStatusFilter', { filter: 'processed' })",
-            ])
-            ->descriptionIcon('heroicon-m-lock-open'),
-            Stat::make('Closed', $queri
-            ->when($startDate, fn (Builder $query) => $query->whereDate('created_at', '>=', $startDate))
-            ->when($endDate, fn (Builder $query) => $query->whereDate('created_at', '<=', $endDate))
-            ->where(function($queri){
-            if (!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen')) {
-                    return $queri->where('users_id', auth()->id());
-                }
-            })
-            ->where('status', 'closed')->count())
-            ->chart([0, 0, 0, 1, 0, 0, 0])
-            ->label(false)
-            ->color('primary')
-            ->description('Closed ')
-            ->descriptionIcon('heroicon-m-lock-closed'),
-            Stat::make('Progress', $queri
-            ->when($startDate, fn (Builder $query) => $query->whereDate('created_at', '>=', $startDate))
-            ->when($endDate, fn (Builder $query) => $query->whereDate('created_at', '<=', $endDate))
-            ->where(function($queri){
-            if (!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen')) {
-                    return $queri->where('users_id', auth()->id());
-                }
-            })
-            ->where('status', 'in-progress')->count())
-            ->label(false)
-            ->color('primary')
-            ->description('In Progress '.$startDate. '-' . $endDate)
-            ->chart([1, 2, 3, 4, 5, 6, 7])
-            ->descriptionIcon('heroicon-m-clock'),
+            Stat::make('Open', (clone $baseQuery)->where('status', 'open')->count())
+                ->chart($dataOpen)
+                ->label(false)
+                ->color('primary')
+                ->description('Open')
+                ->extraAttributes([
+                    'class' => 'cursor-pointer',
+                    'wire:click' => "\$dispatch('setStatusFilter', { filter: 'processed' })",
+                ])
+                ->descriptionIcon('heroicon-m-lock-open'),
+
+            Stat::make('Closed', (clone $baseQuery)->where('status', 'closed')->count())
+                ->chart($dataClosed)
+                ->label(false)
+                ->color('primary')
+                ->description('Closed')
+                ->descriptionIcon('heroicon-m-lock-closed'),
+
+            Stat::make('Progress', (clone $baseQuery)->where('status', 'in_progress')->count())
+                ->chart([1, 2, 3, 4, 5, 6, 7])
+                ->label(false)
+                ->color('primary')
+                ->description('In Progress')
+                ->descriptionIcon('heroicon-m-clock'),
         ];
     }
 
-    // kondisi role
-    // public static function canView(): bool
-    // {
-    //     return auth()->user()->isAdmin();
-    // }
+
 }

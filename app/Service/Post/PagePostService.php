@@ -13,15 +13,17 @@ class PagePostService implements PostInterface
     public function show($type,$slug,$id)
     {
 
-        $data = Page::query()->where('slug', $slug)->where('menu_id', $id)->where('is_active', 1)->first();
+        try {
+            $data = Page::query()->where('slug', $slug)->where('menu_id', $id)->where('is_active', 1)->first();
+            return [
+                'title' =>$data->title,
+                'data' => $data,
+                'view' => 'page.page',
+            ];
 
-        if (!$data) {
-            return redirect()->back();
+        } catch (\Exception $e) {
+            return redirect()->route('home')->with('error', 'Page not found');
         }
-        return [
-            'title' =>$data->title,
-            'data' => $data,
-            'view' => 'page.page',
-        ];
+
     }
 }
