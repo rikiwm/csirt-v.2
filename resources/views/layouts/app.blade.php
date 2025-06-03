@@ -8,15 +8,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="Cache-Control" content="max-age=3600, must-revalidate">
     <title>CSIRT-PADANG</title>
-    <link href="{{ asset('frontend/css/nucleo-icons.css') }}" rel="stylesheet" />
-    <link href="{{ asset('frontend/css/material-kit.css') }}" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <link href="https://fonts.cdnfonts.com/css/pixies" rel="stylesheet">
-    <link href="https://fonts.cdnfonts.com/css/mineplayer" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <link preload href="{{ asset('frontend/css/nucleo-icons.css') }}" rel="stylesheet" />
+    <link preload href="{{ asset('frontend/css/material-kit.css') }}" rel="stylesheet" />
+    <link preload rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
+    <link preload rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link preload href="https://fonts.cdnfonts.com/css/pixies" rel="stylesheet">
+    <link preload href="https://fonts.cdnfonts.com/css/mineplayer" rel="stylesheet">
+    <link preload rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link preload rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     @livewireStyles
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
     <style>
         @keyframes bounce {
@@ -155,9 +158,15 @@
     <!-- ========== Start footer ========== -->
         <x-footer :setting="$copyright" :address="$alamat" :footer="$footer" :visitor="$visitor ?? null" appname="{{ $appname ?? env('APP_NAME') }}"/>
     <!-- ========== End footer ========== -->
-    @livewireScripts
-    <x-script />
+
+        <x-script />
     @stack('script')
+
+    @livewireScripts
+
+
+
+
 </body>
 </html>
 {{-- Lorem ipsum dolor sit, amet consectetur adipisicing elit. Explicabo porro, eveniet tempore doloribus temporibus nam veritatis perspiciatis ut veniam nemo, numquam, facilis recusandae cum natus neque modi libero! Recusandae, deserunt? --}}

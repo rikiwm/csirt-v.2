@@ -19,6 +19,7 @@
             data-bs-target="#navigation"
             aria-controls="navigation"
             aria-expanded="false"
+            wire:ignore.self
             aria-label="Toggle navigation">
         <span class="mt-2 navbar-toggler-icon">
             <span class="navbar-toggler-bar bar1"></span>
@@ -26,8 +27,9 @@
             <span class="navbar-toggler-bar bar3"></span>
         </span>
     </button>
-    <div class="collapse navbar-collapse py-lg-0 w-100" id="navigation">
+    <div class="collapse navbar-collapse py-lg-0 w-100" id="navigation" wire:ignore.self>
         {{ $content }}
     </div>
     </div>
 </nav>
+

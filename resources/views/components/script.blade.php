@@ -1,18 +1,18 @@
-<script src="{{ asset('frontend/js/core/popper.min.js')}}" type="text/javascript"></script>
-<script src="{{ asset('frontend/js/core/bootstrap.min.js') }}" type="text/javascript"></script>
-<script src="{{ asset('frontend/js/plugins/perfect-scrollbar.min.js') }}"></script>
-<script src="{{ asset('frontend/js/plugins/countup.min.js') }}"></script>
-<script src="{{ asset('frontend/js/plugins/choices.min.js') }}"></script>
-<script src="{{ asset('frontend/js/plugins/prism.min.js') }}"></script>
-<script src="{{ asset('frontend/js/plugins/highlight.min.js') }}"></script>
-<script src="{{ asset('frontend/js/plugins/rellax.min.js') }}"></script>
-<script src="{{ asset('frontend/js/plugins/tilt.min.js') }}"></script>
-<script src="{{ asset('frontend/js/plugins/choices.min.js') }}"></script>
-<script src="{{ asset('frontend/js/material-kit.min.js')}}" type="text/javascript"></script>
-<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+<script src="{{ asset('frontend/js/core/popper.min.js')}}" type="text/javascript" defer></script>
+<script src="{{ asset('frontend/js/core/bootstrap.min.js') }}" type="text/javascript" defer></script>
+<script src="{{ asset('frontend/js/plugins/perfect-scrollbar.min.js') }}"defer></script>
+<script src="{{ asset('frontend/js/plugins/countup.min.js') }}" defer ></script>
+<script src="{{ asset('frontend/js/plugins/choices.min.js') }}" defer ></script>
+<script src="{{ asset('frontend/js/plugins/prism.min.js') }}" defer ></script>
+<script src="{{ asset('frontend/js/plugins/highlight.min.js') }}" defer ></script>
+<script src="{{ asset('frontend/js/plugins/rellax.min.js') }}" defer ></script>
+<script src="{{ asset('frontend/js/plugins/tilt.min.js') }}" defer ></script>
+<script src="{{ asset('frontend/js/plugins/choices.min.js') }}" defer ></script>
+<script src="{{ asset('frontend/js/material-kit.min.js')}}" type="text/javascript" defer ></script>
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12" ></script>
 <!-- ========== Js Section ========== -->
 
-<script>
+<script defer >
     window.addEventListener("scroll", function () {
         let navbar = document.querySelector(".navbar");
         if (window.scrollY > 100) {
@@ -22,7 +22,7 @@
         }
     });
 </script>
-<script type="text/javascript">
+<script type="text/javascript" defer>
     if (document.getElementById('state1')) {
     const countUp = new CountUp('state1', document.getElementById("state1").getAttribute("countTo"));
     if (!countUp.error) {
@@ -49,7 +49,7 @@
     }
 </script>
 
-<script type="text/javascript">
+<script type="text/javascript" defer>
     if (document.getElementById('typed')) {
     var typed = new Typed("#typed", {
         stringsElement: '#typed-strings',

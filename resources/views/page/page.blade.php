@@ -26,6 +26,8 @@
        <x-page.section-page :data="$data" title="Artikel Lainya" updated="{{ $data['updated_at'] }}" />
     </div>
 
+
+
     <div class="mx-2 card card-body blur blur-rounded shadow-blur mx-md-2 " style="">
         <x-page.section-page-sugest title="Title Artikel Lainya"/>
     </div>
