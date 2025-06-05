@@ -1,3 +1,4 @@
+@props(['title'=> ''])
 <x-layouts.app>
     <x-slot name="header">
         <x-page.hero-page >

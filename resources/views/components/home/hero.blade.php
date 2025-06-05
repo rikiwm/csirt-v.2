@@ -1,7 +1,5 @@
-@props(['name' => '', 'content' => '', 'bg' => 'frontend/img/bg4.mp4', 'class' => 'min-vh-90'])
-<header class="">
-    <div class="relative mt-0 mb-0 page-header {{ $class }} ms-1 me-1 mt-lg-2 ms-lg-2 mb-lg-0 me-lg-1 rounded-4" >
-        <x-home.hero-bg :background="$bg"/>
+@props(['name' => '', 'content' => '', 'bg' => 'frontend/img/bg4.mp4',])
+     <x-home.hero-bg :background="$bg"/>
         <div class="container ">
             <div class="row justify-content-center">
             <div class="mx-auto my-auto text-center col-lg-12 col-10">
@@ -28,6 +26,3 @@
             </div>
             </div>
         </div>
-
-    </div>
-</header>

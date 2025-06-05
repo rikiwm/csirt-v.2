@@ -183,7 +183,8 @@ class TicketResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->deferLoading()
+            ->deferLoading(false)
+            ->query(Ticket::with(['users', 'types', 'useragen']))
             ->striped(false)
             ->defaultSort('created_at', 'desc')
             ->columns([

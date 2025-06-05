@@ -1,6 +1,5 @@
 @props(['name' => '', 'background' => '', 'class' => '','content' => '','desc' => '', 'category' => '','title' => ''])
 <div class="container ">
-
 <div class="row justify-content-center">
     <div class="mx-auto my-auto text-center col-lg-12 col-10"
   >
@@ -9,10 +8,9 @@
       </div>
     </div>
     <div class="mx-auto my-auto text-center col-lg-7 col-11">
-      <p class="mt-3 text-white text-md">
+      <p class="mt-4 text-white text-md">
           {{ $category['name'] ?? '' }}
       </div>
   </div>
-
 </div>
 

@@ -1,10 +1,10 @@
 <x-layouts.app class="">
     <x-slot name="header">
-        <x-page.hero-page >
+        {{-- <x-page.hero-page >
           <x-slot name="descpage">
-              <x-page.hero-content :category="$data['categori']" title="{{$data->sub_title ?? ''}}" desc="{{$data->title ?? ''}}"/>
-          </x-slot>
-        </x-page.hero-page>
+        </x-slot>
+    </x-page.hero-page> --}}
+    <x-page.hero-content :category="$data['categori']" title="{{$data->sub_title ?? ''}}" desc="{{$data->title ?? ''}}"/>
       </x-slot>
 
         <div class="container">
@@ -22,7 +22,7 @@
         </div>
 
 
-       <div class="mx-4 mb-2 card card-body blur blur-rounded shadow-blur mx-md-6" style="z-index: 10;">
+       <div class="mx-1 mb-2 card card-body blur blur-rounded shadow-blur mx-md-6" style="z-index: 10;">
             <x-page.section-page :data="$data" title="Artikel Lainya" :author="$data['user']" updated="{{ $data['updated_at'] }}">
                 <x-slot name="share">
                     <div class="d-flex justify-content-end">

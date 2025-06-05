@@ -24,7 +24,6 @@ class Register extends BaseRegister
             'form' => $this->form(
                 $this->makeForm()
                     ->schema([
-
                         $this->getNameFormComponent(),
                         $this->getEmailFormComponent(),
                         $this->getPasswordFormComponent(),
@@ -43,6 +42,6 @@ class Register extends BaseRegister
     {
         $user = $this->getUserModel()::create($data);
         $user->assignRole('user');
-        return $user;
+        return auth()->login($user);
     }
 }

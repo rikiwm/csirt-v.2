@@ -1,5 +1,5 @@
 <script src="{{ asset('frontend/js/core/popper.min.js')}}" type="text/javascript" defer></script>
-<script src="{{ asset('frontend/js/core/bootstrap.min.js') }}" type="text/javascript" defer></script>
+<script type="module" src="{{ asset('frontend/js/core/bootstrap.min.js') }}" type="text/javascript" ></script>
 <script src="{{ asset('frontend/js/plugins/perfect-scrollbar.min.js') }}"defer></script>
 <script src="{{ asset('frontend/js/plugins/countup.min.js') }}" defer ></script>
 <script src="{{ asset('frontend/js/plugins/choices.min.js') }}" defer ></script>

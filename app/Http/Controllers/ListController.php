@@ -12,7 +12,7 @@ class ListController extends Controller
     public function list($slug)
     {
         try {
-            $data = Cache::remember("post_{$slug}", 60, function() use ($slug) {
+            $data = Cache::remember("post_{$slug}", 1260, function() use ($slug) {
                 return Post::with('user','categori','menu')->where('slug', $slug)->first();
             });
 

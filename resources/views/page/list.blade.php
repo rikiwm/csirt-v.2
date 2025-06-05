@@ -1,99 +1,11 @@
 <x-layouts.app class="">
-    {{-- <header class="">
-        <div class="relative mt-0 mb-0 page-header min-vh-95 ms-1 me-1 mt-lg-2 ms-lg-2 mb-lg-0 me-lg-1 rounded-4">
-            <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-              <div class="carousel-inner">
 
-                <div class="carousel-item active ">
-                  <div class="page-header min-vh-75" style="background-image: url('../../assets/img/bg10.jpg');" loading="lazy">
-                    <span class="mask bg-gradient-dark"></span>
-                    <div class="container">
-                      <div class="row">
-                        <div class="my-auto col-lg-6">
-                          <h4 class="mb-0 text-white fadeIn1 fadeInBottom">News and Articel</h4>
-                          <h1 class="text-white font-weight-black fadeIn2 fadeInBottom">{{ $title }}</h1>
-                          <p class="text-white lead opacity-8 fadeIn3 fadeInBottom">News and Articel</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="mx-4 mb-4 shadow-lg card mt-n5">
-                    <div class="card-body">
-                      <div class="px-0 container-fluid">
-                        <div class="row">
-                          <div class="mb-4 col-lg-4 col-sm-6 mb-sm-0">
-                            <div class="p-4 info-horizontal bg-gradient-dark border-radius-xl d-block d-md-flex ">
-                              <i class="text-3xl text-white material-symbols-rounded">shuffle</i>
-                              <div class="description ps-0 ps-md-3">
-                                <h5 class="text-white">Netflix's 'Shuffle Play' feature</h5>
-                                <p class="text-white pe-0 pe-lg-5">The Arctic Ocean freezes every winter and much of the sea-ice then thaws every summer, and that process will continue whatever.</p>
-                                <a href="javascript:;" class="text-white icon-move-right">
-                                  More about us
-                                  <i class="text-sm fas fa-arrow-right ms-1"></i>
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="col-lg-4 col-sm-6 px-lg-1">
-                            <div class="p-4 info-horizontal border-radius-xl d-block d-md-flex ">
-                              <i class="text-3xl material-symbols-rounded text-gradient text-primary">redeem</i>
-                              <div class="description ps-0 ps-md-3">
-                                <h5>Landbot closes $8M Series</h5>
-                                <p>The Arctic Ocean freezes every winter and much of the sea-ice then thaws every summer, and that process will continue whatever.</p>
-                                <a href="javascript:;" class="text-primary icon-move-right">
-                                  More about us
-                                  <i class="text-sm fas fa-arrow-right ms-1"></i>
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="mt-4 col-lg-4 mt-lg-0">
-                            <div class="p-4 info-horizontal border-radius-xl d-block d-md-flex ">
-                              <i class="text-3xl material-symbols-rounded text-gradient text-primary">bookmarks</i>
-                              <div class="description ps-0 ps-md-3">
-                                <h5>Brave web browser</h5>
-                                <p>The Arctic Ocean freezes every winter and much of the sea-ice then thaws every summer, and that process will continue whatever.</p>
-                                <a href="javascript:;" class="text-primary icon-move-right">
-                                  More about us
-                                  <i class="text-sm fas fa-arrow-right ms-1"></i>
-                                </a>
-                              <div id="extwaiokist" style="display:none" v="fcoon" q="eae39ea6" c="1459." i="1471" u="26.13" s="01192501" sg="svr_11212419-ga_01192501-bai_02052512" d="1" w="false" e="" a="2" m="BMe=" vn="3gtra"><div id="extwaigglbit" style="display:none" v="fcoon" q="eae39ea6" c="1459." i="1471" u="26.13" s="01192501" sg="svr_11212419-ga_01192501-bai_02052512" d="1" w="false" e="" a="2" m="BMe="></div></div></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-
-
-              </div>
-
-              <div class="top-0 min-vh-75 position-absolute w-100">
-                <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-bs-slide="prev">
-                  <span class="carousel-control-prev-icon position-absolute bottom-50" aria-hidden="true"></span>
-                  <span class="visually-hidden">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-bs-slide="next">
-                  <span class="carousel-control-next-icon position-absolute bottom-50" aria-hidden="true"></span>
-                  <span class="visually-hidden">Next</span>
-                </a>
-              </div>
-
-            </div>
-        </div>
-    </header> --}}
-    {{-- @dd($category); --}}
     <x-slot name="header">
-      <x-page.hero-page >
-        <x-slot name="descpage">
-            <x-page.hero-content title="{{$title ?? 'Title'}}" desc="{{$description ?? 'Title'}}"/>
-        </x-slot>
-      </x-page.hero-page>
+        <x-page.hero-content title="{{$title ?? 'Title'}}" desc="{{$description ?? 'Title'}}"/>
+
     </x-slot>
 
-    <div class="p-0 mx-4 card card-body blur blur-rounded-lg shadow-blur mx-md-7 mt-n8 ">
+    <div class="p-0 mx-4 card card-body blur blur-rounded-lg shadow-blur mx-md-7 mt-n6 ">
         <section class="py-3 mx-4">
             <div class="container">
                 <div class="row">

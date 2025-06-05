@@ -30,13 +30,13 @@ class HomeController extends Controller
     public function index()
     {
 
-        $section = Cache::remember('section', 60, function() {
+        $section = Cache::remember('section', 3260, function() {
             return SettingWeb::query()->where('status', '1')->where('key','section-1')->first();
         });
-        $s =  Cache::remember('section2', 60, function() {
+        $s =  Cache::remember('section2', 3260, function() {
             return SettingWeb::query()->where('status', '1')->where('key','section-2')->first();
         });
-        $s3 =  Cache::remember('section3', 60, function() {
+        $s3 =  Cache::remember('section3', 3260, function() {
             return SettingWeb::query()->where('status', '1')->where('key','section-3')->first();
         });
         return view('home2',[
@@ -68,7 +68,7 @@ class HomeController extends Controller
 
             try {
                 $cacheKey = 'post_'.$menu->type.'_'.$slug.'_'.$menu->id;
-            $data = Cache::remember($cacheKey, 60, function() use ($postService, $menu, $slug) {
+            $data = Cache::remember($cacheKey, 1260, function() use ($postService, $menu, $slug) {
                 return $postService->show($menu->type, $slug, $menu->id);
             });
 

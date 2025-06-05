@@ -16,7 +16,7 @@ class StaticController extends Controller
 
     public function faq()
     {
-        $menu = Cache::remember('faq_menu', 60, function() {
+        $menu = Cache::remember('faq_menu', 1260, function() {
             return Menu::where('slug', 'faq')->first();
         });
         $data = Cache::remember('faq_data', 60, function() {

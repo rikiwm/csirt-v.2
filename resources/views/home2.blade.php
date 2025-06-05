@@ -1,8 +1,8 @@
+@props(['section'=>''])
 <x-layouts.app >
     <div class="p-0 mx-4 card card-body blur blur-rounded-lg shadow-blur mx-md-7 mt-n7" style="z-index: 10;">
         <x-section-component :section="$section" class="text-center" >
             <x-slot name="content" >
-
                 @if ($section['value'][1]['data']['model-view'] == 'berita')
                     <span class="p-0 m-0">
                         Model view : {{  $section['value'][1]['data']['section-view'] ?? null }}

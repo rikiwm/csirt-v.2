@@ -48,8 +48,8 @@
                 <div class="py-2 mx-auto col-lg-10 mt-n2">
                     <div class="row">
 
-                        <div class="col-md-12 position-relative">
-                            <div class="p-2 text-dark ">
+                        <div class=" col-md-12 position-relative">
+                            <div class="p-lg-2 text-dark ">
 
                                 @foreach ($data['content'] as $item)
                                     @if ($item['type'] == 'heading')

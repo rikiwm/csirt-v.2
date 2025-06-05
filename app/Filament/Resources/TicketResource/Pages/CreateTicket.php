@@ -73,8 +73,8 @@ class CreateTicket extends CreateRecord
     protected function onValidationSuccess(): void
     {
         Notification::make()
-        ->title('Ticket Created')
-        ->body('A new ticket has been created.')
+        ->title('Ticket Berhasil Dibuat')
+        ->body('Tiket baru telah berhasil dibuat.')
         ->success()
         ->send();
 

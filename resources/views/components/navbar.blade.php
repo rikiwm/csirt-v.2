@@ -1,6 +1,6 @@
 @props(['item' => 'p'])
 
-<nav class="top-0 p-2 mx-auto my-2 shadow p-lg-0 navbar navbar-expand-lg blur navbar-blur border-radius-lg z-index-fixed position-absolute my-lg-4 start-0 end-0">
+<nav class="top-0  mx-auto my-2 shadow p-lg-0 navbar navbar-expand-lg blur navbar-blur border-radius-lg z-index-fixed position-absolute my-lg-4 start-0 end-0">
     <div class="px-2 container-fluid">
         <a class="text-sm navbar-brand font-weight-bolder"
             href="/" rel="tooltip"
@@ -27,7 +27,7 @@
             <span class="navbar-toggler-bar bar3"></span>
         </span>
     </button>
-    <div class="collapse navbar-collapse py-lg-0 w-100" id="navigation" wire:ignore.self>
+    <div class="collapse navbar-collapse py-3 py-lg-0 w-100" id="navigation" wire:ignore.self>
         {{ $content }}
     </div>
     </div>

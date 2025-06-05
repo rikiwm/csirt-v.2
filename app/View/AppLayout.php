@@ -15,18 +15,18 @@ class AppLayout extends Component
 
     public function render(): View
     {
-        $nav = Cache::remember('nav_menu', 60, function () {
+        $nav = Cache::remember('nav_menu', 3260, function () {
             return Menu::where('parent_id', null)
                 ->with('children')->where('is_active', true)
                 ->orderBy('id')
                 ->get();
         });
 
-        $setting = Cache::remember('setting_copyright', 60, function () {
+        $setting = Cache::remember('setting_copyright', 3260, function () {
             return SettingWeb::query()->where('key','copyright')->first();
         });
 
-        $kontak = Cache::remember('setting_address', 60, function () {
+        $kontak = Cache::remember('setting_address', 3260, function () {
             return SettingWeb::query()->where('key','address')->first();
         });
         $hero = Cache::remember('setting_hero', 60, function () {

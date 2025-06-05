@@ -103,7 +103,7 @@
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center top;">
-    <div class="container top-0 position-sticky z-index-sticky">
+    <div class="container-xl top-0 position-sticky z-index-sticky">
         <div class="row">
           <div class="col-12">
             <x-navbar>
@@ -129,7 +129,7 @@
                     </ul>
                     @else
                     <ul class="navbar-nav navbar-nav-hover ms-auto justify-content-center">
-                        <li class="my-auto nav-item ms-3 ms-lg-4">
+                        <li class="my-auto nav-item ms-lg-4 arrow ms-auto ">
                             <a href="/app/login" class="p-1 mt-2 mb-0 rounded btn btn-facebook ms-1 btn-icon mt-md-0 ">
                             <div class="mx-2 text-white d-flex align-items-center">Login
                             </div>
@@ -143,12 +143,29 @@
           </div>
         </div>
     </div>
+    @php
+        $route = Request::url('/') == url('/') ? 'home' : 'page';
+    @endphp
     <!-- ========== Start hero  ========== -->
-        @if(Request::url('/') == url('/'))
+    <header class="">
+    @switch($route)
+        @case('home')
+        <div class="relative mt-0 mb-0 page-header min-vh-90  ms-1 me-1 mt-lg-2 ms-lg-2 mb-lg-0 me-lg-1 rounded-4" >
+            <x-home.hero :name="$hero"/>
+        </div>
+        @break
+        @default
+            <div class="relative mt-0 mb-0 page-header min-vh-35 ms-1 me-1 mt-lg-2 ms-lg-2 mb-lg-0 me-lg-1 rounded-4" style="background-image: url('https://csirt.padang.go.id/storage/image-property/mzvRlMVfbLiChlEzB1g9WIYZTEeuURXj5nI7iM9W.jpg')">
+          <span class="mask bg-gradient-faded-dark-blue opacity-6"></span>
+            {{ $header ?? '' }}
+            </div>
+            @endswitch
+    </header>
+        {{-- @if(Request::url('/') == url('/'))
             <x-home.hero :name="$hero"/>
         @else
-            {{ $header ?? '' }}
-        @endif
+
+        @endif --}}
     <!-- ========== End hero  ========== -->
 
     <!-- ========== Start Section Content ========== -->

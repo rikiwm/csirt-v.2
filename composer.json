@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
         "pboivin/filament-peek": "^2.2",
+        "predis/predis": "2.0",
         "spatie/laravel-medialibrary": "^11.12"
     },
     "require-dev": {

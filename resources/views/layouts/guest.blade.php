@@ -8,19 +8,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="Cache-Control" content="max-age=3600, must-revalidate">
     <title>CSIRT-PADANG</title>
-    <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
-    <!-- Nucleo Icons -->
     <link href="{{ asset('frontend/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('frontend/css/nucleo-svg.css') }}" rel="stylesheet" />
-    <!-- Font Awesome Icons -->
-    <!-- Icons -->
+   
     <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <!-- CSS Files -->
     <link href="https://fonts.cdnfonts.com/css/wheaton" rel="stylesheet">
     <link href="https://fonts.cdnfonts.com/css/neckless-starways" rel="stylesheet">
-    {{-- <link href="https://fonts.cdnfonts.com/css/tmbg-severe-tire-damage" rel="stylesheet"> --}}
     <link href="{{ asset('frontend/css/material-kit.css') }}" rel="stylesheet" />
 
 </head>
