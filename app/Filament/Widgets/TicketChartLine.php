@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 class TicketChartLine extends ChartWidget
 {
     use HasWidgetShield, InteractsWithPageFilters;
-
+protected static ?string $maxHeight = '200px';
     protected static ?string $heading = 'Insiden Verified and Not Verified';
     protected function getData(): array
     {

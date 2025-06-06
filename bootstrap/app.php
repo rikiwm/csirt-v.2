@@ -14,7 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
         //
         $middleware->alias([
             'webTrackVisitors' => App\Http\Middleware\WebTrackVisitors::class,
-            'postTrackVisitors' => App\Http\Middleware\PostTrackVisitors::class
+            'postTrackVisitors' => App\Http\Middleware\PostTrackVisitors::class,
+            'nonce' => App\Http\Middleware\ContentSecurityPolicy::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

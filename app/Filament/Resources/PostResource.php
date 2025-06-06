@@ -179,6 +179,8 @@ class PostResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->striped()
+        ->query(Post::query()->with(['menu', 'categori']))
+            ->defaultSort('published_at', 'desc')
             ->columns([
                 //
                 TextColumn::make('title'),

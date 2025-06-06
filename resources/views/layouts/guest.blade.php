@@ -11,49 +11,16 @@
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
     <link href="{{ asset('frontend/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('frontend/css/nucleo-svg.css') }}" rel="stylesheet" />
-   
-    <link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link href="https://fonts.cdnfonts.com/css/wheaton" rel="stylesheet">
     <link href="https://fonts.cdnfonts.com/css/neckless-starways" rel="stylesheet">
-    <link href="{{ asset('frontend/css/material-kit.css') }}" rel="stylesheet" />
-
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<style>
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-      }
-      40% {
-        transform: translateY(-30px);
-      }
-      60% {
-        transform: translateY(-15px);
-      }
-    }
-    .bounce {
-      display: inline-block;
-      animation: bounce 2.2s infinite;
-    }
-  </style>
-<style>
-    .navbar {
-      width: 100%;
-      margin: auto;
-      transition-property: width;
-      transition-duration: .5s ;
-    }
-    .navbar.shrink  {
-      right: 0;
-      left: 0;
-       width: 75%;
-    }
-  </style>
 <body class="bg-white index-page" style=" background-image: url('{{ asset('frontend/img/blue.png') }}'); background-size: contain;">
-    <!-- Navbar -->
     <div class="container top-0 position-sticky z-index-sticky">
       <div class="row">
         <div class="col-12">
+            <!-- Navbar -->
             <x-navbar>
                 <x-slot name="content">
                     <ul class="navbar-nav navbar-nav-hover ms-auto justify-content-center">
@@ -87,22 +54,11 @@
                     @endif
                 </x-slot>
             </x-navbar>
-          <!-- End Navbar -->
+            <!-- End Navbar -->
         </div>
       </div>
     </div>
         {{ $slot }}
-<x-script />
-<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-<script>
-    window.addEventListener("scroll", function () {
-      let navbar = document.querySelector(".navbar");
-      if (window.scrollY > 100) {
-          navbar.classList.add("shrink");
-      } else {
-          navbar.classList.remove("shrink");
-      }
-  });
-  </script>
+    @include('components.script', ['csp_nonce' => $csp_nonce])
 </body>
 </html>

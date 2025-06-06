@@ -39,7 +39,7 @@ class SummaryReports extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(Ticket::query()->select('id','code','subject','users_id','agent_id','created_at','status','priority')
+            ->query(Ticket::query()->select('id','code','subject','users_id','agent_id','created_at','status','priority')->with(['users', 'useragen', 'types'])
             ->when(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'), function ($query) {
                 $query->where('users_id', auth()->id());
             }))

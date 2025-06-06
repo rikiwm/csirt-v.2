@@ -3,7 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\ResponTimeAgenWidget;
-use App\Filament\Widgets\TicketCount;
+use App\Filament\Widgets\TicketChart;
 use App\Models\Ticket;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\Action;
@@ -17,7 +17,8 @@ class SummaryReport extends Page
     protected static string $view = 'filament.pages.summary-report';
     protected ?string $heading = 'Summary Report Ticket';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = -1;
+
 
 
 
@@ -39,7 +40,8 @@ class SummaryReport extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            ResponTimeAgenWidget::class
+            TicketChart::class,
+            TicketChart::class,
         ];
     }
 

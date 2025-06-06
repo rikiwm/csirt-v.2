@@ -14,7 +14,8 @@ class TicketChart extends ChartWidget
 {
     use HasWidgetShield, InteractsWithPageFilters;
     protected static ?string $heading = 'Insiden Summary';
-
+    protected static ?string $maxHeight = '200px';
+    public ?string $filter = 'today';
     protected function getData(): array
     {
         $startDate = $this->filters['startDate'] ?? null;
@@ -69,6 +70,16 @@ class TicketChart extends ChartWidget
     protected function getType(): string
     {
         return 'bar';
+    }
+
+    protected function getFilters(): ?array
+    {
+        return [
+            'today' => 'Today',
+            'week' => 'Last week',
+            'month' => 'Last month',
+            'year' => 'This year',
+        ];
     }
 
     public function getDescription(): ?string

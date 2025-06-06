@@ -4,14 +4,14 @@
         <x-section-component :section="$section" class="text-center" >
             <x-slot name="content" >
                 @if ($section['value'][1]['data']['model-view'] == 'berita')
-                    <span class="p-0 m-0">
+                    {{-- <span class="p-0 m-0">
                         Model view : {{  $section['value'][1]['data']['section-view'] ?? null }}
-                    </span>
+                    </span> --}}
                     {{-- description --}}
                 @elseif($section['value'][1]['data']['model-view'] == 'peringatan')
-                    <code>
+                    {{-- <code>
                         Model view : {{  $section['value'][1]['data']['model-view'] ?? null }}
-                    </code>
+                    </code> --}}
                     {{-- description --}}
                     <div class="row">
                         <div class="col-12 col-lg-10">
@@ -19,10 +19,9 @@
                         </div>
                     </div>
                 @else
-                    <code>
+                    {{-- <code>
                         Model view : {{  $section['value'][1]['data']['model-view'] ?? null }}
-                    </code>
-                      {{-- description --}}
+                    </code> --}}
                     <div class="row">
                         <div class="col-md-3 position-relative">
                         <div class="p-3 text-center ">
@@ -76,7 +75,6 @@
         <!-- ========== Start Section2 ========== -->
         <x-section-component :section="$section2" class="text-start" >
             <x-slot name="content" >
-
                 <div class="row align-items-center">
                     <div class="mt-0 col-lg-6 ms-auto me-auto p-lg-4 mt-lg-0">
                       <div class="rotating-card-container ">
@@ -142,7 +140,6 @@
         <!-- ========== Start Section3 ========== -->
         <x-section-component :section="$section3" class="text-end" >
             <x-slot name="content" >
-
                 <div class="container mt-sm-5">
                     <div class="py-6 mb-3 page-header py-md-5 my-sm-3 border-radius-xl"
                           style="background-image: url('https://tse2.mm.bing.net/th?id=OIP.iGVTzCGaM9pQnDxlP2u-HwHaEB&pid=Api&P=0&h=180');"
