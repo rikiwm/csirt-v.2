@@ -56,15 +56,17 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Support\Enums\ActionSize;
-
-class TicketResource extends Resource
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+class TicketResource extends Resource implements HasForms
 {
+ use InteractsWithForms;
+
     protected static ?string $model = Ticket::class;
     protected static ?string $navigationIcon = 'heroicon-c-ticket';
     protected static ?string $navigationGroup = 'Ticket';
     protected $listeners = ['refreshInfolist' => '$refresh'];
     protected static ?string $recordTitleAttribute = 'subject';
-
 
 
     public static function form(Form $form): Form
@@ -366,62 +368,69 @@ class TicketResource extends Resource
     public static function infolist(Infolist $infolist): Infolist
 {
 
+
     return $infolist
-    ->columns([
-        'default' => 1,
-        'md' => 1,
-        'lg' => 1,
-        'xl' => 1,
-        '2xl' => 1
-    ])
+->columns([
+    'xs' => 1, // tampilkan 1 kolom di HP
+    'md' => 1,
+    'lg' => 1, // tampilkan 2 kolom mulai dari layar besar
+])
         ->schema([
             Tabs::make('Tabs')
-                ->tabs([
-                    Tabs\Tab::make('Ticket Detail')
-                        ->schema([
-                            InfolistsSplit::make([
-                                ComponentsSection::make($infolist->record->code)->description('code')->schema([
-                                    TextEntry::make('subject')->label('Subject')
-                                    ->grow(false)
-                                    ->size(TextEntry\TextEntrySize::Large)
-                                    ->weight(FontWeight::Bold)->columns(2),
+                    ->tabs([
+                    Tabs\Tab::make('Message Response')->badge(5)
+            ->badgeColor('info')
+                            ->schema([
+                                ComponentsSection::make('Ticket Response')
+                                    ->description($infolist->record->updated_at)->extraAttributes(['class' => 'overflow-hidden overflow-y-auto'])
+                                    ->relationship('messages')->columns(1)
+                                    ->icon('heroicon-m-chat-bubble-left')
+                                        ->schema([
+                                            View::make('filament.pages.ticket.ticket-chat')->extraAttributes(['class' => 'overflow-hidden overflow-y-auto'])
+                                            ->viewData([
+                                                'messages' => TicketMassage::where('ticket_id', $infolist->record->id)->with('user')->orderBy('created_at', 'desc')->get(),
+                                                'record' => $infolist->record,
+                                                'statuse' => $infolist->record->status
+                                            ])->columnSpanFull(),
+                                    ])->grow(false),
+                            ])
+                            ->icon('heroicon-m-chat-bubble-left-right')
+                            ->label('Message'),
 
+                    Tabs\Tab::make('Ticket Detail')
+                            ->schema([
+                            InfolistsSplit::make([
+                                ComponentsSection::make($infolist->record->code)->description('code')  ->columns([
+                                'xs' => 1,
+                                'md' => 2,
+                                'lg' => 2,
+                                'xl' => 2,
+                                '2xl' => 1
+                            ])->columnSpanFull()->schema([
+                                    TextEntry::make('subject')->label('Subject')
+                                    ->size(TextEntry\TextEntrySize::Large)
+                                    ->weight(FontWeight::Bold),
                                     Fieldset::make('Ticket')
                                     ->schema([
-                                        TextEntry::make('status')->grow(false),
+                                        TextEntry::make('status'),
                                         TextEntry::make('priority')->label('Priority')->badge()->color(fn (string $state): string => match ($state) {
                                             'low' => 'secondary',
                                             'medium' => 'info',
                                             'high' => 'warning',
-                                            'urgent' => 'danger'})->grow(false),
-                                        TextEntry::make('types.name')->label('Insident')->badge()->grow(false),
-                                        TextEntry::make('users.name')->grow(false),
-                                        TextEntry::make('users.email')->grow(false),
-                                        TextEntry::make('created_at')->date()->grow(false),
+                                            'urgent' => 'danger'})->grow(true),
+                                        TextEntry::make('types.name')->label('Insident')->badge()->grow(true),
+                                        TextEntry::make('users.name')->grow(true),
+                                        TextEntry::make('users.email')->grow(true),
+                                        TextEntry::make('created_at')->date()->grow(true),
                                     ]),
                                     Fieldset::make('description')->schema([
-                                        TextEntry::make('description')->label('Description')->html()->grow(false),
+                                        TextEntry::make('description')->label('Description')->html()->grow(true),
 
                                     ])
 
-                                ])->columns(2),
-                                ComponentsSection::make('Ticket Response')
-                                ->description($infolist->record->updated_at)
-                                ->relationship('messages')
-                                ->collapsible()
-                                ->persistCollapsed()
-                                ->icon('heroicon-m-chat-bubble-left')
-                                ->grow(false)
-                                    ->schema([
-                                        View::make('filament.pages.ticket.ticket-chat')
-                                        ->columnSpan(2)
-                                        ->viewData([
-                                            'messages' => TicketMassage::where('ticket_id', $infolist->record->id)->with('user')->orderBy('created_at', 'desc')->get(),
-                                            'record' => $infolist->record,
-                                            'statuse' => $infolist->record->status
-                                        ]),
-                                ]),
-                            ])->columns(2),
+                                ])->icon('heroicon-m-ticket'),
+
+                            ]),
                         ]),
                     Tabs\Tab::make('Proof Of Concept')
                         ->schema([
@@ -466,6 +475,7 @@ class TicketResource extends Resource
     public function methodResultRefreshSelf()
     {
         $this->dispatch('refreshChat');
+         $this->emit('ViewTicket', $infolist->record->id);
     }
 
 }

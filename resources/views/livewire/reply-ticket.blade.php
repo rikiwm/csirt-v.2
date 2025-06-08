@@ -6,13 +6,13 @@
     use Filament\Forms\Components\RichEditor;
 @endphp
 
-<x-filament-tables::container>
     <x-filament::card>
         <form wire:submit="create">
             {{ $this->form }}
-            <div class="flex justify-end mt-2">
+            <div class="flex justify-end my-4">
                 @if($this->record->agent_id == null || auth()->user()->id == $this->record->users_id || auth()->user()->id == $this->record->agent_id )
-                <x-filament::button type="submit" class=" btn btn-facebook">
+                <x-filament::button type="submit" class=" btn btn-facebook"  wire:loading.attr="disabled" >
+                    <x-filament::loading-indicator class="h-5 w-5" wire:loading />
                     Kirim
                 </x-filament::button>
                 @else
@@ -20,7 +20,5 @@
                 @endif
             </div>
         </form>
-        <x-filament-actions::modals />
     </x-filament::card>
-</x-filament-tables::container>
 </div>

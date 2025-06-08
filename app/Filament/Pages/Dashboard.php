@@ -17,7 +17,7 @@ use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Pages\Dashboard\Actions\FilterAction;
 use Filament\Pages\Dashboard\Concerns\HasFiltersAction;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
-
+use App\Filament\Resources\WidgetsResource\Widgets\TiketInsident;
 
 class Dashboard extends BaseDashboard
 {
@@ -25,7 +25,8 @@ class Dashboard extends BaseDashboard
     // protected static ?string $title = 'Finance dashboard';
     // protected static string $view = 'filament.pages.dashboard';
     use HasFiltersAction, HasFiltersForm;
-
+    protected int | string | array $columnSpan = 'full';
+    protected static bool $isLazy = false;
     protected function getHeaderActions(): array
     {
         return [
@@ -71,7 +72,22 @@ class Dashboard extends BaseDashboard
 
         ];
     }
+     public function getColumns(): int | string | array
+    {
+        return 2;
+    }
+    // protected function getHeaderWidgets(): array
+    // {
+    //     return [
 
+    //     ];
+    // }
+
+    // protected function getFooterWidgets(): array
+    // {
+    //     return [
+    //         ];
+    // }
 
 
     // public function filtersForm(Form $form): Form

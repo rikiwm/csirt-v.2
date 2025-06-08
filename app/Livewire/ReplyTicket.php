@@ -25,6 +25,14 @@ class ReplyTicket extends Component implements HasForms
     use InteractsWithForms;
     public $record;
     public ?array $data = [];
+
+    #[On('ViewTicket')]
+    public function loadTicket($ticketId)
+    {
+        $this->record = Ticket::find($ticketId);
+    }
+
+
     public function form(Form $form): Form
     {
         return $form
@@ -57,7 +65,6 @@ class ReplyTicket extends Component implements HasForms
                 //    1 => 'success',
                 // ]),
                 ])
-
             ->statePath('data');
     }
     public function mount(): void
@@ -75,13 +82,13 @@ class ReplyTicket extends Component implements HasForms
                 'message' => $this->form->getState()['message'],
             ]);
             $data = $this->form->getState()['message'];
-
-            $this->form->fill([]); // rempve
+            $this->form->fill([]);
             $details = [
                 'name' => 'John Doe',
                 'message' => $data
             ];
             if ($user->hasRole('agen') || $user->hasRole('super_admin')) {
+
                 $recipient = User::find($this->record->users_id);
                 Mail::to($recipient)->queue(new TicketCreateMail($details)); // tomail admin
                 if ($this->record->agent_id == null) {
@@ -91,6 +98,7 @@ class ReplyTicket extends Component implements HasForms
                     Log::info($recorde);
                 }
             } else {
+
                 $recipient = User::find($this->record->agent_id);
                 Mail::to($recipient)->queue(new TicketCreateMail($details)); //tomail user
 

@@ -13,8 +13,8 @@ use Filament\Forms\Components\Builder;
 class TicketChart extends ChartWidget
 {
     use HasWidgetShield, InteractsWithPageFilters;
-    protected static ?string $heading = 'Insiden Summary';
-    protected static ?string $maxHeight = '200px';
+    protected static ?string $heading = 'Bagan Laporan Insiden Tiket Terbuka dan Tiket Tertutup';
+    protected static ?string $maxHeight = '500px';
     public ?string $filter = 'today';
     protected function getData(): array
     {
@@ -50,15 +50,17 @@ class TicketChart extends ChartWidget
             'datasets' => [
                 [
                     'label' => 'Tickets Created',
+                    'axis' => 'y',
                     'data' => $dataOpen,
-                    'borderWidth' => 2,
+                    'borderWidth' => 1,
                     'backgroundColor' => 'rgba(54, 162, 235, 0.5)',
                     'borderColor' => 'rgba(54, 162, 235, 1)',
                 ],
                 [
                     'label' => 'Tickets Closed',
+                    'axis' => 'y',
                     'data' => $dataClosed,
-                    'borderWidth' => 2,
+                    'borderWidth' => 1,
                     'backgroundColor' => 'rgba(255, 99, 132, 0.5)',
                     'borderColor' => 'rgba(255, 99, 132, 1)',
                 ],
@@ -72,18 +74,65 @@ class TicketChart extends ChartWidget
         return 'bar';
     }
 
-    protected function getFilters(): ?array
-    {
-        return [
-            'today' => 'Today',
-            'week' => 'Last week',
-            'month' => 'Last month',
-            'year' => 'This year',
-        ];
-    }
+    // protected function getFilters(): ?array
+    // {
+    //     return [
+    //         'today' => 'Today',
+    //         'week' => 'Last week',
+    //         'month' => 'Last month',
+    //         'year' => 'This year',
+    //     ];
+    // }
 
     public function getDescription(): ?string
     {
         return 'The number of blog posts published per month.';
+    }
+
+    protected function getOptions(): array
+    {
+        return [
+            'plugins' => [
+                'legend' => [
+                    'display' => false,
+                ],
+                'tooltip' => [
+                    'enabled' => true,
+                    'mode' => 'index',
+                    'intersect' => false,
+                ],
+                'title' => [
+                    'display' => true,
+                    'text' => 'Tickets Opened and Closed',
+                ],
+            ],
+            'responsive' => true,
+            'indexAxis' => 'y', // Use 'y' for horizontal bar chart
+            'scales' => [
+                'y' => [
+                    'beginAtZero' => true,
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Number of Tickets',
+                    ],
+                ],
+
+                'y1' => [
+                    'beginAtZero' => true,
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Number of Tickets',
+                    ],
+                ],
+            ],
+            'elements' => [
+                'bar' => [
+                    'borderWidth' => 2,
+                    'borderRadius' => 15, // Add border radius for rounded corners
+                ],
+            ],
+            'barPercentage' => 1, // Adjust bar width
+            'categoryPercentage' => 1, // Adjust category width
+        ];
     }
 }

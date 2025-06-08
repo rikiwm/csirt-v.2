@@ -22,7 +22,7 @@ use Illuminate\Session\Middleware\StartSession;
 use App\Filament\Pages\Profile;
 use App\Filament\Pages\Auth\Register;
 use App\Filament\Pages\Dashboard;
-use App\Filament\Widgets\TicketCount;
+
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -46,6 +46,8 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 FilamentPeekPlugin::make(),
                 FilamentShieldPlugin::make(),
+                // ChartInsidenCount::class,
+
             ])
             ->colors([
                 'urgent' => Color::Purple,
@@ -73,10 +75,14 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
-                TicketCount::class,
-                TicketChart::class,
+                Widgets\AccountWidget::class,
+                \App\Filament\Widgets\TicketChart::class,
+                \App\Filament\Widgets\ChartTiket::class,
+                \App\Filament\Widgets\TicketChartLine::class,
+                \App\Filament\Widgets\Tables\TabelTopUser::class,
+                \App\Filament\Widgets\TicketCount::class,
+
             ])
             ->middleware([
                 EncryptCookies::class,

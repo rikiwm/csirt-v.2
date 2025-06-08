@@ -15,11 +15,8 @@ class SummaryReport extends Page
 {
     use HasPageShield;
     protected static string $view = 'filament.pages.summary-report';
-    protected ?string $heading = 'Summary Report Ticket';
+    protected ?string $heading = 'Ticket Analysis';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?int $navigationSort = -1;
-
-
 
 
     protected function getHeaderActions(): array
@@ -40,8 +37,8 @@ class SummaryReport extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            TicketChart::class,
-            TicketChart::class,
+                \App\Filament\Resources\WidgetsResource\Widgets\TiketInsident::class,
+                TicketChart::class,
         ];
     }
 

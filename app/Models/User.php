@@ -69,4 +69,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     {
         return $this->hasMany(Profile::class, 'users_id') ?? null;
     }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class, 'users_id') ?? null;
+    }
 }

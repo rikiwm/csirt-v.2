@@ -31,7 +31,7 @@ class Ticket extends Model implements HasMedia
         // ->addMediaConversion('thumb')->nonQueued();
     }
 
-        public function messages()
+    public function messages()
     {
         return $this->hasMany(TicketMassage::class);
     }

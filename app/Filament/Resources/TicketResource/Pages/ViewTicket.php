@@ -119,6 +119,7 @@ class ViewTicket extends ViewRecord
 
     public function form(Form $form): Form
     {
+
         return $form
         ->columns([
             'default' => 1,

@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\DB;
 class TicketChartLine extends ChartWidget
 {
     use HasWidgetShield, InteractsWithPageFilters;
-protected static ?string $maxHeight = '200px';
-    protected static ?string $heading = 'Insiden Verified and Not Verified';
+    protected static ?string $heading = 'Bagan Laporan Insiden oleh Terverifikasi dan Tidak Terverifikasi';
+    protected static ?string $maxHeight = '500px';
     protected function getData(): array
     {
         $startDate = $this->filters['startDate'] ?? null;
@@ -72,5 +72,41 @@ protected static ?string $maxHeight = '200px';
     public function getDescription(): ?string
     {
         return 'The number of blog posts published per month.';
+    }
+
+    public function getOptions(): array
+    {
+        return [
+            'scales' => [
+                'y' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Number of Tickets',
+                    ],
+                ],
+                'x' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Month',
+                    ],
+                ],
+            ],
+            'plugins' => [
+                'legend' => [
+                    'display' => true,
+                    'position' => 'top',
+                ],
+            ],
+            'tension' => 0.4, // Adjust the tension for smooth lines
+            'elements' => [
+                'line' => [
+                    'borderWidth' => 2,
+                    'borderColor' => 'rgba(54, 162, 235, 1)', // Default line color
+                    'fill' => false, // Fill the area under the line
+                ],
+            ],
+            'responsive' => true,
+            'maintainAspectRatio' => true,
+        ];
     }
 }
