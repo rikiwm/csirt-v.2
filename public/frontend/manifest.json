@@ -1,0 +1,16 @@
+{
+  "name": "CSIRT",
+  "short_name": "CSIRT Padang",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "white",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/frontend/img/cslogo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

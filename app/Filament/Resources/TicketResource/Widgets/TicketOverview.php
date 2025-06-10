@@ -16,7 +16,7 @@ class TicketOverview extends BaseWidget
 {
 
     use InteractsWithPageFilters;
-    protected static ?string $pollingInterval = '50s';
+    // protected static ?string $pollingInterval = '50s';
     protected ?string $description = 'An overview of some Ticket.';
 
 

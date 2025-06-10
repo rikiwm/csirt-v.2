@@ -3,7 +3,15 @@
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Laravel') }}</title>
-    <link rel="icon" type="image/x-icon" href="{{ asset('frontend/img/cslogo.png') }}" />
+    <!-- PWA  -->
+    <link rel="manifest" href="{{ asset('frontend/manifest.json') }}">
+    <meta name="theme-color" content="#4CAF50">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+    <link rel="apple-touch-icon" href="{{ asset('frontend/img/cslogo.png') }}">
+
+    {{-- <link rel="icon" type="image/x-icon" href="{{ asset('frontend/img/cslogo.png') }}" /> --}}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="Cache-Control" content="max-age=3600, must-revalidate">
@@ -181,6 +189,17 @@
 
     @livewireScripts
 
+<script type="module" defer>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register("{{ asset('frontend/serviceworker.js') }}")
+            .then(function(registration) {
+                console.log("Service Worker registered with scope:", registration.scope);
+            })
+            .catch(function(error) {
+                console.log("Service Worker registration failed:", error);
+            });
+    }
+</script>
 
 
 

@@ -46,8 +46,6 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 FilamentPeekPlugin::make(),
                 FilamentShieldPlugin::make(),
-                // ChartInsidenCount::class,
-
             ])
             ->colors([
                 'urgent' => Color::Purple,

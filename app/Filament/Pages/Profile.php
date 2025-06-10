@@ -50,8 +50,8 @@ class Profile extends BaseProfile
                                     ->default(auth()->id())
                                     ->hidden(),
                                     TextInput::make('address')->label('address'),
-                                    TextInput::make('nik')->label('nik'),
-                                    TextInput::make('phone_number')->label('Hp'),
+                                    TextInput::make('nik')->label('nik')->maxLength(16),
+                                    TextInput::make('phone_number')->label('Hp')->maxLength(12),
                                     TextInput::make('jobs')->label('jobs'),
                                 ])->columns(3),
                             ]),

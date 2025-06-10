@@ -15,9 +15,6 @@ class TicketCount extends BaseWidget
 {
     use InteractsWithPageFilters;
 
-
-
-
     protected function getStats(): array
     {
         $startDate = $this->filters['startDate'] ?? null;
