@@ -5,7 +5,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
     <!-- PWA  -->
     <link rel="manifest" href="{{ asset('frontend/manifest.json') }}">
-    <meta name="theme-color" content="#4CAF50">
+    <meta name="theme-color" content="white">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="white">

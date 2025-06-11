@@ -33,12 +33,12 @@ class ListTickets extends ListRecords
                 ->icon('heroicon-o-plus-circle')
                 ->url($hasProfile ? route('filament.admin.resources.tickets.create') : route('filament.admin.auth.profile', ['record' => $profile]))
                 ->label($hasProfile ? 'Create Ticket' : 'Lengkapi Data Profile Dulu'),
-            FilterAction::make('asd')
-                ->form([
-                    DatePicker::make('startDate'),
-                    DatePicker::make('endDate'),
-                    // ...
-                ]),
+            // FilterAction::make('asd')
+            //     ->form([
+            //         DatePicker::make('startDate'),
+            //         DatePicker::make('endDate'),
+            //         // ...
+            //     ]),
         ];
     }
 
@@ -46,27 +46,27 @@ class ListTickets extends ListRecords
     public function getTabs(): array
     {
         {
-    $isAdmin = auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen');
-    $userId = auth()->id();
-    $statuses = ['open', 'in_progress', 'closed'];
-    $icons = $isAdmin ? ['heroicon-m-lock-open', 'heroicon-m-clock', 'heroicon-m-lock-closed'] : ['heroicon-m-bug-ant', 'heroicon-m-bug-ant', 'heroicon-m-bug-ant'];
-    $badgeColors = ['primary', 'success', 'success'];
+            $isAdmin = auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen');
+            $userId = auth()->id();
+            $statuses = ['open', 'in_progress', 'closed'];
+            $icons = $isAdmin ? ['heroicon-m-lock-open', 'heroicon-m-clock', 'heroicon-m-lock-closed'] : ['heroicon-m-bug-ant', 'heroicon-m-bug-ant', 'heroicon-m-bug-ant'];
+            $badgeColors = ['primary', 'success', 'success'];
 
-    $tabs = collect($statuses)->mapWithKeys(function ($status, $index) use ($isAdmin, $userId, $icons, $badgeColors) {
-        $query = Ticket::query()->where('status', $status);
-        if (!$isAdmin) {
-            $query->where('users_id', $userId);
-        }
-        return [
-            ucfirst($status) => Tab::make()
-                ->icon($icons[$index])
-                ->badge($query->count())
-                ->badgeColor($badgeColors[$index])
-                ->query(fn ($query) => $query->where('status', $status)),
-        ];
-    })->toArray();
+            $tabs = collect($statuses)->mapWithKeys(function ($status, $index) use ($isAdmin, $userId, $icons, $badgeColors) {
+                $query = Ticket::query()->where('status', $status);
+                if (!$isAdmin) {
+                    $query->where('users_id', $userId);
+                }
+                return [
+                    ucfirst($status) => Tab::make()
+                        ->icon($icons[$index])
+                        ->badge($query->count())
+                        ->badgeColor($badgeColors[$index])
+                        ->query(fn ($query) => $query->where('status', $status)),
+                ];
+            })->toArray();
 
-    return $tabs;
+            return $tabs;
 }
     }
 

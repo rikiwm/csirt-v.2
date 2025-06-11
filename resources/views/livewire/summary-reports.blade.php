@@ -5,21 +5,23 @@
     use Filament\Forms\Components\RichEditor;
 @endphp
 <div>
+
     {{-- <div class="grid grid-flow-col grid-rows-3 gap-4 py-0">
+    <form wire:submit="generateReport">
         <x-filament::card>
             <div class="grid gap-6 fi-wi-stats-overview-stats-ctn md:grid-cols-3">
                 <x-filament::input.wrapper>
                     <x-slot name="prefix">
                         Start
                     </x-slot>
-                    <x-filament::input type="date" wire:model="name" />
+                    <x-filament::input type="date" wire:model="startDate" />
 
                 </x-filament::input.wrapper>
                 <x-filament::input.wrapper>
                     <x-slot name="suffix">
                         End
                     </x-slot>
-                    <x-filament::input type="date" wire:model="name" />
+                    <x-filament::input type="date" wire:model="endDate" />
                 </x-filament::input.wrapper>
                 <x-filament::input.wrapper>
 
@@ -42,6 +44,7 @@
                    </x-filament::button>
             </div>
         </x-filament::card>
+    </form>
     </div> --}}
     {{-- ------------------------------------------------- --}}
     <div class="grid grid-flow-col grid-rows-3 gap-4 py-4">
@@ -50,7 +53,7 @@
                 <div class="d-flex align-items-center">
                     <div
                         class="text-3xl font-semibold tracking-tight fi-wi-stats-overview-stat-value text-gray-950 dark:text-white">
-                        {{ $total }}
+                        {{ $this->total }}
                     </div>
                     <div class="flex items-center gap-x-2">
                         <span
@@ -75,7 +78,7 @@
                 <div class="d-flex align-items-center">
                     <div
                         class="text-3xl font-semibold tracking-tight fi-wi-stats-overview-stat-value text-gray-950 dark:text-white">
-                        {{ $open }}
+                        {{ $this->open }}
                     </div>
                     <div class="flex items-center gap-x-2">
                         <span
@@ -100,7 +103,7 @@
                 <div class="d-flex align-items-center">
                     <div
                         class="text-3xl font-semibold tracking-tight fi-wi-stats-overview-stat-value text-gray-950 dark:text-white">
-                        {{ $closed }}
+                        {{ $this->closed }}
                     </div>
                     <span
                         class="text-sm fi-wi-stats-overview-stat-description fi-color-custom text-custom-600 dark:text-custom-400 fi-color-warning"
@@ -115,7 +118,7 @@
                 <div class="cols-span-1">
                     <div
                         class="text-3xl font-semibold tracking-tight fi-wi-stats-overview-stat-value text-gray-950 dark:text-white">
-                        {{ $invalid }}
+                        {{ $this->valid }}
 
                     </div>
                     <span
@@ -128,7 +131,7 @@
                 <div class="cols-span-1">
                     <div
                         class="text-3xl font-semibold tracking-tight fi-wi-stats-overview-stat-value text-gray-950 dark:text-white">
-                        {{ $invalid }}
+                        {{ $this->invalid }}
 
                     </div>
                     <span
@@ -148,7 +151,7 @@
 
                     <div
                         class="text-3xl font-semibold tracking-tight fi-wi-stats-overview-stat-value text-gray-950 dark:text-white">
-                        {{ $avg }} Menit
+                        {{ $this->avg }} Menit
                     </div>
                     <div class="flex items-center gap-x-2">
                         <span
@@ -172,7 +175,7 @@
                 <span
                     class="text-sm fi-wi-stats-overview-stat-description fi-color-custom text-custom-600 dark:text-custom-400 fi-color-primary">
                     Responder
-                </span> {{ $total }}
+                </span> {{ $this->total }}
             </div>
         </div>
     </x-filament::section>

@@ -5,8 +5,8 @@
     use Filament\Tables\Actions\Action;
     use Filament\Forms\Components\RichEditor;
 @endphp
+        <form wire:submit.prevent="create" class="flex flex-col">
 
-        <form wire:submit="create">
             {{ $this->form }}
             <div class="flex justify-end my-4">
                 @if($this->record->agent_id == null || auth()->user()->id == $this->record->users_id || auth()->user()->id == $this->record->agent_id )

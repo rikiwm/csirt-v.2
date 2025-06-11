@@ -16,11 +16,13 @@ use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\Fieldset;
 
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Tables\Columns\TextColumn;
-
+use Filament\Forms\Get;
+use Filament\Forms\HtmlString;
 class SettingWebResource extends Resource
 {
     protected static ?string $model = SettingWeb::class;
@@ -31,7 +33,14 @@ class SettingWebResource extends Resource
     {
         return $form
         ->schema([
-            Fieldset::make('Setup')->schema([
+            Section::make('Setup')->columns(1)->aside()->description(fn (Get $get) => match ($get('key')) {
+                'hero-section' => 'Hero Section',
+                'section-1' => 'Section 1',
+                'section-2' => 'Section 2',
+                'section-3' => 'Section 3',
+                'section-4' => 'Section 4',
+            })->schema([
+                  Fieldset::make('Setup')->schema([
                  Select::make('key')->label('key')
                    ->options(function ($get) {
                     $usedKeys = SettingWeb::pluck('key')->toArray();
@@ -68,68 +77,60 @@ class SettingWebResource extends Resource
                 ->selectablePlaceholder($currentKey ?? 'Select a view')
                 ->disabled(fn ($record) => filled($record))
                 ->required(),
-                //             ->options([
-                //                 'hero-section' => 'hero / home',
-                //                 'section-1' => 'section 1',
-                //                 'section-2' => 'section 2',
-                //                 'section-3' => 'section 3',
-                //                 'copyright' => 'copyright',
-                //                 'address' => 'address',
-                //             ])
-                //             ->required(),
-                // // TextInput::make('key')->required()->label('Title')->placeholder('title'),
                 ToggleButtons::make('status')->boolean()->label('Is Active')->inline(),
                 ComponentsBuilder::make('value')
-                ->blocks([
-                    Block::make('view')
-                    ->schema([
-                        TextInput::make('section-view')
-                            ->label('Section View')
-                            ->required(),
-                        Select::make('model-view')
-                            ->label('Model View')
-                            ->options([
-                                'berita' => 'View Berita',
-                                'peringatan' => 'View Peringatan',
-                                'data' => 'View Data',
-                            ])
-                            ->required(),
-                    ])
-                    ->columns(2),
-                    Block::make('heading')
+                    ->blocks([
+                        Block::make('view')
                         ->schema([
-                            TextInput::make('content')
-                                ->label('Title')
+                            TextInput::make('section-view')
+                                ->label('Section View')
                                 ->required(),
-                            TextInput::make('sub_content')
-                                ->label('Deskripsi')
+                            Select::make('model-view')
+                                ->label('Model View')
+                                ->options([
+                                    'berita' => 'View Berita',
+                                    'peringatan' => 'View Peringatan',
+                                    'data' => 'View Data',
+                                ])
                                 ->required(),
                         ])
                         ->columns(2),
-                    Block::make('paragraph')
-                        ->schema([
-                            Textarea::make('content')
-                                ->label('Paragraph')
+                        Block::make('heading')
+                            ->schema([
+                                TextInput::make('content')
+                                    ->label('Title')
+                                    ->required(),
+                                TextInput::make('sub_content')
+                                    ->label('Deskripsi')
+                                    ->required(),
+                            ])
+                            ->columns(2),
+                        Block::make('paragraph')
+                            ->schema([
+                                Textarea::make('content')
+                                    ->label('Paragraph')
+                                    ->required(),
+                            ]),
+                        Block::make('key')->label('like json array')
+                            ->schema([
+                                TextInput::make('keys')
+                                ->label('Keys')
                                 ->required(),
-                        ]),
-                    Block::make('key')->label('like json array')
-                        ->schema([
-                            TextInput::make('keys')
-                            ->label('Keys')
-                            ->required(),
-                            TextInput::make('content')
-                            ->label('Body')
-                            ->required(),
-                        ])->columns(2),
-                        Block::make('desc')->label('Description')
-                        ->schema([
-                            TextInput::make('desc')
-                            ->label('desc')
-                            ->required(),
-                        ])->columns(1),
+                                TextInput::make('content')
+                                ->label('Body')
+                                ->required(),
+                            ])->columns(2),
+                            Block::make('desc')->label('Description')
+                            ->schema([
+                                TextInput::make('desc')
+                                ->label('desc')
+                                ->required(),
+                            ])->columns(1),
 
-                ])->columnSpanFull(),
+                    ])->columnSpanFull(),
             ])
+            ])
+
 
         ]);
     }

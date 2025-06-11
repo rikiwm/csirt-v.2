@@ -22,16 +22,14 @@ use App\Filament\Widgets\TicketCount;
 
 class Dashboard extends BaseDashboard
 {
-    // protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    // protected static ?string $title = 'Finance dashboard';
-    // protected static string $view = 'filament.pages.dashboard';
     use HasFiltersAction, HasFiltersForm;
     protected int | string | array $columnSpan = 'full';
     protected static bool $isLazy = false;
+
     protected function getHeaderActions(): array
     {
         return [
-            
+
             FilterAction::make('filter')
                 ->icon('heroicon-o-calendar')
                 ->form([

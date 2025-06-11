@@ -12,6 +12,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Livewire\Component;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Enums\FiltersLayout;
@@ -29,13 +30,22 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
 class SummaryReports extends Component implements HasForms, HasTable
 {
-     use InteractsWithForms;
-     use InteractsWithTable;
-     protected static bool $isLazy = false;
-
-     protected ?string $heading = 'Response Time Insidenr';
-     protected ?string $description = 'An overview of some analytics.';
-
+        use InteractsWithForms;
+        use InteractsWithTable;
+        use InteractsWithPageFilters;
+        protected static bool $isLazy = false;
+        protected ?string $heading = 'Response Time Insidenr';
+        protected ?string $description = 'An overview of some analytics.';
+        public $filter = [];
+        public $startDate = null;
+        public $endDate = null;
+        public $total = null;
+        public $closed = null;
+        public $open = null;
+        public $valid = null;
+        public $invalid = null;
+        public $avg = null;
+        public $averageResponseTime = null;
     public function table(Table $table): Table
     {
         return $table
@@ -169,29 +179,45 @@ class SummaryReports extends Component implements HasForms, HasTable
         }
         return gmdate("i:s", $averageResponseTime);
     }
-    public function filter(BaseFilter $filter)
-        {
-            return $filter;
-    }
-    public function render()
-    {
-        try {
-            $avg = $this->avgClosed();
 
-        } catch (\Exception $e) {
-            $avg = 'Kosong';
+
+    public function generateReport()
+    {
+        $this->resetPage();
+    }
+  public function render()
+{
+    try {
+        $avg = $this->avgClosed();
+    } catch (\Exception $e) {
+        $avg = 'Kosong';
+    }
+ if ($this->filter !== '') {
+     $filteredTickets = Ticket::query()->where(function ($query) {
+         $query->whereDate('created_at', '>=', $this->filter['startDate'] ?? now())
+             ->whereDate('created_at', '<=', $this->filter['endDate'] ?? now());
+     });
+
+        $this->total = $filteredTickets->count();
+        $this->closed = $filteredTickets->where('status', 'closed')->count();
+        $this->open = $filteredTickets->where('status', 'open')->count();
+        $this->valid = $filteredTickets->where('is_verified', true)->count();
+        $this->invalid = $filteredTickets->where('is_verified', false)->count();
+        }
+    if($this->filter === ''){
+            $this->resetForm();
         }
 
-        $tickets = Ticket::query()->select('id', 'status', 'is_verified')->get();
-
-        $total = $tickets->count();
-        $closed = $tickets->where('status', 'closed')->count();
-        $open = $tickets->where('status', 'open')->count();
-        $valid = $tickets->where('is_verified', true)->count();
-        $invalid = $tickets->where('is_verified', false)->count();
-
-        return view('livewire.summary-reports', compact('avg', 'total','closed','open','valid','invalid'));
-    }
+// dd($filteredTickets);
+    return view('livewire.summary-reports', [
+        'avg' => $avg,
+        'total' => $this->total,
+        'closed' => $this->closed,
+        'open' => $this->open,
+        'valid' => $this->valid,
+        'invalid' => $this->invalid,
+    ]);
+}
 
     private function avgClosed($ticketId= null)
     {
@@ -218,7 +244,6 @@ class SummaryReports extends Component implements HasForms, HasTable
             })
             ->select(DB::raw('AVG(TIMESTAMPDIFF(SECOND, first_message.created_at, first_reply.created_at)) as avg_response_time'))
             ->value('avg_response_time');
-// dd($averageResponseTime->toSql(), $averageResponseTime->getBindings());
         if ($averageResponseTime === null) {
             return 'N/A';
         }

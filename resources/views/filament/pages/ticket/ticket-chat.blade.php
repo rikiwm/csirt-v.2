@@ -1,4 +1,4 @@
-<div class="h-screen flex flex-col justify-between">
+<div class="flex flex-col justify-between bg-transparent dark:bg-gray-900">
     {{-- Chat Messages --}}
     <div
         id="messages"
@@ -7,26 +7,26 @@
     >
         @foreach ($messages as $message)
             @php
-                $isMine = $message->user_id === auth()->id();
+                $isMine = $message->user_id === auth()->user()->id;
             @endphp
 
             <div class="flex {{ $isMine ? 'justify-end' : 'justify-start' }}">
-                <div class="max-w-sm rounded-lg p-3 shadow-md 
-                    {{ $isMine ? 'bg-gray-200 text-black rounded-br-none' : 'bg-gray-200 text-gray-900 rounded-bl-none' }}">
-                    
-                    <div class="text-xs font-semibold mb-1">
+                <div class="max-w-sm rounded-lg p-3 shadow-md
+                    {{ $isMine ? 'bg-gray-200 text-black rounded-br-none dark:bg-gray-800' : 'bg-gray-200 dark:bg-gray-800 text-gray-900 rounded-bl-none' }}">
+
+                    <div class="text-xs font-semibold mb-1 capitalize">
                         {{ $message->user->name ?? 'User' }}
                         <span class="text-[10px] text-gray-300 ml-2">
                             {{-- {{ $message->created_at->diffForHumans() }} --}}
                         </span>
                     </div>
 
-                    <div class="text-sm leading-snug">
+                    <div class="text-sm leading-snug py-2">
                         {!! $message->message ?? '' !!}
                     </div>
 
                     <div class="text-xs mt-1 text-right">
-                        <x-heroicon-c-calendar-date-range class="inline-block w-3 h-3 text-black opacity-70" />
+                        <x-heroicon-c-calendar-date-range class="inline-block w-3 h-3 text-black opacity-50" />
                         {{ $message->created_at->format('d M Y H:i') }}
                     </div>
                 </div>
@@ -34,9 +34,8 @@
         @endforeach
     </div>
 
-    {{-- Input Reply Form --}}
-    @if ($statuse !== 'closed')
-        <div class="p-2 border-t">
+        @if ($statuse !== 'closed')
+        <div class="p-3 border-t bg-white dark:bg-gray-800">
             <livewire:reply-ticket :record="$record" />
         </div>
     @endif
@@ -59,7 +58,7 @@
             <div class="flex {{ $isMine ? 'justify-end' : 'justify-start' }}">
                 <div class="max-w-sm rounded-xl px-4 py-2 shadow
                     {{ $isMine ? 'bg-blue-500 text-white rounded-br-none' : 'bg-white text-gray-800 rounded-bl-none' }}">
-                    
+
                     <div class="text-xs font-semibold mb-1">
                         {{ $message->user->name ?? 'User' }}
                         <span class="text-[10px] text-gray-300 ml-2">

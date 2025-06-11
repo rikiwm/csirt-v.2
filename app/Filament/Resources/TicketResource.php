@@ -118,8 +118,14 @@ class TicketResource extends Resource implements HasForms
                         ->maxLength(255)
                         ->validationMessages([
                             'required' => 'The :attribute not valid.',
-                        ])->columnSpan(2),
-                    RichEditor::make('description')->columnSpan(1)
+                        ])->columnSpan(1),
+                    TextInput::make('domain')->placeholder('Ex: contoh.contoh.go.id')
+                        ->required()->helperText('domain Vuln')
+                        ->maxLength(255)
+                        ->validationMessages([
+                            'required' => 'The :attribute not valid.',
+                        ]),
+                    RichEditor::make('description')->columnSpan(2)
                         ->toolbarButtons([
                             'attachFiles',
                             'blockquote',
@@ -141,18 +147,18 @@ class TicketResource extends Resource implements HasForms
                         ->fileAttachmentsVisibility('private')
                         ->validationMessages([
                             'required' => 'The :attribute not valid.',
-                        ])->hint('description')->hintColor('primary')
+                        ])->hint('Description Vuln')->hintColor('warning')
                         ->required(),
                 ])->columnSpan(1),
-                Section::make('Priority')->icon('heroicon-m-tag')
+                Section::make('Category and Priority')->icon('heroicon-m-tag')
                     ->schema([
-                        Select::make('type_id')
+                        Select::make('type_id')->label('Insiden Type')
                             ->required()->helperText('select type here')
                             ->relationship('types', 'name')
                             ->multiple()
                             ->preload()
                             ->searchable()->columnSpan(1),
-                        Select::make('priority')->columnSpan(1)
+                        Select::make('priority')->columnSpan(1)->label('Priority Vuln')
                             ->options([
                                 'low' => 'Low',
                                 'medium' => 'Medium',
@@ -168,16 +174,17 @@ class TicketResource extends Resource implements HasForms
                             ->visible(fn() => auth()->user()->hasRole('super_admin')),
                         SpatieMediaLibraryFileUpload::make('ticket_media')
                             ->collection('ticket_media')
-                            ->disk('public')->helperText('Your file or image here')
-                            ->acceptedFileTypes(['application/pdf', 'jpg', 'jpeg', 'png'])
-                            ->image()
-                            ->rules(['mimetypes:image/jpeg,image/png,application/pdf'])
+                            ->disk('public')
+                            // ->acceptedFileTypes(['application/pdf','image/jpg', 'image/png', 'image/jpeg'])
+                            // ->image()
+                            ->rules(['mimetypes:image/jpeg,image/png,application/pdf', 'max:2048'])
                             ->validationMessages([
                                 'required' => 'The :attribute not Valid.',
                             ])
                             ->required()
                             ->columnSpan(2)
-                            ->label('File'),
+                            ->label('Proof of Concept'),
+                            TextArea::make('recomendation')->columnSpan(3)->label('Recommendation Insiden')->maxLength(255)->hint('Recommendation Insiden : Opsional')->hintColor('warning'),
                     ])->columnSpan(1),
 
             ]);
@@ -387,7 +394,7 @@ class TicketResource extends Resource implements HasForms
                 'lg' => 1,
             ])
             ->schema([
-               
+
                 Tabs::make('Tabs')
                     ->tabs([
                         Tabs\Tab::make('Ticket Detail')->icon('heroicon-m-bell')
@@ -476,7 +483,7 @@ class TicketResource extends Resource implements HasForms
                             ]),
                     ])->contained(false),
                 // Actions::make([
-                 
+
                 // ])->alignment(Alignment::End)->visible(auth()->user()->hasRole('super_admin') || auth()->user()->id == $infolist->record->agent_id),
             ]);
     }

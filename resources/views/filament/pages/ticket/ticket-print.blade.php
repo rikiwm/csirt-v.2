@@ -178,13 +178,30 @@
 
     @page {
         font-family: Tahoma, Verdana, Segoe, sans-serif;
-        size: A4 landscape;
+        size: A4 portrait;
         margin-left: 0.67in;
         margin-right: 0.67in;
         margin-bottom: 0.39in;
     }
 </style>
 
+@php
+// Path to the image file
+$imagePath = public_path('frontend/logopadang.png');
+
+if (file_exists($imagePath)) {
+    $imageData = file_get_contents($imagePath);
+
+    // Encode the image data to Base64
+    $base64Image = base64_encode($imageData);
+
+    // Output the Base64 string
+ $spesiment = 'data:image/png;base64,'.$base64Image;
+//  dd($spesiment);
+} else {
+    echo "File does not exist.";
+}
+@endphp
 <body>
     <div class="pre-header">
         <span class="nomor-doc">No. Document</span>
@@ -193,11 +210,11 @@
         <table class="kop">
             <tr>
                 <td style="width: 6%">
-                    <img src="https://seeklogo.com/images/K/kota-padang-logo-24E687949A-seeklogo.com.png" alt="asdasd"
-                        width="auto" height="65pt">
+                    <img src="{{ $spesiment }}" alt="asdasd"
+                        width="auto" height="62pt">
                 </td>
                 <td style="width: 80%">
-                    <p><b>Test</b></p>
+                    <p><b>LAPORAN CSIRT PADANG</b></p>
                     <p><b>KOTA PADANG</b></p>
                     <p>Jl. By Pass Km 15 Air Pacah Padang
                     </p>
@@ -213,10 +230,9 @@
             <thead>
                 <tr >
                     <th style="width: 4%"><b>No.</b></th>
-                    <th  style="width: 20%"><b>subject.</b></th>
-                    <th><b>name.</b></th>
-                    <th><b>name.</b></th>
-
+                    <th><b>Subject</b></th>
+                    <th style="width: 15%"><b>User</b></th>
+                    <th style="width: 15%"><b>Insiden</b></th>
                 </tr>
             </thead>
             <tbody>
