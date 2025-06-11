@@ -26,74 +26,48 @@ class ListTickets extends ListRecords
     protected function getHeaderActions(): array
     {
 
-
+        $profile = Profile::where('users_id', auth()->id())->first();
+        $hasProfile = $profile !== null;
         return [
-            Actions\CreateAction::make()->icon('heroicon-o-plus-circle')->hidden(function (Profile $profile): bool {
-                if ($profile->when !== null) {
-                    return true;
-                } else {
-                    return false;
-                    // return redirect()->route('filament.resources.users.edit', ['record' => $profile]);
-                }
-            }),
+            Actions\CreateAction::make()
+                ->icon('heroicon-o-plus-circle')
+                ->url($hasProfile ? route('filament.admin.resources.tickets.create') : route('filament.admin.auth.profile', ['record' => $profile]))
+                ->label($hasProfile ? 'Create Ticket' : 'Lengkapi Data Profile Dulu'),
             FilterAction::make('asd')
-            ->form([
-                DatePicker::make('startDate'),
-                DatePicker::make('endDate'),
-                // ...
-            ]),
+                ->form([
+                    DatePicker::make('startDate'),
+                    DatePicker::make('endDate'),
+                    // ...
+                ]),
         ];
     }
 
-   private function nullProfile(Profile $profile): bool
-   {
-        if ($profile->when !== null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-    // protected function getHeaderWidgets(): array
-    // {
-    //     return [
-    //        TicketOverview::class
-    //     ];
-    // }
 
     public function getTabs(): array
     {
         {
-            if (auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen')) {
-                $tabs = [
-                    'Open' => Tab::make()->icon('heroicon-m-lock-open')->badge(Ticket::query()->where('status', 'open')->count())->badgeColor('primary')
-                    ->query(fn ($query) => $query->where('status', 'open')),
-                    'In Progress' => Tab::make()->icon('heroicon-m-clock')
-                    ->badge(Ticket::query()->where('status', 'in_progress')->count())->badgeColor('success')
-                    ->query(fn ($query) => $query->where('status', 'in_progress')),
-                    'Closed' => Tab::make()->icon('heroicon-m-lock-closed')
-                    ->badge(Ticket::query()->where('status', 'closed')->count())->badgeColor('success')
-                    ->query(fn ($query) => $query->where('status', 'closed')),
-                ];
-            }else{
+    $isAdmin = auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen');
+    $userId = auth()->id();
+    $statuses = ['open', 'in_progress', 'closed'];
+    $icons = $isAdmin ? ['heroicon-m-lock-open', 'heroicon-m-clock', 'heroicon-m-lock-closed'] : ['heroicon-m-bug-ant', 'heroicon-m-bug-ant', 'heroicon-m-bug-ant'];
+    $badgeColors = ['primary', 'success', 'success'];
 
-            $tabs = [
-                'Open' => Tab::make()->icon('heroicon-m-bug-ant')
-                ->badge(Ticket::query()->where('users_id', auth()->id())->where('status', 'open')->count())
-                ->badgeColor('primary')
-                ->query(fn ($query) => $query->where('status', 'open')),
-                'In Progress' => Tab::make()->icon('heroicon-m-bug-ant')
-                ->badge(Ticket::query()->where('users_id', auth()->id())->where('status', 'in_progress')->count())
-                ->query(fn ($query) => $query->where('status', 'in_progress')),
-                'Closed' => Tab::make()->icon('heroicon-m-bug-ant')
-                ->badge(Ticket::query()->where('users_id', auth()->id())->where('status', 'closed')->count())
-                ->query(fn ($query) => $query->where('status', 'closed')),
-            ];
+    $tabs = collect($statuses)->mapWithKeys(function ($status, $index) use ($isAdmin, $userId, $icons, $badgeColors) {
+        $query = Ticket::query()->where('status', $status);
+        if (!$isAdmin) {
+            $query->where('users_id', $userId);
         }
+        return [
+            ucfirst($status) => Tab::make()
+                ->icon($icons[$index])
+                ->badge($query->count())
+                ->badgeColor($badgeColors[$index])
+                ->query(fn ($query) => $query->where('status', $status)),
+        ];
+    })->toArray();
 
-            return $tabs;
-        }
+    return $tabs;
+}
     }
 
 

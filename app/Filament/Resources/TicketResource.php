@@ -186,7 +186,7 @@ class TicketResource extends Resource implements HasForms
     {
         return $table
             ->deferLoading(false)
-            ->query(Ticket::with(['users', 'types', 'useragen']))
+            ->query(Ticket::with(['users', 'types', 'useragen'])->when(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'), function ($query) { $query->where('users_id', auth()->id()); }))
             ->striped(false)
             ->defaultSort('created_at', 'desc')
             ->columns([

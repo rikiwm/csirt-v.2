@@ -44,8 +44,7 @@ class ViewTicket extends ViewRecord
 
     protected function onboardingAction(): Action
     {
-
-            return Action::make('onboarding')->label('Give me a feedback')
+        return Action::make('onboarding')->label('Give me a feedback')
             ->visible(fn () => auth()->user()->id === $this->record->users_id)
             ->hidden(fn () => $this->record->status !== 'closed')
             ->form([
