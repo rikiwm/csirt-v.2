@@ -54,7 +54,7 @@
                                     @endif
                                 @endforeach
                                 <span class="text-sm font-weight-normal font-italic">Published by
-                                    {{ $author['name'] ?? '' }}</span>
+                                    {{ $data->author->name ?? '' }}</span>
                             </div>
                                 <hr class="horizontal dark">
                                 <p class="text-sm font-weight-normal">

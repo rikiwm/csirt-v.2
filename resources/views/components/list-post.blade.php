@@ -15,7 +15,6 @@
                 <img src="https://csirt.jatimprov.go.id/storage/post-image/znAhGpik9hnBSLvDXVueTztfO5R6P0GUfsQXTYtu.jpg"
                 class="w-100 border-radius-lg" loading="lazy">
                 @endforelse
-
             </a>
         </div>
         </div>

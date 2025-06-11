@@ -7,6 +7,8 @@
     <div class="p-0 mx-4 card card-body blur blur-rounded-lg shadow-blur mx-md-7 mt-n6 ">
         <section class="py-3 mx-4">
             <div class="container">
+                @isset($top)
+                    
                 <div class="row">
                     <div class="mx-auto mb-2 text-center col-12 col-lg-8">
                         <span class="mb-0 badge badge-info">Penting</span>
@@ -22,6 +24,8 @@
                     </div>
                 </div>
                 <hr class="horizontal dark d-md-block d-none">
+                @endisset
+
                 <div class="row">
                     <div class="col-12 col-lg-10">
                         <livewire:list-post :dataobject="collect($data)" title="{{ $title ?? '' }}" />
@@ -49,7 +53,7 @@
         </section>
         <hr class="my-4 horizontal dark">
 
-        <section class="py-4 my-2">
+        {{-- <section class="py-4 my-2">
             <div class="container">
                 <div class="row">
                     <div class="text-center row justify-content-center my-sm-2">
@@ -99,7 +103,7 @@
                 </div>
             </div>
             <hr class="my-4 horizontal dark">
-        </section>
+        </section> --}}
     </div>
 
     {{-- <section class="wrapper bg-light">

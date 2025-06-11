@@ -40,8 +40,8 @@ class AppServiceProvider extends ServiceProvider
         Blade::component('components.list-post', ListPost::class);
 
         // spaite shield
-        // Gate::policy(Ticket::class, TicketPolicy::class);
-        // Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(Ticket::class, TicketPolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
 
 
     }

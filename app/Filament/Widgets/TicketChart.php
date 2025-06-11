@@ -14,7 +14,7 @@ class TicketChart extends ChartWidget
 {
     use HasWidgetShield, InteractsWithPageFilters;
     protected static ?string $heading = 'Bagan Laporan Insiden Tiket Terbuka dan Tiket Tertutup';
-    protected static ?string $maxHeight = '500px';
+    protected static ?string $maxHeight = '300px';
     public ?string $filter = 'today';
     protected function getData(): array
     {

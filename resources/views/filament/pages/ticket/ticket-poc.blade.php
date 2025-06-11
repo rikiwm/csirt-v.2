@@ -8,6 +8,7 @@ use Filament\Forms\Components\RichEditor;
     <x-filament-tables::container>
         <x-filament::card>
             @if($data && $data->hasMedia('ticket_media'))
+            {{-- <img src="{{ $data->getFirstMediaUrl('ticket_media') }}"> --}}
             <object data="{{ $data->getFirstMediaUrl('ticket_media') }}" type="application/pdf" width="100%" height="500px">
                 <p>Unable to display PDF file. <a href="{{ $data->getFirstMediaUrl('ticket_media') }}">Download</a> instead.</p>
               </object>

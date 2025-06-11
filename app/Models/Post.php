@@ -25,11 +25,10 @@ class Post extends Model
         return $this->belongsTo(Type::class);
     }
 
-    public function user()
+    public function author()
     {
         return $this->belongsTo(User::class,'created_by');
     }
-
 
     public function menu()
     {

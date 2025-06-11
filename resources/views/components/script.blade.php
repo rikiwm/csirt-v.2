@@ -1,19 +1,8 @@
 
-@props(
-    [
-        'csp_nonce' => '',
-    ]
-)
+@props(['csp_nonce' => ''])
 <script nonce="{{ $csp_nonce }}" src="{{ asset('frontend/js/core/popper.min.js')}}" type="text/javascript" ></script>
 <script nonce="{{ $csp_nonce }}" type="module" src="{{ asset('frontend/js/core/bootstrap.min.js') }}" type="text/javascript" ></script>
 <script nonce="{{ $csp_nonce }}" src="{{ asset('frontend/js/plugins/perfect-scrollbar.min.js') }}"></script>
-{{-- <script src="{{ asset('frontend/js/plugins/countup.min.js') }}"  ></script>
-<script src="{{ asset('frontend/js/plugins/choices.min.js') }}"  ></script>
-<script src="{{ asset('frontend/js/plugins/prism.min.js') }}"  ></script>
-<script src="{{ asset('frontend/js/plugins/highlight.min.js') }}"  ></script>
-<script src="{{ asset('frontend/js/plugins/rellax.min.js') }}"  ></script>
-<script src="{{ asset('frontend/js/plugins/tilt.min.js') }}"  ></script>
-<script src="{{ asset('frontend/js/plugins/choices.min.js') }}"  ></script> --}}
 <script nonce="{{ $csp_nonce }}" src="{{ asset('frontend/js/material-kit.min.js')}}" type="text/javascript"  ></script>
 <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12" ></script>
 <!-- ========== Js Section ========== -->

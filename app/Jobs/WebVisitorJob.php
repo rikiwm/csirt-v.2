@@ -36,7 +36,7 @@ class WebVisitorJob implements ShouldQueue
         WebVisitor::create([
             'ip_address' => $this->ip,
             'visited_at' => now(),
-            'isOnline' => true,
+            'is_online' => true,
             'user_agent' => $this->agent,
             'mac_address' => $this->mac,
         ]);

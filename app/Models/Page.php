@@ -19,7 +19,6 @@ class Page extends Model
         return $this->belongsTo(Menu::class);
     }
 
-
     public function category()
     {
         return $this->belongsTo(Categori::class, 'categori_id');
@@ -29,4 +28,10 @@ class Page extends Model
     {
         return $this->belongsTo(Menu::class,'menu_id');
     }
+
+       public function author()
+    {
+        return $this->belongsTo(User::class,'created_by');
+    }
+    
 }

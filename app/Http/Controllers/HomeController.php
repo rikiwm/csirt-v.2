@@ -33,16 +33,16 @@ class HomeController extends Controller
         $section = Cache::remember('section', 3260, function() {
             return SettingWeb::query()->where('status', '1')->where('key','section-1')->first();
         });
-        $s =  Cache::remember('section2', 3260, function() {
+        $section2 =  Cache::remember('section2', 3260, function() {
             return SettingWeb::query()->where('status', '1')->where('key','section-2')->first();
         });
-        $s3 =  Cache::remember('section3', 3260, function() {
+        $section3 =  Cache::remember('section3', 3260, function() {
             return SettingWeb::query()->where('status', '1')->where('key','section-3')->first();
         });
         return view('home2',[
             'section'=> $section,
-            'section2'=> $s,
-            'section3'=> $s3,
+            'section2'=> $section2,
+            'section3'=> $section3,
         ]);
     }
 
@@ -50,16 +50,16 @@ class HomeController extends Controller
     {
         $menu = Menu::where('slug', $slug)->first();
         try {
-            if (!$menu) {
-                throw new \InvalidArgumentException('Menu not found');
+              if (!$menu || $menu->type === 'place') {
+                return redirect()->route('home')->with('error', 'Menu tidak ditemukan atau tidak didukung.');
             }
 
             if ($menu->type === 'place') {
                 throw new \InvalidArgumentException('Unsupported menu type: '.$menu->type);
             }
-            if ($menu->type === 'link') {
-                $url = Str::replace(Request::url(),'', $menu->slug);
-                return redirect('https://'.$url );
+
+             if ($menu->type === 'link') {
+                return redirect()->away($menu->slug);
             }
             $postService = PostFactory::make($menu->type);
         } catch (\InvalidArgumentException $e) {

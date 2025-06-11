@@ -18,7 +18,7 @@ class AppLayout extends Component
         $nav = Cache::remember('nav_menu', 3260, function () {
             return Menu::where('parent_id', null)
                 ->with('children')->where('is_active', true)
-                ->orderBy('id')
+                ->orderBy('order','asc')
                 ->get();
         });
 
@@ -40,7 +40,7 @@ class AppLayout extends Component
                                     ->count();
 
         $yearlyVisitors = WebVisitor::whereYear('visited_at', now()->year)->count();
-        $onlineVisitors = WebVisitor::where('isOnline', true)->count();
+        $onlineVisitors = WebVisitor::where('is_online', true)->count();
         return view('layouts.app',[
             'copyright'=> $setting,
             'alamat'=> $kontak,

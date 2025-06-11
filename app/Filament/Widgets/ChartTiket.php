@@ -6,12 +6,13 @@ use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 use App\Models\Ticket;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class ChartTiket extends ChartWidget
 {
-    protected static ?string $heading = 'Chart asdsad';
-    protected static ?string $maxHeight = '500px';
-
+    protected static ?string $heading = 'Chart Daily';
+    protected static ?string $maxHeight = '300px';
+    use HasWidgetShield;
     protected function getData(): array
     {
         $data = Trend::model(Ticket::class)
@@ -73,5 +74,9 @@ class ChartTiket extends ChartWidget
             'barPercentage' => 0.4, // Adjust bar width
             'categoryPercentage' => 0.8, // Adjust category width
         ];
+    }
+     public function getDescription(): ?string
+    {
+        return 'The number of tickets created per month, categorized by priority.';
     }
 }

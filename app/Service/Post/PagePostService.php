@@ -14,7 +14,7 @@ class PagePostService implements PostInterface
     {
 
         try {
-            $data = Page::query()->where('slug', $slug)->where('menu_id', $id)->where('is_active', 1)->first();
+            $data = Page::query()->with('author')->where('slug', $slug)->where('menu_id', $id)->where('is_active', 1)->first();
             return [
                 'title' =>$data->title,
                 'data' => $data,

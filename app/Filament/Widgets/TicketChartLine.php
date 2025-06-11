@@ -13,7 +13,7 @@ class TicketChartLine extends ChartWidget
 {
     use HasWidgetShield, InteractsWithPageFilters;
     protected static ?string $heading = 'Bagan Laporan Insiden oleh Terverifikasi dan Tidak Terverifikasi';
-    protected static ?string $maxHeight = '500px';
+    protected static ?string $maxHeight = '300px';
     protected function getData(): array
     {
         $startDate = $this->filters['startDate'] ?? null;

@@ -38,6 +38,7 @@ use Filament\Forms\Components\Builder as ComponentsBuilder;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Toggle;
 use Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction;
 
 class PageResource extends Resource
@@ -118,7 +119,7 @@ class PageResource extends Resource
             ->schema([
                 Tabs::make('Tabs')->contained(false)
                 ->tabs([
-                    Tabs\Tab::make('Tab 1')
+                    Tabs\Tab::make('manage')
                         ->schema([
                             Wizard::make([
                                 Wizard\Step::make('Name Menu')
@@ -157,13 +158,13 @@ class PageResource extends Resource
                                         Hidden::make('created_by')->default(auth()->user()->id),
                                         Hidden::make('slug'),
                                         DatePicker::make('publish_at'),
-                                        TextInput::make('is_active'),
+                                        Toggle::make('is_active')->required(),
                                         Select::make('categori_id')->relationship('category', 'name')->preload()->searchable(),
                                     ]),
 
                             ])
                         ]),
-                    Tabs\Tab::make('Tab 2')
+                    Tabs\Tab::make('Content')
                         ->schema([
                             Actions::make([
                                 InlinePreviewAction::make()

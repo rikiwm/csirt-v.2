@@ -23,8 +23,9 @@ class DatabaseSeeder extends Seeder
         $this->roles();
         $this->call([
             ShieldSeeder::class,
-            UserSeeder::class
+            UserSeeder::class,
         ]);
+        $this->call(SetupSeeder::class);
 }
 
     private function roles()

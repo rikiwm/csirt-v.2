@@ -42,6 +42,6 @@ class Register extends BaseRegister
     {
         $user = $this->getUserModel()::create($data);
         $user->assignRole('user');
-        return auth()->login($user);
+        // return auth()->login($user);
     }
 }

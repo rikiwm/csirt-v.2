@@ -32,7 +32,52 @@ class SettingWebResource extends Resource
         return $form
         ->schema([
             Fieldset::make('Setup')->schema([
-                TextInput::make('key')->required()->label('Title')->placeholder('title'),
+                 Select::make('key')->label('key')
+                   ->options(function ($get) {
+                    $usedKeys = SettingWeb::pluck('key')->toArray();
+                    $allOptions = [
+                        'hero-section' => 'Hero',
+                        'section-1' => 'Section 1',
+                        'section-2' => 'Section 2',
+                        'section-3' => 'Section 3',
+                        // 'section-4' => 'Section 4',
+                        // 'section-5' => 'Section 5',
+                        // 'section-6' => 'Section 6',
+                        // 'team-section' => 'Team',
+                        // 'welcome' => 'View welcome',
+                        // 'app' => 'App name',
+                        // 'copyright' => 'Copyright',
+                        // 'footer' => 'Footer',
+                        // 'contact' => 'Contact',
+                        // 'social' => 'Social',
+                        // 'address' => 'Address',
+                        // 'phone' => 'Phone',
+                        // 'email' => 'Email',
+                    ];
+                    $currentKey = $get('key');
+                    if ($currentKey && !in_array($currentKey, $usedKeys)) {
+                        // aman, tidak perlu ubah
+                    } elseif ($currentKey && in_array($currentKey, $usedKeys)) {
+                        // hapus dari usedKeys agar tetap tampil
+                        $usedKeys = array_diff($usedKeys, [$currentKey]);
+                    }
+                    return collect($allOptions)
+                        ->reject(fn ($label, $key) => in_array($key, $usedKeys))
+                        ->toArray();
+                })
+                ->selectablePlaceholder($currentKey ?? 'Select a view')
+                ->disabled(fn ($record) => filled($record))
+                ->required(),
+                //             ->options([
+                //                 'hero-section' => 'hero / home',
+                //                 'section-1' => 'section 1',
+                //                 'section-2' => 'section 2',
+                //                 'section-3' => 'section 3',
+                //                 'copyright' => 'copyright',
+                //                 'address' => 'address',
+                //             ])
+                //             ->required(),
+                // // TextInput::make('key')->required()->label('Title')->placeholder('title'),
                 ToggleButtons::make('status')->boolean()->label('Is Active')->inline(),
                 ComponentsBuilder::make('value')
                 ->blocks([

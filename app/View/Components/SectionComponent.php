@@ -27,7 +27,7 @@ class SectionComponent extends Component
     {
         $data = Post::query()->with('menu')->where('is_active', true)->first();
         return view('components.section-component',[
-            'section' => $this->section->toArray(),
+            'section' => $this->section,
             'data' => $data ?? null,
             'link' =>$data->menu->slug ?? null,
         ]);

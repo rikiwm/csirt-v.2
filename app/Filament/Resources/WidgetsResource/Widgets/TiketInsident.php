@@ -10,8 +10,9 @@ use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Forms\Components\Builder;
 class TiketInsident extends ChartWidget
 {
+    use HasWidgetShield;
     protected static ?string $heading = 'Bagan Laporan Insiden Berdasarkan Prioritas';
-    protected static ?string $maxHeight = '500px';
+    protected static ?string $maxHeight = '300px';
     use InteractsWithPageFilters;
     protected function getData(): array
     {

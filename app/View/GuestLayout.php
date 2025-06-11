@@ -14,18 +14,18 @@ class GuestLayout extends Component
 
     public function render(): View
     {
-        $nav = Cache::remember('nav_menus', 3260, function () {
+        $nav = Cache::remember('nav_menus', 200, function () {
             return Menu::where('parent_id', null)
                 ->with('children')->where('is_active', true)
-                ->orderBy('id')
+                ->orderBy('order','asc')
                 ->get();
         });
 
-        $setting = Cache::remember('setting_copyright', 3260, function () {
+        $setting = Cache::remember('setting_copyright', 200, function () {
             return SettingWeb::query()->where('key','copyright')->first();
         });
 
-        $kontak = Cache::remember('setting_address', 3260, function () {
+        $kontak = Cache::remember('setting_address', 200, function () {
             return SettingWeb::query()->where('key','address')->first();
         });
 

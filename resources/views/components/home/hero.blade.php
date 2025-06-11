@@ -18,7 +18,7 @@
                 <h1>INFORMASI</h1>
             </div>
             <p class="mt-2 text-white text-md">
-                {{ $name['value'][1]['data']['desc'] ?? null }}
+                {{ $name['value'][1]['data']['desc'] ?? 'asd' }}
             </p>
             <div class="mx-auto my-auto mb-2 text-center col-lg-7 col-11">
                 <a class="btn btn-sm btn-white rounded-xl me-2 text-capitalize"

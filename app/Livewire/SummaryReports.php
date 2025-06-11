@@ -48,6 +48,7 @@ class SummaryReports extends Component implements HasForms, HasTable
                 TextColumn::make('users.name')->label('Nama')->sortable()->searchable(),
                 TextColumn::make('useragen.name')->label('Agent')->searchable(),
                 TextColumn::make('subject')->limit(50),
+                TextColumn::make('types.name')->limit(50)->badge()->color('primary'),
                 TextColumn::make('priority')->badge()
                 ->color(fn (string $state): string => match ($state) {
                     'low' => 'secondary',

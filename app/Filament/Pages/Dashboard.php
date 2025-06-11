@@ -18,6 +18,7 @@ use Filament\Pages\Dashboard\Actions\FilterAction;
 use Filament\Pages\Dashboard\Concerns\HasFiltersAction;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
 use App\Filament\Resources\WidgetsResource\Widgets\TiketInsident;
+use App\Filament\Widgets\TicketCount;
 
 class Dashboard extends BaseDashboard
 {
@@ -30,6 +31,7 @@ class Dashboard extends BaseDashboard
     protected function getHeaderActions(): array
     {
         return [
+            
             FilterAction::make('filter')
                 ->icon('heroicon-o-calendar')
                 ->form([
@@ -74,12 +76,12 @@ class Dashboard extends BaseDashboard
     }
      public function getColumns(): int | string | array
     {
-        return 2;
+        return 3;
     }
     // protected function getHeaderWidgets(): array
     // {
     //     return [
-
+    //         TicketCount::class
     //     ];
     // }
 
