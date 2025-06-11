@@ -1,32 +1,45 @@
-@props(['messages' => '', 'record' => '', 'statuse' => ''])
-<div class=" h-screen" id="messages">
-    <div class="space-y-4  mb-4 overflow-hidden  overflow-y-auto " id="messages">
+<div class="h-screen flex flex-col justify-between">
+    {{-- Chat Messages --}}
+    <div
+        id="messages"
+        class="flex-1 overflow-y-auto p-2 space-y-2"
+        style="max-height: 60vh;"
+    >
         @foreach ($messages as $message)
-            <div class="border border-gray-200 rounded-lg flex items-start gap-1"
-                @if ($message->user_id == auth()->user()->id) style="direction: rtl" @else style="direction: ltr" @endif>
-                <img class="items-center h-6 mt-2 rounded-full me-2"
-                    src="https://cdn1.iconfinder.com/data/icons/people-avatar-flat-2/128/1-07-512.png" alt="Jese image"
-                    loading="lazy">
-                <div
-                    class="flex flex-col w-full max-w-[220px] leading-1.5 p-4 border-gray-100 bg-white rounded-e-xl rounded-es-xl dark:bg-gray-800 rounded-lg ">
-                    <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                        <span
-                            class="text-xs font-semibold text-gray-900 dark:text-white mx-2 capitalize">{{ $message->user->name ?? '' }}
-                        </span>
-                        <span class="text-xs font-normal text-gray-500 dark:text-gray-400 ">
-                            {{ $message->created_at->diffForHumans() ?? '' }}</span>
-                    </div>
-                    <p class="text-xs text-gray-900 dark:text-white">{!! $message->message ?? '' !!}</p>
-                    <span class=" text-xs font-light text-gray-500 dark:text-gray-400">
-                        <x-heroicon-c-calendar-date-range
-                            class="inline-block w-3 h-3 text-primary-500 mx-2 dark:text-gray-400" />
-                        {{ $message->created_at->toDateTimeString() ?? '' }}</span>
+            @php
+                $isMine = $message->user_id === auth()->id();
+            @endphp
 
+            <div class="flex {{ $isMine ? 'justify-end' : 'justify-start' }}">
+                <div class="max-w-sm rounded-lg p-3 shadow-md 
+                    {{ $isMine ? 'bg-gray-200 text-black rounded-br-none' : 'bg-gray-200 text-gray-900 rounded-bl-none' }}">
+                    
+                    <div class="text-xs font-semibold mb-1">
+                        {{ $message->user->name ?? 'User' }}
+                        <span class="text-[10px] text-gray-300 ml-2">
+                            {{-- {{ $message->created_at->diffForHumans() }} --}}
+                        </span>
+                    </div>
+
+                    <div class="text-sm leading-snug">
+                        {!! $message->message ?? '' !!}
+                    </div>
+
+                    <div class="text-xs mt-1 text-right">
+                        <x-heroicon-c-calendar-date-range class="inline-block w-3 h-3 text-black opacity-70" />
+                        {{ $message->created_at->format('d M Y H:i') }}
+                    </div>
                 </div>
             </div>
         @endforeach
     </div>
-    @if ($statuse != 'closed')
-        <livewire:reply-ticket :record="$record" />
+
+    {{-- Input Reply Form --}}
+    @if ($statuse !== 'closed')
+        <div class="p-2 border-t">
+            <livewire:reply-ticket :record="$record" />
+        </div>
     @endif
 </div>
+
+                {{-- @if ($message->user_id === auth()->user()->id) style="direction: rtl" @else style="direction: ltr" @endif --}}

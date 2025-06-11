@@ -6,7 +6,6 @@
     use Filament\Forms\Components\RichEditor;
 @endphp
 
-    <x-filament::card>
         <form wire:submit="create">
             {{ $this->form }}
             <div class="flex justify-end my-4">
@@ -20,5 +19,4 @@
                 @endif
             </div>
         </form>
-    </x-filament::card>
 </div>

@@ -37,14 +37,14 @@ class ReplyTicket extends Component implements HasForms
     {
         return $form
             ->schema([
-                RichEditor::make('message')
+                RichEditor::make('message')->columnSpan(1)
                 ->toolbarButtons([
-                    'blockquote',
+                    // 'blockquote',
                     'bold',
                     'bulletList',
                     // 'codeBlock',
-                    'h2',
-                    'h3',
+                    // 'h2',
+                    // 'h3',
                     // 'italic',
                     'link',
                     'orderedList',

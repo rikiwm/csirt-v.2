@@ -119,7 +119,7 @@ class TicketResource extends Resource implements HasForms
                         ->validationMessages([
                             'required' => 'The :attribute not valid.',
                         ])->columnSpan(2),
-                    RichEditor::make('description')
+                    RichEditor::make('description')->columnSpan(1)
                         ->toolbarButtons([
                             'attachFiles',
                             'blockquote',
@@ -446,8 +446,8 @@ class TicketResource extends Resource implements HasForms
                     ->visible(auth()->user()->hasRole('super_admin') || auth()->user()->id == $infolist->record->agent_id),
 
                     ])
-                                        ])->columnSpan(2),
-                                        ComponentsSection::make('chat')->description('code')->schema([
+                                ])->columnSpan(2),
+                                        ComponentsSection::make('chat')->description('Chat Form')->label('Form Message')->icon('heroicon-m-envelope')->schema([
                                             View::make('filament.pages.ticket.ticket-chat')->extraAttributes(['class' => 'overflow-hidden overflow-y-auto'])
                                                 ->viewData([
                                                     'messages' => TicketMassage::where('ticket_id', $infolist->record->id)->with('user')->orderBy('created_at', 'desc')->get(),

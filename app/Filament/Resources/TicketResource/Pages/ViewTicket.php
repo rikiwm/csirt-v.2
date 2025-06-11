@@ -69,19 +69,15 @@ class ViewTicket extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-
-            Action::make('message')->modal('Message Ticket')->modalHeading('Time')->modalWidth('4xl')
-            // ->hidden(fn ($record) => $record->status == 'closed')
+            Action::make('message')->modal('Message Ticket')->modalHeading('Time Line')->modalWidth('4xl')->color('warning')->icon('heroicon-m-clock')
             ->slideOver()
             ->modalWidth(MaxWidth::Large)
             ->label('Hsitori')
             ->form([
-                ComponentsView::make('filament.card.avg')->extraAttributes(['class' => 'overflow-hidden overflow-y-auto']),
+              ComponentsView::make('filament.card.time-line')
+                                ->viewData(['data' => Ticket::find($this->record->id)])->columnSpanFull(),
             ])
-            ->actions([
-                
-            ])
-           
+         ->modalSubmitAction(false)
         ];
     }
 
