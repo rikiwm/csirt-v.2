@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class TicketSettingResource extends Resource
 {
     protected static ?string $model = TicketSetting::class;
-
+   protected static bool $shouldRegisterNavigation = false;
     protected static ?string $navigationIcon = 'heroicon-m-cog-8-tooth';
     protected static ?string $navigationGroup = 'Ticket';
     public static function form(Form $form): Form

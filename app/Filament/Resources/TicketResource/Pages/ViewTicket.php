@@ -66,55 +66,24 @@ class ViewTicket extends ViewRecord
             ->modalWidth('xl');
     }
 
-    // protected function getHeaderActions(): array
-    // {
-    //     return [
+    protected function getHeaderActions(): array
+    {
+        return [
 
-    //         Action::make('message')->modal('Message Ticket')->modalHeading('Reply')->modalWidth('4xl')->icon('heroicon-m-envelope')
-    //         ->hidden(fn ($record) => $record->status == 'closed')
-    //         ->slideOver()
-    //         ->modalWidth(MaxWidth::ExtraSmall)
-    //         ->label('Massage')
-    //         ->form([
-    //             MarkdownEditor::make('message')->required(),
-    //         ])
-    //         ->action(function ($data, $record) {
-    //             $user = auth()->user();
-    //             TicketMassage::create([
-    //                 'ticket_id' => $record->id,
-    //                 'user_id' => auth()->user()->id,
-    //                 'message' => $data['message'],
-    //             ]);
-    //             $this->refreshFormData([]);
-    //             if ($user->hasRole('agen') || $user->hasRole('super_admin')) {
-    //                 $recipient = User::find($record->users_id);
-    //                 if ($record->agent_id == null) {
-    //                     $recorde = Ticket::find($record->id);
-    //                     $recorde->agent_id = $user->id;
-    //                     $recorde->save();
-    //                     Log::info($recorde);
-    //                 }
-    //             } else {
-    //                 $recipient = User::find($record->agent_id);
-    //             }
-    //             if ($recipient) {
-    //                 Notification::make()
-    //                     ->title('New message')->body(new HtmlString($data['message']))
-    //                     ->icon('heroicon-m-bell')
-    //                     ->color('primary')
-    //                     ->actions([
-    //                         \Filament\Notifications\Actions\Action::make('View')
-    //                             ->color('primary')->button()
-    //                             ->url('/app/tickets/'.$record->id, shouldOpenInNewTab: false),
-    //                     ])
-    //                     ->sendToDatabase($recipient);
-    //             }
-    //             Notification::make()
-    //                 ->title('Send Success')->body(new HtmlString($data['message']))
-    //                 ->send();
-    //         })
-    //     ];
-    // }
+            Action::make('message')->modal('Message Ticket')->modalHeading('Time')->modalWidth('4xl')
+            // ->hidden(fn ($record) => $record->status == 'closed')
+            ->slideOver()
+            ->modalWidth(MaxWidth::Large)
+            ->label('Hsitori')
+            ->form([
+                ComponentsView::make('filament.card.avg')->extraAttributes(['class' => 'overflow-hidden overflow-y-auto']),
+            ])
+            ->actions([
+                
+            ])
+           
+        ];
+    }
 
     public function form(Form $form): Form
     {
@@ -134,9 +103,6 @@ class ViewTicket extends ViewRecord
             ])->grow(false),
                 Split::make([
                     Section::make('Ticket Message')->label(false)
-                    // ->footerActions([
-                    //     Action::make('message')->modal('Message Ticket')->modalHeading('Reply')->modalWidth('xl')
-                    // ])
                     ->schema([
                         Repeater::make('messages')->label(false)
                         ->relationship('messages')
@@ -159,7 +125,7 @@ class ViewTicket extends ViewRecord
                         ComponentsView::make('filament.pages.ticket.ticket-chat')->schema([
                         ]),
                         Select::make('type_id')
-                        ->relationship('types', 'name') // Relasi ke model Category
+                        ->relationship('types', 'name') 
                         ->multiple()
                         ->preload()
                         ->searchable(),
@@ -175,6 +141,7 @@ class ViewTicket extends ViewRecord
                     ]),
                 ]);
     }
+    
 
 
 

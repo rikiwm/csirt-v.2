@@ -58,13 +58,17 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Support\Enums\ActionSize;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Illuminate\Support\Facades\Mail;
+use Filament\Infolists\Components\Grid;
+use Filament\Tables\Grouping\Group;
+
 class TicketResource extends Resource implements HasForms
 {
- use InteractsWithForms;
+    use InteractsWithForms;
 
     protected static ?string $model = Ticket::class;
     protected static ?string $navigationIcon = 'heroicon-c-ticket';
-    protected static ?string $navigationGroup = 'Ticket';
+    // protected static ?string $navigationGroup = 'Ticket';
     protected $listeners = ['refreshInfolist' => '$refresh'];
     protected static ?string $recordTitleAttribute = 'subject';
 
@@ -72,12 +76,12 @@ class TicketResource extends Resource implements HasForms
     public static function form(Form $form): Form
     {
         return $form
-        ->columns([
-            'default' => 1,
-            'lg' => 1,
-            'xl' => 1,
-            '2xl' => 1
-        ])
+            ->columns([
+                'default' => 1,
+                'lg' => 2,
+                'xl' => 2,
+                '2xl' => 2
+            ])
             ->schema([
                 Section::make('Instructions')->icon('heroicon-o-document-text')->collapsible()->collapsed()->schema([
 
@@ -108,17 +112,14 @@ class TicketResource extends Resource implements HasForms
                             ')),
 
                 ]),
-
-                Split::make([
-                    Section::make('Topik')->schema([
-                        TextInput::make('subject')
-                        // ->capitalize()
-                        ->required()
+                Section::make('Topik')->icon('heroicon-m-tag')->schema([
+                    TextInput::make('subject')
+                        ->required()->helperText('Your subject here')
                         ->maxLength(255)
                         ->validationMessages([
                             'required' => 'The :attribute not valid.',
-                        ]),
-                        RichEditor::make('description')
+                        ])->columnSpan(2),
+                    RichEditor::make('description')
                         ->toolbarButtons([
                             'attachFiles',
                             'blockquote',
@@ -133,51 +134,51 @@ class TicketResource extends Resource implements HasForms
                             'redo',
                             'strike',
                             'underline',
-                            'undo',])
-                            ->fileAttachmentsDisk('public')
-                            ->fileAttachmentsDirectory('attachments_ticket')
-                            ->fileAttachmentsVisibility('private')
-                            ->validationMessages([
-                                'required' => 'The :attribute not valid.',
-                            ])
-                            ->required(),
-                    ]),
-                    Section::make('Priority')->icon('heroicon-m-bug-ant')
+                            'undo',
+                        ])
+                        ->fileAttachmentsDisk('public')
+                        ->fileAttachmentsDirectory('attachments_ticket')
+                        ->fileAttachmentsVisibility('private')
+                        ->validationMessages([
+                            'required' => 'The :attribute not valid.',
+                        ])->hint('description')->hintColor('primary')
+                        ->required(),
+                ])->columnSpan(1),
+                Section::make('Priority')->icon('heroicon-m-tag')
                     ->schema([
                         Select::make('type_id')
-                        ->required()
-                        ->relationship('types', 'name')
-                        ->multiple()
-                        ->preload()
-                        ->searchable(),
-                        Select::make('priority')
-                        ->options([
-                            'low' => 'Low',
-                            'medium' => 'Medium',
-                            'high' => 'High',
-                            'urgent' => 'Urgent',
-                        ])->required()
-                        ->default('low'),
+                            ->required()->helperText('select type here')
+                            ->relationship('types', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable()->columnSpan(1),
+                        Select::make('priority')->columnSpan(1)
+                            ->options([
+                                'low' => 'Low',
+                                'medium' => 'Medium',
+                                'high' => 'High',
+                                'urgent' => 'Urgent',
+                            ])->required()->helperText('Select priority here')
+                            ->default('low'),
 
                         Select::make('agent_id')->label('Assign to Agent')
-                        ->relationship('agents', 'name')
-                        ->required()
-                        ->options(fn () => User::role('agen')->pluck('name', 'id'))
-                        ->visible(fn () => auth()->user()->hasRole('super_admin')),
-                    SpatieMediaLibraryFileUpload::make('ticket_media')
-                    ->collection('ticket_media')
-                    ->disk('public')
-                    ->acceptedFileTypes(['application/pdf','jpg','jpeg','png'])
-                    ->image()
-                    ->rules(['mimetypes:image/jpeg,image/png,application/pdf'])
-                    ->validationMessages([
-                        'required' => 'The :attribute not Valid.',
-                    ])
-                    ->required()
-
-                    ->label('File'),
-                    ])->grow(false),
-                    ]),
+                            ->relationship('agents', 'name')
+                            ->required()
+                            ->options(fn() => User::role('agen')->pluck('name', 'id'))
+                            ->visible(fn() => auth()->user()->hasRole('super_admin')),
+                        SpatieMediaLibraryFileUpload::make('ticket_media')
+                            ->collection('ticket_media')
+                            ->disk('public')->helperText('Your file or image here')
+                            ->acceptedFileTypes(['application/pdf', 'jpg', 'jpeg', 'png'])
+                            ->image()
+                            ->rules(['mimetypes:image/jpeg,image/png,application/pdf'])
+                            ->validationMessages([
+                                'required' => 'The :attribute not Valid.',
+                            ])
+                            ->required()
+                            ->columnSpan(2)
+                            ->label('File'),
+                    ])->columnSpan(1),
 
             ]);
     }
@@ -186,9 +187,15 @@ class TicketResource extends Resource implements HasForms
     {
         return $table
             ->deferLoading(false)
-            ->query(Ticket::with(['users', 'types', 'useragen'])->when(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'), function ($query) { $query->where('users_id', auth()->id()); }))
+            ->query(Ticket::with(['users', 'types', 'useragen'])->when(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'), function ($query) {
+                $query->where('users_id', auth()->id());
+            }))
             ->striped(false)
             ->defaultSort('created_at', 'desc')
+            ->groups([
+                Group::make('priority')
+                ->collapsible(),
+            ])
             ->columns([
                 TextColumn::make('No')->rowIndex(),
                 TextColumn::make('users.name')->label('Nama')->sortable()->searchable(),
@@ -196,133 +203,139 @@ class TicketResource extends Resource implements HasForms
                 TextColumn::make('created_at')->sortable()->date()->dateTimeTooltip(),
                 TextColumn::make('subject')->sortable()->searchable()->limit(40),
                 TextColumn::make('priority')->label('Priority')->badge()
-                ->color(fn (string $state): string => match ($state) {
-                    'low' => 'info',
-                    'medium' => 'warning',
-                    'high' => 'urgent',
-                    'urgent' => 'danger',
-                })->sortable()
-                ->icon(fn (string $state): string => match ($state) {
-                    'low' => 'heroicon-m-exclamation-circle',
-                    'medium' => 'heroicon-m-exclamation-circle',
-                    'high' => 'heroicon-m-exclamation-triangle',
-                    'urgent' => 'heroicon-c-fire',
-                })
-                ->searchable()->numeric(),
+                    ->color(fn(string $state): string => match ($state) {
+                        'low' => 'info',
+                        'medium' => 'warning',
+                        'high' => 'urgent',
+                        'urgent' => 'danger',
+                    })->sortable()
+                    ->icon(fn(string $state): string => match ($state) {
+                        'low' => 'heroicon-m-exclamation-circle',
+                        'medium' => 'heroicon-m-exclamation-circle',
+                        'high' => 'heroicon-m-exclamation-triangle',
+                        'urgent' => 'heroicon-c-fire',
+                    })
+                    ->searchable()->numeric(),
                 TextColumn::make('types.name')->sortable()->label('Insident')->badge()->searchable()->lineClamp(2)->icon('heroicon-m-tag'),
                 TextColumn::make('status')->sortable()->label('Status')
-                ->badge()
-                ->color(fn (string $state): string => match ($state) {
-                    'open' => 'success',
-                    'in_progress' => 'info',
-                    'closed' => 'warning'
-                })->searchable()
-                ->icon(fn ($record) => match ($record->status) {
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'open' => 'success',
+                        'in_progress' => 'info',
+                        'closed' => 'warning'
+                    })->searchable()
+                    ->icon(fn($record) => match ($record->status) {
                         'open' => 'heroicon-m-lock-open',
                         'closed' => 'heroicon-m-lock-closed',
                         'in_progress' => 'heroicon-m-clock',
                     }),
                 TextColumn::make('useragen.name')->label('Assign By')->searchable(),
                 TextColumn::make('is_verified')
-                ->badge()
-                ->color(fn (string $state): string => match ($state) {
-                    '' => '',
-                    '0' => 'danger',
-                    '1' => 'success',
-                })
-                       ->label('Verified')
-                       ->sortable()
-                       ->searchable()
-                       ->formatStateUsing(fn($state) => $state === null ? 'Not Processed' : ($state ? 'Verified' : 'Unverified')),
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        '' => '',
+                        '0' => 'danger',
+                        '1' => 'success',
+                    })
+                    ->label('Verified')
+                    ->sortable()
+                    ->searchable()
+                    ->formatStateUsing(fn($state) => $state === null ? 'Not Processed' : ($state ? 'Verified' : 'Unverified')),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make()->label('Trashed')
-                ->visible(fn () => auth()->user()->hasRole('super_admin')),
+                    ->visible(fn() => auth()->user()->hasRole('super_admin')),
                 SelectFilter::make('status')
-                ->multiple()->options([
-                    'open' => 'Open',
-                    'in_progress' => 'In Progress',
-                    'closed' => 'Closed',
-                ])
-                ->default('draft')
-                ->selectablePlaceholder(false),
+                    ->multiple()->options([
+                        'open' => 'Open',
+                        'in_progress' => 'In Progress',
+                        'closed' => 'Closed',
+                    ])
+                    ->default('draft')
+                    ->selectablePlaceholder(false),
                 SelectFilter::make('priority')->multiple()->options([
                     'low' => 'Low',
                     'medium' => 'Medium',
                     'high' => 'High',
                     'urgent' => 'Urgent',
                 ])
-                ->selectablePlaceholder(false),
+                    ->selectablePlaceholder(false),
                 Filter::make('created_at')
-                        ->form([
-                                DatePicker::make('from'),
-                                DatePicker::make('until'),
+                    ->form([
+                        DatePicker::make('from'),
+                        DatePicker::make('until'),
+                    ])
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['from'] ?? null) {
+                            $indicators[] = Indicator::make('Created from ' . Carbon::parse($data['from'])->toFormattedDateString())
+                                ->removeField('from');
+                        }
 
-                        ])
-                        ->indicateUsing(function (array $data): array {
-                            $indicators = [];
-                            if ($data['from'] ?? null) {
-                                $indicators[] = Indicator::make('Created from ' . Carbon::parse($data['from'])->toFormattedDateString())
-                                    ->removeField('from');
-                            }
+                        if ($data['until'] ?? null) {
+                            $indicators[] = Indicator::make('Created until ' . Carbon::parse($data['until'])->toFormattedDateString())
+                                ->removeField('until');
+                        }
 
-                            if ($data['until'] ?? null) {
-                                $indicators[] = Indicator::make('Created until ' . Carbon::parse($data['until'])->toFormattedDateString())
-                                    ->removeField('until');
-                            }
-
-                            return $indicators;
-                        })->columns(2),
+                        return $indicators;
+                    })->columns(2),
                 SelectFilter::make('types.name')
-                ->relationship('types', 'name')
-                ->label('Insident')->options(fn() => Type::all()->pluck('name','id'))
-                        ->selectablePlaceholder(false),
+                    ->relationship('types', 'name')
+                    ->label('Insident')->options(fn() => Type::all()->pluck('name', 'id'))
+                    ->selectablePlaceholder(false),
 
             ], layout: FiltersLayout::AboveContentCollapsible)
             ->filtersFormWidth(MaxWidth::FourExtraLarge)
 
             ->actions([
                 ActionGroup::make([
-                Tables\Actions\EditAction::make()->color('warning'),
-                Tables\Actions\ViewAction::make()->modal(false)
-                ->label('Detail')
-                ->icon('heroicon-m-play')
-                ->color('info'),
-
-                Tables\Actions\Action::make('verified')
-                    ->label('Verified')
-                    ->color('success')
-                ->icon('heroicon-m-check-badge')
-                    ->visible(fn (Ticket $record): bool => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen') && $record->is_verified === null)
-                    ->requiresConfirmation()
-                    ->modal(true)
-                    ->action(fn (Ticket $record) => $record->update([
-                        'is_verified' => true,
-                        'status' => 'in_progress',
-                        'reason' => null
+                    Tables\Actions\EditAction::make()->label('Edit')
+                        ->color('warning')
+                        ->visible(fn(Ticket $record): bool =>
+                        auth()->user()->hasRole('super_admin') ||
+                            auth()->user()->hasRole('agen')),
+                    Tables\Actions\ViewAction::make()->modal(false)
+                        ->label('Detail')
+                        ->icon('heroicon-m-play')
+                        ->color('info'),
+                    Tables\Actions\Action::make('verified')
+                        ->label('Verified')
+                        ->color('success')
+                        ->icon('heroicon-m-check-badge')
+                        ->visible(fn(Ticket $record): bool => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen') && $record->is_verified === null)
+                        ->hidden(fn(Ticket $record): bool => $record->is_verified === 1)
+                        // Tables\Actions\ViewAction::make()->modal(false)
+                        ->requiresConfirmation()
+                        ->modal(true)
+                        ->action(fn(Ticket $record) => $record->update([
+                            'is_verified' => true,
+                            'status' => 'in_progress',
+                            'reason' => null
                         ]))
-                    ->successNotificationTitle('Ticket berhasil diUpdate'),
+                        ->successNotificationTitle('Ticket berhasil diUpdate'),
 
                     Tables\Actions\Action::make('non-verified')
                         ->modal('Tutup Ticket')
                         ->modalHeading('Attach Reason')
-                        ->modalWidth('xl')
-                        ->label('Non Verified')->form([
-                            Textarea::make('reason')->label('Reason')->rows(3)->required(),
+                        ->modalWidth('lg')
+                        ->label('Non Verified')
+                        ->form([
+                            Textarea::make('reason')->label('Reason Ticket')->helperText('alasan No verif...')->rows(3)->required(),
                         ])
                         ->icon('heroicon-m-exclamation-circle')
                         ->color('danger')
-                        ->visible(fn (Ticket $record): bool => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen') && $record->is_verified === null)
-                        ->action(fn ($data, $record) => $record->update([
+                        ->visible(fn(Ticket $record): bool => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen') && $record->is_verified === null)
+                        ->hidden(fn(Ticket $record): bool => $record->is_verified === 0)
+                        ->action(fn($data, $record) => $record->update([
                             'is_verified' => false,
                             'status' => 'closed',
                             'reason' => $data['reason'],
                         ]))
                         ->successNotificationTitle('Ticket berhasil diUpdate'),
-            ])->button()
-            ->size(ActionSize::Small)
-            ->label('Actions')
-        ])
+                ])->button()
+                    ->size(ActionSize::Small)
+                    ->label('Actions')
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -352,130 +365,125 @@ class TicketResource extends Resource implements HasForms
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
-            // ->withoutGlobalScopes([
-            //     SoftDeletingScope::class,
-            // ]);
-            if (!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen')) {
-                $query->where('users_id', auth()->id());
-            }
-            if (auth()->user()->hasRole('super_admin')) {
-                $query->withTrashed();
-            }
-            return $query;
+        // ->withoutGlobalScopes([
+        //     SoftDeletingScope::class,
+        // ]);
+        if (!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen')) {
+            $query->where('users_id', auth()->id());
+        }
+        if (auth()->user()->hasRole('super_admin')) {
+            $query->withTrashed();
+        }
+        return $query;
     }
 
 
     public static function infolist(Infolist $infolist): Infolist
-{
-
-
-    return $infolist
-->columns([
-    'xs' => 1, // tampilkan 1 kolom di HP
-    'md' => 1,
-    'lg' => 1, // tampilkan 2 kolom mulai dari layar besar
-])
-        ->schema([
-            Tabs::make('Tabs')
+    {
+        return $infolist
+            ->columns([
+                'xs' => 1,
+                'md' => 1,
+                'lg' => 1,
+            ])
+            ->schema([
+               
+                Tabs::make('Tabs')
                     ->tabs([
-                    Tabs\Tab::make('Message Response')->badge(5)
-            ->badgeColor('info')
+                        Tabs\Tab::make('Ticket Detail')->icon('heroicon-m-bell')
                             ->schema([
-                                ComponentsSection::make('Ticket Response')
-                                    ->description($infolist->record->updated_at)->extraAttributes(['class' => 'overflow-hidden overflow-y-auto'])
-                                    ->relationship('messages')->columns(1)
-                                    ->icon('heroicon-m-chat-bubble-left')
-                                        ->schema([
-                                            View::make('filament.pages.ticket.ticket-chat')->extraAttributes(['class' => 'overflow-hidden overflow-y-auto'])
-                                            ->viewData([
-                                                'messages' => TicketMassage::where('ticket_id', $infolist->record->id)->with('user')->orderBy('created_at', 'desc')->get(),
-                                                'record' => $infolist->record,
-                                                'statuse' => $infolist->record->status
-                                            ])->columnSpanFull(),
-                                    ])->grow(false),
-                            ])
-                            ->icon('heroicon-m-chat-bubble-left-right')
-                            ->label('Message'),
-
-                    Tabs\Tab::make('Ticket Detail')
-                            ->schema([
-                            InfolistsSplit::make([
-                                ComponentsSection::make($infolist->record->code)->description('code')  ->columns([
-                                'xs' => 1,
-                                'md' => 2,
-                                'lg' => 2,
-                                'xl' => 2,
-                                '2xl' => 1
-                            ])->columnSpanFull()->schema([
-                                    TextEntry::make('subject')->label('Subject')
-                                    ->size(TextEntry\TextEntrySize::Large)
-                                    ->weight(FontWeight::Bold),
-                                    Fieldset::make('Ticket')
+                                Grid::make(3)
                                     ->schema([
-                                        TextEntry::make('status'),
-                                        TextEntry::make('priority')->label('Priority')->badge()->color(fn (string $state): string => match ($state) {
-                                            'low' => 'secondary',
-                                            'medium' => 'info',
-                                            'high' => 'warning',
-                                            'urgent' => 'danger'})->grow(true),
-                                        TextEntry::make('types.name')->label('Insident')->badge()->grow(true),
-                                        TextEntry::make('users.name')->grow(true),
-                                        TextEntry::make('users.email')->grow(true),
-                                        TextEntry::make('created_at')->date()->grow(true),
+                                        InfolistsSplit::make([
+                                            ComponentsSection::make($infolist->record->code)->description('code')->schema([
+                                                TextEntry::make('subject')->label('Subject')
+                                                    ->size(TextEntry\TextEntrySize::Large)
+                                                    ->weight(FontWeight::Bold),
+                                                Fieldset::make('Ticket')
+                                                    ->schema([
+                                                        TextEntry::make('status')->icon('heroicon-o-check-circle'),
+                                                        TextEntry::make('priority')->label('Priority')->badge()->color(fn(string $state): string => match ($state) {
+                                                            'low' => 'secondary',
+                                                            'medium' => 'info',
+                                                            'high' => 'warning',
+                                                            'urgent' => 'danger'
+                                                        })->grow(true)->icon('heroicon-o-check-circle'),
+                                                        TextEntry::make('types.name')->label('Insident')->badge()->grow(true)->icon('heroicon-o-check-circle'),
+                                                        TextEntry::make('users.name')->grow(true)->icon('heroicon-o-check-circle'),
+                                                        TextEntry::make('users.email')->grow(true)->icon('heroicon-o-check-circle'),
+                                                        TextEntry::make('created_at')->date()->grow(true)->icon('heroicon-o-check-circle'),
+                                                    ]),
+                                                Fieldset::make('description')->schema([
+                                                    TextEntry::make('description')->label('Description')->html()->grow(true)->prose()
+                                                ])
+                                            ])->icon('heroicon-m-ticket')->headerActions([
+                 Action::make('close')
+                        ->disabled(fn(Ticket $record) => $record->status === 'closed')
+                        ->icon('heroicon-o-trash')->color(fn(Ticket $record) => $record->status === 'closed' ? 'gray' : 'danger')
+                        ->requiresConfirmation()
+                        ->label(fn($record) => $record->status === 'closed' ? 'Ticket Closed' : 'Close Ticket')
+                        ->action(function (Ticket $record) {
+                            $record->where('id', $record->id)->update([
+                                'status' => 'closed',
+                            ]);
+                            $recipient = User::find($record->users_id);
+                            $details = [
+                                'name' => $recipient->name,
+                                'body' =>  [
+                                    'code' => '',
+                                    'subject' => $record->subject,
+                                    'description' => $record->subject,
+                                    'priority' => '',
+                                    'link' => '',
+                                ],
+                            ];
+                            Mail::to($recipient)->queue(new \App\Mail\TicketRespons($details));
+                            Notification::make('close')->title('Ticket Is Closed')
+                                ->body('Ticket Telah di Tutup')
+                                ->success()
+                                ->sendToDatabase($recipient);
+                        })
+                    ->visible(auth()->user()->hasRole('super_admin') || auth()->user()->id == $infolist->record->agent_id),
+
+                    ])
+                                        ])->columnSpan(2),
+                                        ComponentsSection::make('chat')->description('code')->schema([
+                                            View::make('filament.pages.ticket.ticket-chat')->extraAttributes(['class' => 'overflow-hidden overflow-y-auto'])
+                                                ->viewData([
+                                                    'messages' => TicketMassage::where('ticket_id', $infolist->record->id)->with('user')->orderBy('created_at', 'desc')->get(),
+                                                    'record' => $infolist->record,
+                                                    'statuse' => $infolist->record->status
+                                                ])->columnSpanFull()
+                                        ])->columnSpan(1)
                                     ]),
-                                    Fieldset::make('description')->schema([
-                                        TextEntry::make('description')->label('Description')->html()->grow(true),
-
-                                    ])
-
-                                ])->icon('heroicon-m-ticket'),
-
                             ]),
-                        ]),
-                    Tabs\Tab::make('Proof Of Concept')
-                        ->schema([
-                            View::make('ticket_media')
-                            ->view('filament.pages.ticket.ticket-poc')
-                            ->viewData(['data' => Ticket::find($infolist->record->id)]),
-                            SpatieMediaLibraryImageEntry::make('ticket_media')->label('POC')->conversion('thumb')->collection('ticket_media')
-                            ->defaultImageUrl(url('https://thumbs.dreamstime.com/b/no-image-available-icon-177641087.jpg'))->checkFileExistence(false)
-                        ]),
-                    Tabs\Tab::make('Get Reward')->visible(fn(Ticket $record) => $record->status === 'closed' && $record->is_verified === true)
-                        ->icon('heroicon-m-bell')
-                        ->iconPosition(IconPosition::After)
-                        // ->badge(1)
-                        ->schema([
-                            View::make('ticket_media')
-                            ->view('filament.pages.ticket.ticket-reward')
-                            ->viewData(['data' => Ticket::find($infolist->record->id)]),
-                        ]),
+                        Tabs\Tab::make('Proof Of Concept')->icon('heroicon-m-bell')
+                            ->schema([
+                                View::make('ticket_media')
+                                    ->view('filament.pages.ticket.ticket-poc')
+                                    ->viewData(['data' => Ticket::find($infolist->record->id)]),
+                                SpatieMediaLibraryImageEntry::make('ticket_media')->label('POC')->conversion('thumb')->collection('ticket_media')
+                                    ->defaultImageUrl(url('https://thumbs.dreamstime.com/b/no-image-available-icon-177641087.jpg'))->checkFileExistence(false)
+                            ]),
+                        Tabs\Tab::make('Get Reward')->visible(fn(Ticket $record) => $record->status === 'closed' && $record->is_verified === true)
+                            ->icon('heroicon-m-bell')
+                            ->iconPosition(IconPosition::After)
+                            // ->badge(1)
+                            ->schema([
+                                View::make('ticket_media')
+                                    ->view('filament.pages.ticket.ticket-reward')
+                                    ->viewData(['data' => Ticket::find($infolist->record->id)]),
+                            ]),
                     ])->contained(false),
-
-
-            Actions::make([
-                Action::make('close')
-                    ->disabled(fn (Ticket $record) => $record->status === 'closed')
-                    ->icon('heroicon-o-trash')->color(fn (Ticket $record) => $record->status === 'closed' ? 'gray' : 'danger')
-                    ->requiresConfirmation()
-                    ->label(fn ($record) => $record->status === 'closed' ? 'Ticket Closed' : 'Close Ticket')
-                    ->action(function (Ticket $record) {
-                        $record->where('id', $record->id)->update([
-                            'status' => 'closed',
-                        ]);
-                        $recipient = User::find($record->users_id);
-                        Notification::make('close')->title('Ticket Is Closed')
-                        ->body('Ticket Telah di Tutup')->success()->sendToDatabase($recipient);
-                    }),
-
-
-            ])->alignment(Alignment::End)->visible(auth()->user()->hasRole('super_admin') || auth()->user()->id == $infolist->record->agent_id),
-        ]);
-}
+                // Actions::make([
+                 
+                // ])->alignment(Alignment::End)->visible(auth()->user()->hasRole('super_admin') || auth()->user()->id == $infolist->record->agent_id),
+            ]);
+    }
 
     public function methodResultRefreshSelf()
     {
         $this->dispatch('refreshChat');
-         $this->emit('ViewTicket', $infolist->record->id);
+        $this->emit('ViewTicket', $infolist->record->id);
     }
-
 }

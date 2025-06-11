@@ -37,33 +37,33 @@ class ReplyTicket extends Component implements HasForms
     {
         return $form
             ->schema([
-                RichEditor::make('message')->columnSpan(12)
+                RichEditor::make('message')
                 ->toolbarButtons([
                     'blockquote',
                     'bold',
                     'bulletList',
-                    'codeBlock',
+                    // 'codeBlock',
                     'h2',
                     'h3',
-                    'italic',
+                    // 'italic',
                     'link',
                     'orderedList',
                     'redo',
                     'strike',
-                    'underline',
+                    // 'underline',
                     'undo',]),
-                // ToggleButtons::make('status')
-                // ->inline()
-                // ->options([
-                //    null => '-',
-                //     0 => 'Verified',
-                //     1 => 'Not Verified',
-                // ])
-                // ->colors([
-                // null => 'info',
-                //    0 => 'warning',
-                //    1 => 'success',
-                // ]),
+                    // ToggleButtons::make('status')
+                    // ->inline()
+                    // ->options([
+                    //    null => '-',
+                    //     0 => 'Verified',
+                    //     1 => 'Not Verified',
+                    // ])
+                    // ->colors([
+                    // null => 'info',
+                    //    0 => 'warning',
+                    //    1 => 'success',
+                    // ]),
                 ])
             ->statePath('data');
     }
@@ -84,13 +84,18 @@ class ReplyTicket extends Component implements HasForms
             $data = $this->form->getState()['message'];
             $this->form->fill([]);
             $details = [
-                'name' => 'John Doe',
-                'message' => $data
+                'name' => auth()->user()->name,
+                'body' =>  [
+                        'code' => '',
+                        'subject' =>'',
+                        'description' => $data,
+                        'priority' => '',
+                        'link' => '',
+                    ],
             ];
             if ($user->hasRole('agen') || $user->hasRole('super_admin')) {
-
                 $recipient = User::find($this->record->users_id);
-                Mail::to($recipient)->queue(new TicketCreateMail($details)); // tomail admin
+                $this->senderMail($recipient,$details);
                 if ($this->record->agent_id == null) {
                     $recorde = Ticket::find($this->record->id);
                     $recorde->agent_id = $user->id;
@@ -100,8 +105,7 @@ class ReplyTicket extends Component implements HasForms
             } else {
 
                 $recipient = User::find($this->record->agent_id);
-                Mail::to($recipient)->queue(new TicketCreateMail($details)); //tomail user
-
+                $this->senderMail($recipient,$details);
             }
             if ($recipient) {
                 Notification::make()
@@ -129,8 +133,10 @@ class ReplyTicket extends Component implements HasForms
         }
     }
 
-
-
+    private function senderMail($recipients, $details)
+    {
+        Mail::to($recipients)->queue(new \App\Mail\TicketRespons($details));
+    }
     public function render()
     {
         return view('livewire.reply-ticket');
