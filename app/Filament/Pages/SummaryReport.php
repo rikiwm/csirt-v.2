@@ -15,10 +15,8 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Pages\Page;
 use Illuminate\Contracts\View\View;
 use App\Models\Type;
-use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action as ActionsAction;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
@@ -34,7 +32,7 @@ class SummaryReport extends Page
     use HasPageShield, HasFiltersAction, HasFiltersForm;
     protected static string $view = 'filament.pages.summary-report';
     protected ?string $heading = 'Ticket Analysis';
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-m-presentation-chart-line';
     public ?string $startDate = '';
     public ?string $endDate = '';
 

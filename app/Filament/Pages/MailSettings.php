@@ -21,7 +21,8 @@ class MailSettings extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-c-cog';
+    protected static ?string $title = 'Config';
     protected static string $view = 'filament.pages.mail-settings';
 
     public ?array $data = [];
@@ -46,7 +47,7 @@ class MailSettings extends Page implements HasForms
     {
         return $form
             ->schema([
-                
+
                 Section::make('SMTP Setting')->description('asd')->schema([
    TextInput::make('mail_host')->label('SMTP Host')->required(),
                 TextInput::make('mail_port')->label('SMTP Port')->required(),
@@ -54,17 +55,17 @@ class MailSettings extends Page implements HasForms
                 TextInput::make('mail_password')->label('SMTP Password')->password()->revealable(),
                 ])->columns(4),
            Fieldset::make()->schema([
-             
+
                 Select::make('mail_encryption')->options([
                     'tls' => 'TLS',
                     'ssl' => 'SSL',
                     null => 'None',
                 ])->label('SMTP Encryption'),
-             
+
                 TextInput::make('mail_from_address')->label('SMTP From Address'),
-                            ToggleButtons::make('status')->boolean()->label('Is Active')->inline(),
+                    ToggleButtons::make('status')->boolean()->label('Active')->inline(),
                 ])->columns(3),
-          
+
             ])
             ->statePath('data');
     }
@@ -105,11 +106,11 @@ class MailSettings extends Page implements HasForms
                 ->title('SMTP settings saved.')
                 ->success()
                 ->send();
-                
+
     if(ENV('APP_ENV') == 'production'){
 
     }
-      
+
     }
 
       protected function setEnvValue($key, $value)
@@ -131,7 +132,7 @@ class MailSettings extends Page implements HasForms
         }
 
         file_put_contents($path, $envContents);
-  
+
         Artisan::call('config:clear');
         Artisan::call('cache:clear');
 

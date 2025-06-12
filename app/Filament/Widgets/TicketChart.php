@@ -49,20 +49,20 @@ class TicketChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Tickets Created',
+                    'label' => 'Tickets Open',
                     'axis' => 'y',
                     'data' => $dataOpen,
                     'borderWidth' => 1,
-                    'backgroundColor' => 'rgba(54, 162, 235, 0.5)',
-                    'borderColor' => 'rgba(54, 162, 235, 1)',
+                    'backgroundColor' => 'rgb(206, 206, 206)',
+                    'borderColor' => 'rgb(255, 255, 255)',
                 ],
                 [
                     'label' => 'Tickets Closed',
                     'axis' => 'y',
                     'data' => $dataClosed,
                     'borderWidth' => 1,
-                    'backgroundColor' => 'rgba(255, 99, 132, 0.5)',
-                    'borderColor' => 'rgba(255, 99, 132, 1)',
+                    'backgroundColor' => 'rgb(39, 39, 39)',
+                    'borderColor' => 'rgb(255, 255, 255)',
                 ],
             ],
             'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -73,7 +73,7 @@ class TicketChart extends ChartWidget
     {
         return 'bar';
     }
- 
+
     protected function getFilters(): ?array
     {
         return [
@@ -94,7 +94,7 @@ class TicketChart extends ChartWidget
         return [
             'plugins' => [
                 'legend' => [
-                    'display' => false,
+                    'display' => true,
                 ],
                 'tooltip' => [
                     'enabled' => true,
@@ -102,7 +102,7 @@ class TicketChart extends ChartWidget
                     'intersect' => false,
                 ],
                 'title' => [
-                    'display' => true,
+                    'display' => false,
                     'text' => 'Tickets Opened and Closed',
                 ],
             ],
@@ -113,21 +113,13 @@ class TicketChart extends ChartWidget
                     'beginAtZero' => true,
                     'title' => [
                         'display' => true,
-                        'text' => 'Number of Tickets',
-                    ],
-                ],
-
-                'y1' => [
-                    'beginAtZero' => true,
-                    'title' => [
-                        'display' => true,
-                        'text' => 'Number of Tickets',
+                        'text' => 'Month of Tickets',
                     ],
                 ],
             ],
             'elements' => [
                 'bar' => [
-                    'borderWidth' => 2,
+                    'borderWidth' => 1,
                     'borderRadius' => 15, // Add border radius for rounded corners
                 ],
             ],

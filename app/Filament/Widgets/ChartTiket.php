@@ -10,7 +10,7 @@ use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class ChartTiket extends ChartWidget
 {
-    protected static ?string $heading = 'Chart Daily';
+    protected static ?string $heading = 'Bagan Laporan Insiden Tahunan';
     protected static ?string $maxHeight = '300px';
     use HasWidgetShield;
     protected function getData(): array
@@ -68,7 +68,7 @@ class ChartTiket extends ChartWidget
             'elements' => [
                 'bar' => [
                     'borderWidth' => 1,
-                    'borderRadius' => 6, // Add border radius for rounded corners
+                    'borderRadius' => 8, // Add border radius for rounded corners
                 ],
             ],
             'barPercentage' => 0.4, // Adjust bar width

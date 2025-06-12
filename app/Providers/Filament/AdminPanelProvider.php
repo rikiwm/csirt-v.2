@@ -29,12 +29,17 @@ use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt;
 use Filament\Pages\Auth\PasswordReset\RequestPasswordReset;
 
+use Filament\FontProviders\GoogleFontProvider;
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
+
+        ->font('Inter', provider: GoogleFontProvider::class)
             ->default()
+            ->favicon(asset('frontend/img/cslogo.png'))
             ->id('admin')
             ->path('app')
             ->login()
@@ -53,7 +58,7 @@ class AdminPanelProvider extends PanelProvider
                 // 'gray' => Color::Zinc,
                 // 'gray' => '#111111',
                 'info' => Color::Sky,
-                'primary' => Color::Blue,
+                'primary' => Color::Gray,
                 'success' => Color::Emerald,
                 'warning' => Color::Yellow,
             ])
