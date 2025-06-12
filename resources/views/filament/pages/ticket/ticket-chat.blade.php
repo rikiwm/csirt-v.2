@@ -1,4 +1,4 @@
-<div class="flex flex-col justify-between bg-transparent dark:bg-gray-900">
+<div class=" flex flex-col justify-between">
     {{-- Chat Messages --}}
     <div
         id="messages"
@@ -12,7 +12,7 @@
 
             <div class="flex {{ $isMine ? 'justify-end' : 'justify-start' }}">
                 <div class="max-w-sm rounded-lg p-3 shadow-md
-                    {{ $isMine ? 'bg-gray-200 text-black rounded-br-none dark:bg-gray-800' : 'bg-gray-200 dark:bg-gray-800 text-gray-900 rounded-bl-none' }}">
+                    {{ $isMine ? 'bg-gray-200 text-black rounded-br-none dark:bg-gray-800' : 'bg-gray-200 text-gray-900 rounded-bl-none dark:bg-gray-800' }}">
 
                     <div class="text-xs font-semibold mb-1 capitalize">
                         {{ $message->user->name ?? 'User' }}

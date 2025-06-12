@@ -30,22 +30,18 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
 class SummaryReports extends Component implements HasForms, HasTable
 {
-        use InteractsWithForms;
-        use InteractsWithTable;
-        use InteractsWithPageFilters;
-        protected static bool $isLazy = false;
-        protected ?string $heading = 'Response Time Insidenr';
-        protected ?string $description = 'An overview of some analytics.';
-        public $filter = [];
-        public $startDate = null;
-        public $endDate = null;
-        public $total = null;
-        public $closed = null;
-        public $open = null;
-        public $valid = null;
-        public $invalid = null;
-        public $avg = null;
-        public $averageResponseTime = null;
+     use InteractsWithForms;
+     use InteractsWithTable;
+     protected static bool $isLazy = false;
+
+     protected ?string $heading = 'Response Time Insidenr';
+     protected ?string $description = 'An overview of some analytics.';
+     public $type,$insiden;
+
+      public function mount()
+      {
+        $this->insiden = Type::pluck('name','id');
+      }
     public function table(Table $table): Table
     {
         return $table
@@ -179,45 +175,36 @@ class SummaryReports extends Component implements HasForms, HasTable
         }
         return gmdate("i:s", $averageResponseTime);
     }
-
-
-    public function generateReport()
+    public function filter(BaseFilter $filter)
     {
-        $this->resetPage();
+            return $filter;
     }
-  public function render()
-{
-    try {
-        $avg = $this->avgClosed();
-    } catch (\Exception $e) {
-        $avg = 'Kosong';
-    }
- if ($this->filter !== '') {
-     $filteredTickets = Ticket::query()->where(function ($query) {
-         $query->whereDate('created_at', '>=', $this->filter['startDate'] ?? now())
-             ->whereDate('created_at', '<=', $this->filter['endDate'] ?? now());
-     });
+    public function render()
+    {
+        try {
+            $avg = $this->avgClosed();
 
-        $this->total = $filteredTickets->count();
-        $this->closed = $filteredTickets->where('status', 'closed')->count();
-        $this->open = $filteredTickets->where('status', 'open')->count();
-        $this->valid = $filteredTickets->where('is_verified', true)->count();
-        $this->invalid = $filteredTickets->where('is_verified', false)->count();
-        }
-    if($this->filter === ''){
-            $this->resetForm();
+        } catch (\Exception $e) {
+            $avg = 'Kosong';
         }
 
-// dd($filteredTickets);
-    return view('livewire.summary-reports', [
-        'avg' => $avg,
-        'total' => $this->total,
-        'closed' => $this->closed,
-        'open' => $this->open,
-        'valid' => $this->valid,
-        'invalid' => $this->invalid,
-    ]);
-}
+        $tickets = Ticket::query()->with('types');
+
+                $closed = (clone $tickets)->where('status', 'closed')->count();
+                $open = (clone $tickets)->where('status', 'open')->count();
+                $valid = (clone $tickets)->where('is_verified', true)->count();
+                $invalid = (clone $tickets)->where('is_verified', false)->count();
+                $total = (clone $tickets)->count();
+                if ($this->type) {
+                    $total = (clone $tickets)
+                        ->whereHas('types', function ($query) {
+                            $query->whereIn('type_id', (array) $this->type);
+                        })
+                        ->count();
+                }
+
+        return view('livewire.summary-reports', compact('avg', 'total','closed','open','valid','invalid'));
+    }
 
     private function avgClosed($ticketId= null)
     {

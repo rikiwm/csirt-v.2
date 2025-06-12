@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Filament\Forms\Components\Builder as ComponentsBuilder;
 use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\KeyValue;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
@@ -49,7 +50,7 @@ class SettingWebResource extends Resource
                         'section-1' => 'Section 1',
                         'section-2' => 'Section 2',
                         'section-3' => 'Section 3',
-                        // 'section-4' => 'Section 4',
+                        'section-4' => 'Section 4',
                         // 'section-5' => 'Section 5',
                         // 'section-6' => 'Section 6',
                         // 'team-section' => 'Team',
@@ -61,13 +62,11 @@ class SettingWebResource extends Resource
                         // 'social' => 'Social',
                         // 'address' => 'Address',
                         // 'phone' => 'Phone',
-                        // 'email' => 'Email',
+                        'smtp' => 'SMTP',
                     ];
                     $currentKey = $get('key');
                     if ($currentKey && !in_array($currentKey, $usedKeys)) {
-                        // aman, tidak perlu ubah
                     } elseif ($currentKey && in_array($currentKey, $usedKeys)) {
-                        // hapus dari usedKeys agar tetap tampil
                         $usedKeys = array_diff($usedKeys, [$currentKey]);
                     }
                     return collect($allOptions)
@@ -130,6 +129,7 @@ class SettingWebResource extends Resource
                     ])->columnSpanFull(),
             ])
             ])
+
 
 
         ]);

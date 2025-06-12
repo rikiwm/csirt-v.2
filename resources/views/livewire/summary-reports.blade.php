@@ -5,9 +5,7 @@
     use Filament\Forms\Components\RichEditor;
 @endphp
 <div>
-
-    {{-- <div class="grid grid-flow-col grid-rows-3 gap-4 py-0">
-    <form wire:submit="generateReport">
+    <div class="grid grid-flow-col grid-rows-3 gap-4 py-0">
         <x-filament::card>
             <div class="grid gap-6 fi-wi-stats-overview-stats-ctn md:grid-cols-3">
                 <x-filament::input.wrapper>
@@ -25,8 +23,13 @@
                 </x-filament::input.wrapper>
                 <x-filament::input.wrapper>
 
-                    <x-filament::input.select wire:model="type">
-                        <option value="Insiden">Insiden</option>
+                    <x-filament::input.select wire:model.live="type">
+                        @forelse ($this->insiden as $key => $value )
+                        <option value="{{ $key }}">{{ $value }}</option>
+                        @empty
+
+                        @endforelse
+
                     </x-filament::input.select>
                 </x-filament::input.wrapper>
             </div>
@@ -44,8 +47,8 @@
                    </x-filament::button>
             </div>
         </x-filament::card>
-    </form>
-    </div> --}}
+    </div>
+
     {{-- ------------------------------------------------- --}}
     <div class="grid grid-flow-col grid-rows-3 gap-4 py-4">
         <x-filament::card>

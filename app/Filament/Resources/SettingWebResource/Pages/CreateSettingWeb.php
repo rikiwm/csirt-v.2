@@ -9,4 +9,11 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateSettingWeb extends CreateRecord
 {
     protected static string $resource = SettingWebResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        \Artisan::call('config:clear');
+        return $this->getResource()::getUrl('index');
+    }
+    
 }

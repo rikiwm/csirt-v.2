@@ -43,6 +43,14 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Ticket::class, TicketPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
 
-
+   $smtp = smtp_setting();
+    config([
+            'mail.mailers.smtp.host' => $smtp['host'] ?? env('MAIL_HOST'),
+            'mail.mailers.smtp.port' => $smtp['port'] ?? env('MAIL_PORT'),
+            'mail.mailers.smtp.encryption' => $smtp['encryption'] ?? env('MAIL_ENCRYPTION'),
+            'mail.mailers.smtp.username' => $smtp['username'] ?? env('MAIL_USERNAME'),
+            'mail.mailers.smtp.password' => $smtp['password'] ?? env('MAIL_PASSWORD'),
+            'mail.from.address' => $smtp['from_address'] ?? env('MAIL_FROM_ADDRESS'),
+        ]);
     }
 }

@@ -9,6 +9,9 @@ use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Forms\Components\DatePicker;
 use Filament\Pages\Page;
 use Illuminate\Contracts\View\View;
 use App\Models\Type;
@@ -94,12 +97,7 @@ class SummaryReport extends Page
         ];
     }
 
-    protected function getFooterWidgets(): array
-    {
-        return [
-            // TicketCount::class
-        ];
-    }
+
 
 
 
