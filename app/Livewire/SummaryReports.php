@@ -36,7 +36,7 @@ class SummaryReports extends Component implements HasForms, HasTable
 
      protected ?string $heading = 'Response Time Insidenr';
      protected ?string $description = 'An overview of some analytics.';
-     public $type,$insiden;
+     public $type,$insiden,$total,$closed,$open,$valid,$invalid,$avg;
 
       public function mount()
       {
@@ -190,20 +190,21 @@ class SummaryReports extends Component implements HasForms, HasTable
 
         $tickets = Ticket::query()->with('types');
 
-                $closed = (clone $tickets)->where('status', 'closed')->count();
-                $open = (clone $tickets)->where('status', 'open')->count();
-                $valid = (clone $tickets)->where('is_verified', true)->count();
-                $invalid = (clone $tickets)->where('is_verified', false)->count();
-                $total = (clone $tickets)->count();
+                $this->closed = (clone $tickets)->where('status', 'closed')->count();
+                $this->open = (clone $tickets)->where('status', 'open')->count();
+                $this->valid = (clone $tickets)->where('is_verified', true)->count();
+                $this->invalid = (clone $tickets)->where('is_verified', false)->count();
                 if ($this->type) {
-                    $total = (clone $tickets)
+                    $this->total = (clone $tickets)
                         ->whereHas('types', function ($query) {
                             $query->whereIn('type_id', (array) $this->type);
                         })
                         ->count();
+                }else {
+                $this->total = (clone $tickets)->count();
                 }
 
-        return view('livewire.summary-reports', compact('avg', 'total','closed','open','valid','invalid'));
+        return view('livewire.summary-reports');
     }
 
     private function avgClosed($ticketId= null)

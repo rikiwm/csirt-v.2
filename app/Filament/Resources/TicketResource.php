@@ -61,7 +61,6 @@ use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Facades\Mail;
 use Filament\Infolists\Components\Grid;
 use Filament\Tables\Grouping\Group;
-
 class TicketResource extends Resource implements HasForms
 {
     use InteractsWithForms;
@@ -205,25 +204,25 @@ class TicketResource extends Resource implements HasForms
             ])
             ->columns([
                 TextColumn::make('No')->rowIndex(),
-                TextColumn::make('users.name')->label('Nama')->sortable()->searchable(),
-                TextColumn::make('users.email')->label('Email')->sortable()->searchable(),
-                TextColumn::make('created_at')->sortable()->date()->dateTimeTooltip(),
-                TextColumn::make('subject')->sortable()->searchable()->limit(40),
-                TextColumn::make('priority')->label('Priority')->badge()
+                TextColumn::make('users.name')->label('Nama')->sortable()->searchable()->alignment(Alignment::Start),
+                TextColumn::make('users.email')->label('Email')->sortable()->searchable()->alignment(Alignment::Start),
+                TextColumn::make('created_at')->sortable()->since()->dateTimeTooltip(),
+                TextColumn::make('types.name')->sortable()->label('Insident')->badge()->searchable()->lineClamp(2)->alignment(Alignment::End),
+                TextColumn::make('subject')->sortable()->searchable()->limit(40)->tooltip('subject')->lineClamp(2),
+                TextColumn::make('priority')->label('Priority')->badge()->alignment(Alignment::Start)
                     ->color(fn(string $state): string => match ($state) {
-                        'low' => 'info',
+                        'low' => 'primary',
                         'medium' => 'warning',
                         'high' => 'urgent',
                         'urgent' => 'danger',
                     })->sortable()
                     ->icon(fn(string $state): string => match ($state) {
-                        'low' => 'heroicon-m-exclamation-circle',
+                        'low' => 'heroicon-o-exclamation-circle',
                         'medium' => 'heroicon-m-exclamation-circle',
                         'high' => 'heroicon-m-exclamation-triangle',
                         'urgent' => 'heroicon-c-fire',
                     })
-                    ->searchable()->numeric(),
-                TextColumn::make('types.name')->sortable()->label('Insident')->badge()->searchable()->lineClamp(2)->icon('heroicon-m-tag'),
+                    ->searchable()->numeric()->extraAttributes(fn ($record) => $record->priority === 'urgent' ? ['class' => 'animate-pulse'] : []),
                 TextColumn::make('status')->sortable()->label('Status')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
@@ -339,9 +338,9 @@ class TicketResource extends Resource implements HasForms
                             'reason' => $data['reason'],
                         ]))
                         ->successNotificationTitle('Ticket berhasil diUpdate'),
-                ])->button()
+                ])->icon('heroicon-s-list-bullet')
                     ->size(ActionSize::Small)
-                    ->label('Actions')
+                    ->label(false)
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

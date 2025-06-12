@@ -16,8 +16,8 @@
 
                     <div class="text-xs font-semibold mb-1 capitalize">
                         {{ $message->user->name ?? 'User' }}
-                        <span class="text-[10px] text-gray-300 ml-2">
-                            {{-- {{ $message->created_at->diffForHumans() }} --}}
+                        <span class="text-xs font-normal  text-gray-400 ml-2">
+                           - {{ $message->created_at->diffForHumans() }}
                         </span>
                     </div>
 
@@ -25,7 +25,7 @@
                         {!! $message->message ?? '' !!}
                     </div>
 
-                    <div class="text-xs mt-1 text-right">
+                    <div class="text-xs opacity-50 text-right">
                         <x-heroicon-c-calendar-date-range class="inline-block w-3 h-3 text-black opacity-50" />
                         {{ $message->created_at->format('d M Y H:i') }}
                     </div>
