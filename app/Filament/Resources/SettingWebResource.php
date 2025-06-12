@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Filament\Forms\Components\Builder as ComponentsBuilder;
 use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\KeyValue;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -40,7 +41,7 @@ class SettingWebResource extends Resource
                         'section-1' => 'Section 1',
                         'section-2' => 'Section 2',
                         'section-3' => 'Section 3',
-                        // 'section-4' => 'Section 4',
+                        'section-4' => 'Section 4',
                         // 'section-5' => 'Section 5',
                         // 'section-6' => 'Section 6',
                         // 'team-section' => 'Team',
@@ -52,13 +53,11 @@ class SettingWebResource extends Resource
                         // 'social' => 'Social',
                         // 'address' => 'Address',
                         // 'phone' => 'Phone',
-                        // 'email' => 'Email',
+                        'smtp' => 'SMTP',
                     ];
                     $currentKey = $get('key');
                     if ($currentKey && !in_array($currentKey, $usedKeys)) {
-                        // aman, tidak perlu ubah
                     } elseif ($currentKey && in_array($currentKey, $usedKeys)) {
-                        // hapus dari usedKeys agar tetap tampil
                         $usedKeys = array_diff($usedKeys, [$currentKey]);
                     }
                     return collect($allOptions)
@@ -74,7 +73,7 @@ class SettingWebResource extends Resource
                 //                 'section-2' => 'section 2',
                 //                 'section-3' => 'section 3',
                 //                 'copyright' => 'copyright',
-                //                 'address' => 'address',
+                //                 fn()=> setting('mail_host', env('MAIL_HOST'))
                 //             ])
                 //             ->required(),
                 // // TextInput::make('key')->required()->label('Title')->placeholder('title'),
@@ -112,7 +111,7 @@ class SettingWebResource extends Resource
                                 ->label('Paragraph')
                                 ->required(),
                         ]),
-                    Block::make('key')->label('like json array')
+                    Block::make('key')->label('Key dan Value')
                         ->schema([
                             TextInput::make('keys')
                             ->label('Keys')
@@ -126,6 +125,10 @@ class SettingWebResource extends Resource
                             TextInput::make('desc')
                             ->label('desc')
                             ->required(),
+                        ])->columns(1),
+                    Block::make('smtp')->label('SMTP')
+                        ->schema([
+                            KeyValue::make('key')
                         ])->columns(1),
 
                 ])->columnSpanFull(),

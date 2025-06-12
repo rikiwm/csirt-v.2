@@ -35,7 +35,12 @@ class SummaryReports extends Component implements HasForms, HasTable
 
      protected ?string $heading = 'Response Time Insidenr';
      protected ?string $description = 'An overview of some analytics.';
+     public $type,$insiden;
 
+      public function mount()
+      {
+        $this->insiden = Type::pluck('name','id');
+      }     
     public function table(Table $table): Table
     {
         return $table
@@ -170,7 +175,7 @@ class SummaryReports extends Component implements HasForms, HasTable
         return gmdate("i:s", $averageResponseTime);
     }
     public function filter(BaseFilter $filter)
-        {
+    {
             return $filter;
     }
     public function render()
@@ -182,13 +187,20 @@ class SummaryReports extends Component implements HasForms, HasTable
             $avg = 'Kosong';
         }
 
-        $tickets = Ticket::query()->select('id', 'status', 'is_verified')->get();
+        $tickets = Ticket::query()->with('types');
 
-        $total = $tickets->count();
-        $closed = $tickets->where('status', 'closed')->count();
-        $open = $tickets->where('status', 'open')->count();
-        $valid = $tickets->where('is_verified', true)->count();
-        $invalid = $tickets->where('is_verified', false)->count();
+                $closed = (clone $tickets)->where('status', 'closed')->count();
+                $open = (clone $tickets)->where('status', 'open')->count();
+                $valid = (clone $tickets)->where('is_verified', true)->count();
+                $invalid = (clone $tickets)->where('is_verified', false)->count();
+                $total = (clone $tickets)->count();
+                if ($this->type) {
+                    $total = (clone $tickets)
+                        ->whereHas('types', function ($query) {
+                            $query->whereIn('type_id', (array) $this->type);
+                        })
+                        ->count();
+                }
 
         return view('livewire.summary-reports', compact('avg', 'total','closed','open','valid','invalid'));
     }

@@ -1,4 +1,4 @@
-<div class="h-screen flex flex-col justify-between">
+<div class=" flex flex-col justify-between">
     {{-- Chat Messages --}}
     <div
         id="messages"
@@ -12,9 +12,9 @@
 
             <div class="flex {{ $isMine ? 'justify-end' : 'justify-start' }}">
                 <div class="max-w-sm rounded-lg p-3 shadow-md 
-                    {{ $isMine ? 'bg-gray-200 text-black rounded-br-none' : 'bg-gray-200 text-gray-900 rounded-bl-none' }}">
+                    {{ $isMine ? 'bg-gray-200 text-black rounded-br-none dark:bg-gray-800' : 'bg-gray-200 text-gray-900 rounded-bl-none dark:bg-gray-800' }}">
                     
-                    <div class="text-xs font-semibold mb-1">
+                    <div class="text-xs font-semibold mb-1 capitalize">
                         {{ $message->user->name ?? 'User' }}
                         <span class="text-[10px] text-gray-300 ml-2">
                             {{-- {{ $message->created_at->diffForHumans() }} --}}

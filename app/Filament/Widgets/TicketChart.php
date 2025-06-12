@@ -8,7 +8,7 @@ use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Builder;
-
+use Filament\Pages\SummaryReport;
 
 class TicketChart extends ChartWidget
 {
@@ -73,16 +73,16 @@ class TicketChart extends ChartWidget
     {
         return 'bar';
     }
-
-    // protected function getFilters(): ?array
-    // {
-    //     return [
-    //         'today' => 'Today',
-    //         'week' => 'Last week',
-    //         'month' => 'Last month',
-    //         'year' => 'This year',
-    //     ];
-    // }
+ 
+    protected function getFilters(): ?array
+    {
+        return [
+            'today' => 'startDate',
+            'week' => 'endDate',
+            'month' => 'Last month',
+            'year' => 'This year',
+        ];
+    }
 
     public function getDescription(): ?string
     {

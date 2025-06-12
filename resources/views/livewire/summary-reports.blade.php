@@ -5,26 +5,31 @@
     use Filament\Forms\Components\RichEditor;
 @endphp
 <div>
-    {{-- <div class="grid grid-flow-col grid-rows-3 gap-4 py-0">
+    <div class="grid grid-flow-col grid-rows-3 gap-4 py-0">
         <x-filament::card>
             <div class="grid gap-6 fi-wi-stats-overview-stats-ctn md:grid-cols-3">
                 <x-filament::input.wrapper>
                     <x-slot name="prefix">
                         Start
                     </x-slot>
-                    <x-filament::input type="date" wire:model="name" />
+                    <x-filament::input type="date" wire:model="startDate" />
 
                 </x-filament::input.wrapper>
                 <x-filament::input.wrapper>
                     <x-slot name="suffix">
                         End
                     </x-slot>
-                    <x-filament::input type="date" wire:model="name" />
+                    <x-filament::input type="date" wire:model="endDate" />
                 </x-filament::input.wrapper>
                 <x-filament::input.wrapper>
 
-                    <x-filament::input.select wire:model="type">
-                        <option value="Insiden">Insiden</option>
+                    <x-filament::input.select wire:model.live="type">
+                        @forelse ($this->insiden as $key => $value )
+                        <option value="{{ $key }}">{{ $value }}</option>
+                        @empty
+                            
+                        @endforelse
+                      
                     </x-filament::input.select>
                 </x-filament::input.wrapper>
             </div>
@@ -42,7 +47,8 @@
                    </x-filament::button>
             </div>
         </x-filament::card>
-    </div> --}}
+    </div>
+
     {{-- ------------------------------------------------- --}}
     <div class="grid grid-flow-col grid-rows-3 gap-4 py-4">
         <x-filament::card>
