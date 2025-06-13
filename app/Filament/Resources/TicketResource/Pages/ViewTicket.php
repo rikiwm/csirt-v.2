@@ -28,6 +28,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\ActionSize;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Log;
@@ -71,65 +72,21 @@ class ViewTicket extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            // Action::make('message')->modal('Message Ticket')->modalHeading('Time Line')->modalWidth('4xl')->color('info')->icon('heroicon-m-clock')->badge()
-            // ->slideOver()
-            // ->modalWidth(MaxWidth::Large)
-            // ->label('Hsitori')
-            // ->form([
-            //   ComponentsView::make('filament.card.time-line')
-            //   ->viewData(['data' => Ticket::find($this->record->id)])->columnSpanFull(),
-            // ])
-            // ->modalSubmitAction(false),
-            
-            // Action::make('sertifikat')
-            //     ->hidden(fn () => !auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'))->modal('Sertifikat')
-            //     ->modalHeading('Sertifikat Apresiasi')->color('primary')->icon('heroicon-m-trophy')->badge()
-            //     ->slideOver()
-            //     ->modalWidth(MaxWidth::ExtraLarge)
-            //     ->label('Sertifikat')
-            //     ->form([                        
-            //         // Hidden::make('user_id')->default(auth()->user()->id),
-            //         Hidden::make('user_id')->default(auth()->user()->id),
-            //         FileUpload::make('file_path')
-            //         ->disk('public')
-            //         ->directory('ticket_reward')
-            //         ->visibility('public')
-            //         ->rules(['mimetypes:image/jpeg,image/png,application/pdf'])
-            //         ])->action(function (array $data) {
-            //             TicketAttachment::updateOrCreate([
-            //                 'ticket_id' => $this->record->id],
-            //                 [
-            //                 'user_id' => $data['user_id'],
-            //                 'file_path' =>  $data['file_path'],
-            //             ]);
-                
-            //         $ticket = Ticket::find($this->record->id);
-            //         $ticket->is_reward = 1;
-            //         $ticket->is_duplicate = 0;
-            //         $ticket->save();
-            //     })->successNotification(
-            //         Notification::make()
-            //                 ->success()
-            //                 ->title('User registered')
-            //                 ->body('The user has been created successfully.'),
-            //         )
-            Action::make('message')->modal('Message Ticket')->modalHeading('Time Line')->modalWidth('4xl')->color('info')->icon('heroicon-m-clock')->badge()
-            ->slideOver()
-            ->modalWidth(MaxWidth::Large)
-            ->label('Hsitori')
-            ->form([
-              ComponentsView::make('filament.card.time-line')
-              ->viewData(['data' => Ticket::find($this->record->id)])->columnSpanFull(),
-            ])
-            ->modalSubmitAction(false),
-
-                Action::make('sertifikat')->visible(fn () => $this->record->is_reward !== 1)->disabled( fn () => $this->record->status !== 'closed')
-                    ->label('Sertifikat')
+            Action::make('activity')->modal('Message Ticket')->modalHeading('Time Line')->modalWidth('4xl')->color('primary')->icon('heroicon-m-clock')->outlined()
+                ->slideOver()->size(ActionSize::Small)
+                ->modalWidth(MaxWidth::Large)
+                ->label('Time Line')
+                ->form([
+                    ComponentsView::make('filament.card.time-line')
+                    ->viewData(['data' => Ticket::find($this->record->id)])->columnSpanFull(),
+                    ])
+                ->modalSubmitAction(false),
+            Action::make('sertifikat')->visible(fn () => $this->record->is_reward !== 1)->disabled( fn () => $this->record->status !== 'closed')
+                    ->label('Gift Reward')->size(ActionSize::Small)
                     ->modal('Sertifikat')
                     ->modalHeading('Sertifikat Apresiasi')
                     ->icon('heroicon-m-trophy')
-                    ->color('primary')
-                    ->badge()
+                    ->color('gray')
                     ->slideOver()
                     ->modalWidth(MaxWidth::ExtraLarge)
                     ->hidden(fn () => !auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'))
@@ -143,31 +100,30 @@ class ViewTicket extends ViewRecord
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf'])
                             ->required(),
                     ])
-                    ->action(function (array $data, $livewire) {
-                        $record = $livewire->record;
+                        ->action(function (array $data, $livewire) {
+                            $record = $livewire->record;
+                            $filePath = is_array($data['file_path']) ? $data['file_path'][0] : $data['file_path'];
 
-                        $filePath = is_array($data['file_path']) ? $data['file_path'][0] : $data['file_path'];
+                            TicketAttachment::updateOrCreate(
+                                ['ticket_id' => $record->id],
+                                [
+                                    'user_id' => $data['user_id'],
+                                    'file_path' => $filePath,
+                                ]
+                            );
 
-                        TicketAttachment::updateOrCreate(
-                            ['ticket_id' => $record->id],
-                            [
-                                'user_id' => $data['user_id'],
-                                'file_path' => $filePath,
-                            ]
-                        );
+                            $record->update([
+                                'is_reward' => true,
+                                'is_duplicate' => false,
+                            ]);
 
-                        $record->update([
-                            'is_reward' => true,
-                            'is_duplicate' => false,
-                        ]);
+                            Notification::make()
+                                ->title('Sertifikat berhasil ditambahkan.')
+                                ->body('Dokumen sertifikat telah berhasil diunggah.')
+                                ->success()
+                                ->send();
+                        })
 
-                        Notification::make()
-                            ->title('Sertifikat berhasil ditambahkan.')
-                            ->body('Dokumen sertifikat telah berhasil diunggah.')
-                            ->success()
-                            ->send();
-                    })
-           
         ];
     }
 

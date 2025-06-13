@@ -61,6 +61,7 @@ use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Facades\Mail;
 use Filament\Infolists\Components\Grid;
 use Filament\Tables\Grouping\Group;
+use Illuminate\Support\Str;
 class TicketResource extends Resource implements HasForms
 {
     use InteractsWithForms;
@@ -202,12 +203,12 @@ class TicketResource extends Resource implements HasForms
                 ->collapsible(),
             ])
             ->columns([
-                TextColumn::make('No')->rowIndex(),
-                TextColumn::make('users.name')->label('Nama')->sortable()->searchable()->alignment(Alignment::Start),
-                TextColumn::make('users.email')->label('Email')->sortable()->searchable()->alignment(Alignment::Start),
-                TextColumn::make('created_at')->sortable()->since()->dateTimeTooltip(),
-                TextColumn::make('types.name')->sortable()->label('Insident')->badge()->searchable()->lineClamp(2)->alignment(Alignment::End),
-                TextColumn::make('subject')->sortable()->searchable()->limit(40)->tooltip('subject')->lineClamp(2),
+
+                TextColumn::make('No')->rowIndex()->size(TextColumn\TextColumnSize::ExtraSmall)->alignment(Alignment::Start),
+                TextColumn::make('users.name')->label('Nama')->sortable()->searchable()->size(TextColumn\TextColumnSize::ExtraSmall)->alignment(Alignment::Start)->formatStateUsing(fn (string $state): string => Str::headline($state))
+                ->description(fn ($record): HtmlString => new HtmlString('<span class="text-xs text-gray-500 dark:text-gray-400">'.$record->users->email.'</span>')),
+                TextColumn::make('types.name')->sortable()->label('Insident')->badge()->searchable(),
+                TextColumn::make('subject')->sortable()->searchable()->limit(60)->tooltip('subject')->lineClamp(2)->size(TextColumn\TextColumnSize::ExtraSmall)->description(fn ($record): HtmlString => new HtmlString('<span class="text-xs text-gray-500 dark:text-gray-400">'.$record->created_at->diffForHumans().'</span>')),
                 TextColumn::make('priority')->label('Priority')->badge()->alignment(Alignment::Start)
                     ->color(fn(string $state): string => match ($state) {
                         'low' => 'primary',
@@ -234,18 +235,18 @@ class TicketResource extends Resource implements HasForms
                         'closed' => 'heroicon-m-lock-closed',
                         'in_progress' => 'heroicon-m-clock',
                     }),
-                TextColumn::make('useragen.name')->label('Assign By')->searchable(),
-                TextColumn::make('is_verified')
-                    ->badge()
-                    ->color(fn(string $state): string => match ($state) {
-                        '' => '',
-                        '0' => 'danger',
-                        '1' => 'success',
-                    })
-                    ->label('Verified')
-                    ->sortable()
-                    ->searchable()
-                    ->formatStateUsing(fn($state) => $state === null ? 'Not Processed' : ($state ? 'Verified' : 'Unverified')),
+                TextColumn::make('useragen.name')->label('Agent By')->searchable(),
+                // TextColumn::make('is_verified')
+                //     ->badge()
+                //     ->color(fn(string $state): string => match ($state) {
+                //         'null' => 'gray',
+                //         '0' => 'danger',
+                //         '1' => 'success',
+                //     })
+                //     ->label('Verified')
+                //     ->sortable()
+                //     ->searchable()
+                //     ->formatStateUsing(fn($record) => $record->is_verified === null ? 'Not Processed' : ($record->is_verified ? 'Verified' : 'Unverified')),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make()->label('Trashed')
@@ -309,7 +310,6 @@ class TicketResource extends Resource implements HasForms
                         ->icon('heroicon-m-check-badge')
                         ->visible(fn(Ticket $record): bool => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen') && $record->is_verified === null)
                         ->hidden(fn(Ticket $record): bool => $record->is_verified === 1)
-                        // Tables\Actions\ViewAction::make()->modal(false)
                         ->requiresConfirmation()
                         ->modal(true)
                         ->action(fn(Ticket $record) => $record->update([
@@ -369,10 +369,7 @@ class TicketResource extends Resource implements HasForms
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery();
-        // ->withoutGlobalScopes([
-        //     SoftDeletingScope::class,
-        // ]);
+        $query = parent::getEloquentQuery()->with(['users', 'types','messages', 'useragen', 'useragen.roles', 'users.roles']);
         if (!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen')) {
             $query->where('users_id', auth()->id());
         }
@@ -399,7 +396,9 @@ class TicketResource extends Resource implements HasForms
                                 Grid::make(3)
                                     ->schema([
                                         InfolistsSplit::make([
-                                            ComponentsSection::make($infolist->record->code)->description('code')->schema([
+                                            ComponentsSection::make(
+                                                $infolist->record->types[0]->name.' - '
+                                                )->description('Ticket Created : ' . $infolist->record->created_at)->schema([
                                                 TextEntry::make('subject')->label('Subject')
                                                     ->size(TextEntry\TextEntrySize::Large)
                                                     ->weight(FontWeight::Bold),
@@ -420,8 +419,36 @@ class TicketResource extends Resource implements HasForms
                                                 Fieldset::make('description')->schema([
                                                     TextEntry::make('description')->label('Description')->html()->grow(true)->prose()
                                                 ])
-                                            ])->icon('heroicon-m-ticket')->headerActions([
-                                        Action::make('close')
+                                            ])->headerActions([
+                                            Action::make('download')->label(false)->color('primary')->icon('heroicon-m-printer')->outlined()->size(ActionSize::ExtraSmall)->extraAttributes(['class' => 'rounded-full pe-2'])
+                                                        ->url(route('summary-report.print', [
+                                                            'id' => $infolist->record->id
+                                                            ]), shouldOpenInNewTab: true),
+                                        Action::make('valid')->size(ActionSize::Small)
+                                                ->icon(fn(Ticket $record) => $record->is_verified === null ? 'heroicon-o-question-mark-circle' : ($record->is_verified == false ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle'))
+                                                ->color(fn(Ticket $record) => $record->is_verified === null ? 'warning' : ($record->is_verified == false ? 'danger' : 'success'))
+                                                ->outlined()
+                                                ->requiresConfirmation()
+                                                ->label(fn(Ticket $record) => $record->is_verified === null ? 'Belum  Terverified' : (($record->is_verified == false) ? 'Tidak  Verified' : 'Valid'))
+                                                 ->visible(fn(Ticket $record): bool => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen') && $record->is_verified === null)
+                                                ->disabled(fn(Ticket $record): bool => $record->is_verified === 1)
+                                                ->requiresConfirmation()
+                                                ->modal(true)
+                                                ->modalIcon(false)
+                                                ->modalHeading('Insident Ticket : '.$infolist->record->types[0]->name)
+                                                ->modalDescription('Subject : '.$infolist->record->subject)->modalContent(new HtmlString('
+                                                                    <span class="text-sm text-gray-600 dark:text-gray-400">
+                                                                    <p class="text-sm text-gray-600 dark:text-gray-400">'. $infolist->record->description .'</p>
+                                                                    </p>
+                                                                    </span>'))
+                                                ->action(fn(Ticket $record) => $record->update([
+                                                        'is_verified' => true,
+                                                        'status' => 'in_progress',
+                                                        'reason' => null // reason = alasan tidak valid
+
+                                                    ]))
+                                                ->modalFooterActionsAlignment(Alignment::Center),
+                                        Action::make('close')->size(ActionSize::Small)
                                                 ->disabled(fn(Ticket $record) => $record->status === 'closed')
                                                 ->icon('heroicon-o-trash')->color(fn(Ticket $record) => $record->status === 'closed' ? 'gray' : 'danger')
                                                 ->requiresConfirmation()
@@ -449,18 +476,18 @@ class TicketResource extends Resource implements HasForms
                                                 })
                                             ->visible(auth()->user()->hasRole('super_admin') || auth()->user()->id == $infolist->record->agent_id),
 
-                                            ])
-                                                        ])->columnSpan(2),
-                                                                ComponentsSection::make('chat')->description('Chat Form')->label('Form Message')->icon('heroicon-m-envelope')->schema([
-                                                                    View::make('filament.pages.ticket.ticket-chat')->extraAttributes(['class' => 'overflow-hidden overflow-y-auto'])
-                                                                        ->viewData([
-                                                                            'messages' => TicketMassage::where('ticket_id', $infolist->record->id)->with('user')->orderBy('created_at', 'desc')->get(),
-                                                                            'record' => $infolist->record,
-                                                                            'statuse' => $infolist->record->status
-                                                                        ])->columnSpanFull()
-                                                                ])->columnSpan(1)
-                                                            ]),
-                                                    ]),
+                                            ]),
+                                                    ])->columnSpan(2),
+                                                            ComponentsSection::make('chat')->description('Chat Form')->label('Form Message')->icon('heroicon-m-envelope')->schema([
+                                                                View::make('filament.pages.ticket.ticket-chat')->extraAttributes(['class' => 'overflow-hidden overflow-y-auto'])
+                                                                    ->viewData([
+                                                                        'messages' => TicketMassage::where('ticket_id', $infolist->record->id)->with('user')->orderBy('created_at', 'desc')->get(),
+                                                                        'record' => $infolist->record,
+                                                                        'statuse' => $infolist->record->status
+                                                                    ])->columnSpanFull()
+                                                            ])->columnSpan(1)
+                                                        ]),
+                                                ]),
                         Tabs\Tab::make('Proof Of Concept')->icon('heroicon-m-bell')
                             ->schema([
                                 View::make('ticket_media')
@@ -477,7 +504,7 @@ class TicketResource extends Resource implements HasForms
                                     ->view('filament.pages.ticket.ticket-reward')
                                     ->viewData(['data' => Ticket::find($infolist->record->id)]),
                             ]),
-                    ])->contained(false),
+                    ])->contained(false)->persistTabInQueryString('detail-ticket-tab'),
                 // Actions::make([
 
                 // ])->alignment(Alignment::End)->visible(auth()->user()->hasRole('super_admin') || auth()->user()->id == $infolist->record->agent_id),

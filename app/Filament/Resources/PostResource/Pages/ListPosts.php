@@ -23,8 +23,8 @@ class ListPosts extends ListRecords
     public function getTabs(): array
     {
         $tabs = [
-            'Active' => Tab::make()->query(fn ($query) => $query->where('is_active', 1)),
-            'Not Active' => Tab::make()->query(fn ($query) => $query->where('is_active', 0)),
+            'Active' => Tab::make('Active')->query(fn ($query) => $query->where('is_active', 1)),
+            'Not Active' => Tab::make('Not Active')->query(fn ($query) => $query->where('is_active', 0)),
             // 'Active' => Tab::make()->query(fn ($query) => $query->whereHas('menu', fn ($q) => $q->where('type', 'page'))),
             // 'Not Active' => Tab::make()->query(fn ($query) => $query->whereHas('menu', fn ($q) => $q->where('type', 'list'))),
 
