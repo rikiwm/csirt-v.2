@@ -28,7 +28,6 @@ class Ticket extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('ticket_media')->useDisk('public');
-        // ->addMediaConversion('thumb')->nonQueued();
     }
 
     public function messages()

@@ -5,10 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-class TicketAttachment extends Model
-{
-    //
-    use SoftDeletes, HasFactory;
-protected $guarded = ['id'];
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
+class TicketAttachment extends Model implements HasMedia
+{
+    use InteractsWithMedia;
+    use SoftDeletes, HasFactory;
+    protected $guarded = ['id'];
+    protected $casts = [
+          'file_path' => 'json',
+      ];
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('ticket_reward')->useDisk('public');
+    }
 }

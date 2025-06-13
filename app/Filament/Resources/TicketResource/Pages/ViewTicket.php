@@ -4,12 +4,15 @@ namespace App\Filament\Resources\TicketResource\Pages;
 
 use App\Filament\Resources\TicketResource;
 use App\Models\Ticket;
+use App\Models\TicketAttachment;
 use App\Models\TicketMassage;
 use App\Models\User;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\StaticAction;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Radio;
@@ -30,7 +33,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\Rules\ImageFile;
-
 
 class ViewTicket extends ViewRecord
 {
@@ -69,76 +71,104 @@ class ViewTicket extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('message')->modal('Message Ticket')->modalHeading('Time Line')->modalWidth('4xl')->color('warning')->icon('heroicon-m-clock')
+            // Action::make('message')->modal('Message Ticket')->modalHeading('Time Line')->modalWidth('4xl')->color('info')->icon('heroicon-m-clock')->badge()
+            // ->slideOver()
+            // ->modalWidth(MaxWidth::Large)
+            // ->label('Hsitori')
+            // ->form([
+            //   ComponentsView::make('filament.card.time-line')
+            //   ->viewData(['data' => Ticket::find($this->record->id)])->columnSpanFull(),
+            // ])
+            // ->modalSubmitAction(false),
+            
+            // Action::make('sertifikat')
+            //     ->hidden(fn () => !auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'))->modal('Sertifikat')
+            //     ->modalHeading('Sertifikat Apresiasi')->color('primary')->icon('heroicon-m-trophy')->badge()
+            //     ->slideOver()
+            //     ->modalWidth(MaxWidth::ExtraLarge)
+            //     ->label('Sertifikat')
+            //     ->form([                        
+            //         // Hidden::make('user_id')->default(auth()->user()->id),
+            //         Hidden::make('user_id')->default(auth()->user()->id),
+            //         FileUpload::make('file_path')
+            //         ->disk('public')
+            //         ->directory('ticket_reward')
+            //         ->visibility('public')
+            //         ->rules(['mimetypes:image/jpeg,image/png,application/pdf'])
+            //         ])->action(function (array $data) {
+            //             TicketAttachment::updateOrCreate([
+            //                 'ticket_id' => $this->record->id],
+            //                 [
+            //                 'user_id' => $data['user_id'],
+            //                 'file_path' =>  $data['file_path'],
+            //             ]);
+                
+            //         $ticket = Ticket::find($this->record->id);
+            //         $ticket->is_reward = 1;
+            //         $ticket->is_duplicate = 0;
+            //         $ticket->save();
+            //     })->successNotification(
+            //         Notification::make()
+            //                 ->success()
+            //                 ->title('User registered')
+            //                 ->body('The user has been created successfully.'),
+            //         )
+            Action::make('message')->modal('Message Ticket')->modalHeading('Time Line')->modalWidth('4xl')->color('info')->icon('heroicon-m-clock')->badge()
             ->slideOver()
             ->modalWidth(MaxWidth::Large)
             ->label('Hsitori')
             ->form([
               ComponentsView::make('filament.card.time-line')
-                                ->viewData(['data' => Ticket::find($this->record->id)])->columnSpanFull(),
+              ->viewData(['data' => Ticket::find($this->record->id)])->columnSpanFull(),
             ])
-         ->modalSubmitAction(false)
+            ->modalSubmitAction(false),
+
+                Action::make('sertifikat')->visible(fn () => $this->record->is_reward !== 1)->disabled( fn () => $this->record->status !== 'closed')
+                    ->label('Sertifikat')
+                    ->modal('Sertifikat')
+                    ->modalHeading('Sertifikat Apresiasi')
+                    ->icon('heroicon-m-trophy')
+                    ->color('primary')
+                    ->badge()
+                    ->slideOver()
+                    ->modalWidth(MaxWidth::ExtraLarge)
+                    ->hidden(fn () => !auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'))
+                    ->form([
+                        Hidden::make('user_id')->default(auth()->user()->id),
+                        FileUpload::make('file_path')
+                            ->disk('public')
+                            ->directory('ticket_reward')
+                            ->visibility('public')
+                            ->label('Upload Sertifikat')
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf'])
+                            ->required(),
+                    ])
+                    ->action(function (array $data, $livewire) {
+                        $record = $livewire->record;
+
+                        $filePath = is_array($data['file_path']) ? $data['file_path'][0] : $data['file_path'];
+
+                        TicketAttachment::updateOrCreate(
+                            ['ticket_id' => $record->id],
+                            [
+                                'user_id' => $data['user_id'],
+                                'file_path' => $filePath,
+                            ]
+                        );
+
+                        $record->update([
+                            'is_reward' => true,
+                            'is_duplicate' => false,
+                        ]);
+
+                        Notification::make()
+                            ->title('Sertifikat berhasil ditambahkan.')
+                            ->body('Dokumen sertifikat telah berhasil diunggah.')
+                            ->success()
+                            ->send();
+                    })
+           
         ];
     }
-
-    public function form(Form $form): Form
-    {
-
-        return $form
-        ->columns([
-            'default' => 1,
-            'lg' => 1,
-            'xl' => 1,
-            '2xl' => 1
-        ])
-
-        ->schema([
-            Section::make('Ticket')->icon('heroicon-m-bug-ant')->schema([
-                Textarea::make('subject'),
-                Textarea::make('description'),
-            ])->grow(false),
-                Split::make([
-                    Section::make('Ticket Message')->label(false)
-                    ->schema([
-                        Repeater::make('messages')->label(false)
-                        ->relationship('messages')
-                        ->schema([
-                            Placeholder::make('user')
-                            ->label(fn ($record) => $record->user?->name)
-                            ->content(
-                                fn ($record) => $record->created_at->diffForHumans(),
-                                ),
-                            Placeholder::make('message')
-                                ->content(fn ($record) => $record->message),
-                        ])->itemLabel(false)
-                            ->columns(1),
-                            Textarea::make('new_message')
-                            ->label('Ketik pesan baru')->disabled(false)
-                            ->required(),
-                        ]),
-
-                    Section::make('Priority')->icon('heroicon-m-bug-ant')->schema([
-                        ComponentsView::make('filament.pages.ticket.ticket-chat')->schema([
-                        ]),
-                        Select::make('type_id')
-                        ->relationship('types', 'name') 
-                        ->multiple()
-                        ->preload()
-                        ->searchable(),
-                        Select::make('priority')->options([
-                            'low' => 'Low',
-                            'medium' => 'Medium',
-                            'high' => 'High',
-                            'urgent' => 'Urgent',
-                        ])->required()->default('low'),
-                        SpatieMediaLibraryFileUpload::make('ticket_media')->collection('ticket_media')->disk('public')->label('File'),
-                        ]),
-
-                    ]),
-                ]);
-    }
-    
-
-
 
 }

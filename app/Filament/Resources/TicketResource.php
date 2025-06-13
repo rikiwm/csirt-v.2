@@ -83,7 +83,6 @@ class TicketResource extends Resource implements HasForms
             ])
             ->schema([
                 Section::make('Instructions')->icon('heroicon-o-document-text')->collapsible()->collapsed()->schema([
-
                     Placeholder::make('Tutorial')
                         ->content(new HtmlString('
                         <div class="grid grid-cols-2 gap-4">
@@ -383,7 +382,6 @@ class TicketResource extends Resource implements HasForms
         return $query;
     }
 
-
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
@@ -423,46 +421,46 @@ class TicketResource extends Resource implements HasForms
                                                     TextEntry::make('description')->label('Description')->html()->grow(true)->prose()
                                                 ])
                                             ])->icon('heroicon-m-ticket')->headerActions([
-                 Action::make('close')
-                        ->disabled(fn(Ticket $record) => $record->status === 'closed')
-                        ->icon('heroicon-o-trash')->color(fn(Ticket $record) => $record->status === 'closed' ? 'gray' : 'danger')
-                        ->requiresConfirmation()
-                        ->label(fn($record) => $record->status === 'closed' ? 'Ticket Closed' : 'Close Ticket')
-                        ->action(function (Ticket $record) {
-                            $record->where('id', $record->id)->update([
-                                'status' => 'closed',
-                            ]);
-                            $recipient = User::find($record->users_id);
-                            $details = [
-                                'name' => $recipient->name,
-                                'body' =>  [
-                                    'code' => '',
-                                    'subject' => $record->subject,
-                                    'description' => $record->subject,
-                                    'priority' => '',
-                                    'link' => '',
-                                ],
-                            ];
-                            Mail::to($recipient)->queue(new \App\Mail\TicketRespons($details));
-                            Notification::make('close')->title('Ticket Is Closed')
-                                ->body('Ticket Telah di Tutup')
-                                ->success()
-                                ->sendToDatabase($recipient);
-                        })
-                    ->visible(auth()->user()->hasRole('super_admin') || auth()->user()->id == $infolist->record->agent_id),
+                                        Action::make('close')
+                                                ->disabled(fn(Ticket $record) => $record->status === 'closed')
+                                                ->icon('heroicon-o-trash')->color(fn(Ticket $record) => $record->status === 'closed' ? 'gray' : 'danger')
+                                                ->requiresConfirmation()
+                                                ->label(fn($record) => $record->status === 'closed' ? 'Ticket Closed' : 'Close Ticket')
+                                                ->action(function (Ticket $record) {
+                                                    $record->where('id', $record->id)->update([
+                                                        'status' => 'closed',
+                                                    ]);
+                                                    $recipient = User::find($record->users_id);
+                                                    $details = [
+                                                        'name' => $recipient->name,
+                                                        'body' =>  [
+                                                            'code' => '',
+                                                            'subject' => $record->subject,
+                                                            'description' => $record->subject,
+                                                            'priority' => '',
+                                                            'link' => '',
+                                                        ],
+                                                    ];
+                                                    Mail::to($recipient)->queue(new \App\Mail\TicketRespons($details));
+                                                    Notification::make('close')->title('Ticket Is Closed')
+                                                        ->body('Ticket Telah di Tutup')
+                                                        ->success()
+                                                        ->sendToDatabase($recipient);
+                                                })
+                                            ->visible(auth()->user()->hasRole('super_admin') || auth()->user()->id == $infolist->record->agent_id),
 
-                    ])
-                                ])->columnSpan(2),
-                                        ComponentsSection::make('chat')->description('Chat Form')->label('Form Message')->icon('heroicon-m-envelope')->schema([
-                                            View::make('filament.pages.ticket.ticket-chat')->extraAttributes(['class' => 'overflow-hidden overflow-y-auto'])
-                                                ->viewData([
-                                                    'messages' => TicketMassage::where('ticket_id', $infolist->record->id)->with('user')->orderBy('created_at', 'desc')->get(),
-                                                    'record' => $infolist->record,
-                                                    'statuse' => $infolist->record->status
-                                                ])->columnSpanFull()
-                                        ])->columnSpan(1)
-                                    ]),
-                            ]),
+                                            ])
+                                                        ])->columnSpan(2),
+                                                                ComponentsSection::make('chat')->description('Chat Form')->label('Form Message')->icon('heroicon-m-envelope')->schema([
+                                                                    View::make('filament.pages.ticket.ticket-chat')->extraAttributes(['class' => 'overflow-hidden overflow-y-auto'])
+                                                                        ->viewData([
+                                                                            'messages' => TicketMassage::where('ticket_id', $infolist->record->id)->with('user')->orderBy('created_at', 'desc')->get(),
+                                                                            'record' => $infolist->record,
+                                                                            'statuse' => $infolist->record->status
+                                                                        ])->columnSpanFull()
+                                                                ])->columnSpan(1)
+                                                            ]),
+                                                    ]),
                         Tabs\Tab::make('Proof Of Concept')->icon('heroicon-m-bell')
                             ->schema([
                                 View::make('ticket_media')
@@ -471,10 +469,9 @@ class TicketResource extends Resource implements HasForms
                                 SpatieMediaLibraryImageEntry::make('ticket_media')->label('POC')->conversion('thumb')->collection('ticket_media')
                                     ->defaultImageUrl(url('https://thumbs.dreamstime.com/b/no-image-available-icon-177641087.jpg'))->checkFileExistence(false)
                             ]),
-                        Tabs\Tab::make('Get Reward')->visible(fn(Ticket $record) => $record->status === 'closed' && $record->is_verified === true)
-                            ->icon('heroicon-m-bell')
-                            ->iconPosition(IconPosition::After)
-                            // ->badge(1)
+
+                        Tabs\Tab::make('Get Reward')
+                        ->hidden(fn(Ticket $record) => $record->is_reward === null || $record->is_reward === false)->icon('heroicon-m-bell')->iconPosition(IconPosition::After)
                             ->schema([
                                 View::make('ticket_media')
                                     ->view('filament.pages.ticket.ticket-reward')

@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Models\SettingWeb;
 use App\Models\TicketSetting;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Forms;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Section;
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 class MailSettings extends Page implements HasForms
 {
-    use InteractsWithForms;
+    use HasPageShield, InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-c-cog';
     protected static ?string $title = 'Config';
@@ -49,7 +50,7 @@ class MailSettings extends Page implements HasForms
             ->schema([
 
                 Section::make('SMTP Setting')->description('asd')->schema([
-   TextInput::make('mail_host')->label('SMTP Host')->required(),
+                TextInput::make('mail_host')->label('SMTP Host')->required(),
                 TextInput::make('mail_port')->label('SMTP Port')->required(),
                    TextInput::make('mail_username')->label('SMTP Username')->password()->revealable(),
                 TextInput::make('mail_password')->label('SMTP Password')->password()->revealable(),

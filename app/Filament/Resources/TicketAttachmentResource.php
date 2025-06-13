@@ -4,8 +4,14 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TicketAttachmentResource\Pages;
 use App\Filament\Resources\TicketAttachmentResource\RelationManagers;
+use App\Models\Ticket;
 use App\Models\TicketAttachment;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -24,7 +30,15 @@ class TicketAttachmentResource extends Resource
     {
         return $form
             ->schema([
-                //
+            //     Select::make('ticket_id')->options(Ticket::where('is_verified', 1)
+            //             ->where('is_duplicate', 0)
+            //             ->where('status', 'closed')
+            //             ->pluck('subject', 'id')
+            //     )
+            //     ->required(),
+            //     Hidden::make('user_id')->default(auth()->user()->id),
+            //    SpatieMediaLibraryFileUpload::make('ticket_reward')->collection('ticket_reward')->disk('public')->label('Dokument')
+            //     ->rules(['mimetypes:image/jpeg,image/png,application/pdf'])
             ]);
     }
 
