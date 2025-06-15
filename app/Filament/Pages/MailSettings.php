@@ -25,8 +25,8 @@ class MailSettings extends Page implements HasForms
     protected static ?string $navigationIcon = 'heroicon-c-cog';
     protected static ?string $title = 'Config';
     protected static string $view = 'filament.pages.mail-settings';
-
     public ?array $data = [];
+   protected static bool $shouldRegisterNavigation = false;
 
     public function mount(): void
     {

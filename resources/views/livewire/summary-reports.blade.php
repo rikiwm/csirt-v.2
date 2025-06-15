@@ -1,10 +1,5 @@
-@php
-    use Filament\Support\Enums\Alignment;
-    use Filament\Tables\Actions\HeaderActionsPosition;
-    use Filament\Tables\Actions\Action;
-    use Filament\Forms\Components\RichEditor;
-@endphp
 <div>
+
     <div class="grid grid-flow-col grid-rows-3 gap-4 py-0">
         <x-filament::card>
             <div class="grid gap-6 fi-wi-stats-overview-stats-ctn md:grid-cols-3">

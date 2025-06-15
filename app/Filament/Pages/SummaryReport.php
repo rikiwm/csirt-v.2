@@ -30,9 +30,11 @@ use App\Filament\Resources\WidgetsResource\Widgets\TiketInsident;
 class SummaryReport extends Page
 {
     use HasPageShield, HasFiltersAction, HasFiltersForm;
-    protected static string $view = 'filament.pages.summary-report';
     protected ?string $heading = 'Ticket Analysis';
+    protected ?string $subheading = 'Ticket Analysis';
     protected static ?string $navigationIcon = 'heroicon-m-presentation-chart-line';
+    protected static string $view = 'filament.pages.summary-report';
+    protected static bool $isLazy = true;
     public ?string $startDate = '';
     public ?string $endDate = '';
 
@@ -40,51 +42,51 @@ class SummaryReport extends Page
     {
         return [
             Action::make('ExportPDF')
-                ->label('Export to PDF')
+                ->label('Export All to PDF')
                 ->icon('heroicon-o-printer')
                 ->color('gray')
                 ->url(route('summary-report.print', [
                     'startDate' => $this->startDate,
                     'endDate' => $this->endDate
                 ]), shouldOpenInNewTab: true),
-            FilterAction::make('filter')
-                ->icon('heroicon-o-calendar')
-                ->form([
-                    DatePicker::make('startDate')
-                    ->prefix('Star')
-                    ->suffixActions([
-                        ActionsAction::make('reset')->icon('heroicon-o-trash')
-                        ->action(fn (callable $set) => $set('startDate', null)),
-                    ])
-                    ->native(true)
-                    ->afterStateUpdated(fn ($state, callable $set) => $set('endDate', $state))->live(onBlur:true),
+            // FilterAction::make('filter')
+            //     ->icon('heroicon-o-calendar')
+            //     ->form([
+            //         DatePicker::make('startDate')
+            //         ->prefix('Star')
+            //         ->suffixActions([
+            //             ActionsAction::make('reset')->icon('heroicon-o-trash')
+            //             ->action(fn (callable $set) => $set('startDate', null)),
+            //         ])
+            //         ->native(true)
+            //         ->afterStateUpdated(fn ($state, callable $set) => $set('endDate', $state))->live(onBlur:true),
 
-                DatePicker::make('endDate')
-                    ->prefix('End')
-                    ->suffixActions([
-                        ActionsAction::make('reset')->icon('heroicon-o-trash')
-                        ->action(fn (callable $set) => $set('endDate', null)),
-                    ])
-                    ->native(false)->default(null)
-                    ->minDate(fn ($get) => $get('startDate')),
-                Select::make('type_id')->label('insiden')
-                    ->options(fn () => Type::pluck('name', 'id'))
-                    ->preload()
-                    ->suffixActions([
-                        ActionsAction::make('reset')->icon('heroicon-o-trash')
-                        ->action(fn (callable $set) => $set('type_id', null)),
-                    ])
-                    ->searchable(),
-                Select::make('priority')->multiple()->options([
-                    'low' => 'Low',
-                    'medium' => 'Medium',
-                    'high' => 'High',
-                    'urgent' => 'Urgent',
-                ])->suffixActions([
-                    ActionsAction::make('reset')->icon('heroicon-o-trash')
-                    ->action(fn (callable $set) => $set('priority', null)),
-                ]),
-            ])->color('primary')
+            //     DatePicker::make('endDate')
+            //         ->prefix('End')
+            //         ->suffixActions([
+            //             ActionsAction::make('reset')->icon('heroicon-o-trash')
+            //             ->action(fn (callable $set) => $set('endDate', null)),
+            //         ])
+            //         ->native(false)->default(null)
+            //         ->minDate(fn ($get) => $get('startDate')),
+            //     Select::make('type_id')->label('insiden')
+            //         ->options(fn () => Type::pluck('name', 'id'))
+            //         ->preload()
+            //         ->suffixActions([
+            //             ActionsAction::make('reset')->icon('heroicon-o-trash')
+            //             ->action(fn (callable $set) => $set('type_id', null)),
+            //         ])
+            //         ->searchable(),
+            //     Select::make('priority')->multiple()->options([
+            //         'low' => 'Low',
+            //         'medium' => 'Medium',
+            //         'high' => 'High',
+            //         'urgent' => 'Urgent',
+            //     ])->suffixActions([
+            //         ActionsAction::make('reset')->icon('heroicon-o-trash')
+            //         ->action(fn (callable $set) => $set('priority', null)),
+            //     ]),
+            // ])->color('primary')
         ];
     }
     protected function getHeaderWidgets(): array

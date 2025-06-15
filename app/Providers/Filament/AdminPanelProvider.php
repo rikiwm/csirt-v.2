@@ -53,13 +53,12 @@ class AdminPanelProvider extends PanelProvider
                 FilamentShieldPlugin::make(),
             ])
             ->colors([
-                'urgent' => Color::Purple,
-                'danger' => Color::Rose,
-                // 'gray' => Color::Zinc,
-                // 'gray' => '#111111',
-                'info' => Color::Sky,
-                'primary' => Color::Gray,
-                'success' => Color::Emerald,
+                'urgent' => Color::Red,
+                'danger' => Color::Pink,
+                'gray' => Color::Zinc,
+                'info' => Color::rgb('rgb(214, 107, 143)'),
+                'primary' =>  Color::Gray,
+                'success' => Color::Teal,
                 'warning' => Color::Yellow,
             ])
             ->profile(isSimple: false, page: Profile::class)
