@@ -59,14 +59,18 @@
                         </div>
                     </div>
                  <x-filament::badge color="{{ $color }}">
-                        {{ $data->created_at }}
+                        {{ $data->time_prosess_ticket }}
                     </x-filament::badge>
                 </div>
 
                 <div class="text-sm text-gray-600 dark:text-gray-300">
                     <span class="font-medium">-</span>
                     <ul class="mt-2 list-disc list-inside text-xs text-gray-500 space-y-1">
-                        <li><strong>-</li>
+                        @if ($data->is_verified !== 1)
+                        <li>Tidak Valid</li>
+                        @else
+                        <li>Valid</li>
+                        @endif
                     </ul>
                 </div>
             </div>
@@ -84,20 +88,24 @@
                         </div>
                     </div>
                <x-filament::badge color="{{ $color }}">
-                        {{ $data->created_at->diffForHumans() }}
+                        {{ $data->time_prosess_ticket }}
                     </x-filament::badge>
                 </div>
 
                 <div class="text-sm text-gray-600 dark:text-gray-300">
                     <span class="font-medium">-</span>
                     <ul class="mt-2 list-disc list-inside text-xs text-gray-500 space-y-1">
-                        <li><strong>-</li>
+                        @if ($data->is_duplicate !== 1)
+                        <li>Identifikasi</li>
+                        @else
+                        <li>Insidend Duplicate</li>
+                        @endif
                     </ul>
                 </div>
             </div>
         </li>
-
-           <li class="mb-10 ms-2 relative">
+        @if ($data->time_close_ticket !== null)
+        <li class="mb-10 ms-2 relative">
             <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 shadow-sm">
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex ">
@@ -108,21 +116,23 @@
                             </div>
                         </div>
                     </div>
-               <x-filament::badge color="{{ $color }}">
-                        {{ $data->created_at->diffForHumans() }}
+                     <x-filament::badge color="{{ $color }}">
+                        {{ $data->time_close_ticket }}
                     </x-filament::badge>
                 </div>
 
                 <div class="text-sm text-gray-600 dark:text-gray-300">
-                    <span class="font-medium">-</span>
+                    <span class="font-medium">  {{ $data->subject }}</span>
                     <ul class="mt-2 list-disc list-inside text-xs text-gray-500 space-y-1">
-                        <li><strong>-</li>
+                        <li><strong>Resolved</li>
                     </ul>
                 </div>
             </div>
         </li>
-
-           <li class="mb-10 ms-2 relative">
+        @else
+        @endif
+        @if ($data->is_reward == true)
+        <li class="mb-10 ms-2 relative">
             <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 shadow-sm">
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex ">
@@ -134,17 +144,19 @@
                         </div>
                     </div>
                     <x-filament::badge color="{{ $color }}">
-                        {{ $data->created_at->diffForHumans() }}
+                       <a href="" target="_blank" rel="noopener noreferrer">Link</a>
                     </x-filament::badge>
                 </div>
 
                 <div class="text-sm text-gray-600 dark:text-gray-300">
-                    <span class="font-medium">-</span>
-                    <ul class="mt-2 list-disc list-inside text-xs text-gray-500 space-y-1">
-                        <li><strong>-</li>
-                    </ul>
+                    <span class="ms-4 text-xs font-light">Silahkan Download Rewardnya !</span>
                 </div>
+
             </div>
         </li>
+        @else
+            
+        @endif
+     
     </ol>
 </div>

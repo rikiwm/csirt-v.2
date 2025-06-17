@@ -9,6 +9,8 @@ use App\Models\Ticket;
 use App\Models\Type;
 use App\Models\TicketMassage;
 use App\Models\User;
+use App\Models\Profile;
+use App\Models\TicketAttachment;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
@@ -49,6 +51,7 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\IconPosition;
 use Filament\Support\Enums\MaxWidth;
+use Filament\Forms\Components\Radio;
 use Filament\Tables\Columns\Layout\Split as LayoutSplit;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Indicator;
@@ -62,6 +65,10 @@ use Illuminate\Support\Facades\Mail;
 use Filament\Infolists\Components\Grid;
 use Filament\Tables\Grouping\Group;
 use Illuminate\Support\Str;
+use Filament\Forms\Set;
+use Filament\Forms\Get;
+
+
 class TicketResource extends Resource implements HasForms
 {
     use InteractsWithForms;
@@ -75,6 +82,16 @@ class TicketResource extends Resource implements HasForms
 
     public static function form(Form $form): Form
     {
+    // $profile = Profile::where('users_id', auth()->id())->first();
+    
+    //     if (!$profile) {
+    //         return $form->schema([
+    //             Placeholder::make('LengkapiProfil')
+    //                 ->content('⚠️ Anda harus melengkapi profil terlebih dahulu sebelum mengisi form tiket.')
+    //                 ->columnSpanFull()
+    //         ]);
+    //     }
+
         return $form
             ->columns([
                 'default' => 1,
@@ -300,7 +317,7 @@ class TicketResource extends Resource implements HasForms
                         ->visible(fn(Ticket $record): bool =>
                         auth()->user()->hasRole('super_admin') ||
                             auth()->user()->hasRole('agen')),
-                    Tables\Actions\ViewAction::make()->modal(false)
+                    Tables\Actions\ViewAction::make('view')->modal(false)
                         ->label('Detail')
                         ->icon('heroicon-m-play')
                         ->color('info'),
@@ -340,7 +357,7 @@ class TicketResource extends Resource implements HasForms
                 ])->icon('heroicon-s-list-bullet')
                     ->size(ActionSize::Small)
                     ->label(false)
-            ])
+            ])->recordUrl(false)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -359,11 +376,13 @@ class TicketResource extends Resource implements HasForms
 
     public static function getPages(): array
     {
+       
         return [
             'index' => Pages\ListTickets::route('/'),
             'create' => Pages\CreateTicket::route('/create'),
-            'view' => Pages\ViewTicket::route('/{record}'),
             'edit' => Pages\EditTicket::route('/{record}/edit'),
+            'view' => Pages\ViewTicket::route('/{record}'),
+
         ];
     }
 
@@ -397,7 +416,7 @@ class TicketResource extends Resource implements HasForms
                                     ->schema([
                                         InfolistsSplit::make([
                                             ComponentsSection::make(
-                                                $infolist->record->types[0]->name.' - '
+                                                $infolist->record->types[0]->name.' - '. Str::upper($infolist->record->domain) ?? null
                                                 )->description('Ticket Created : ' . $infolist->record->created_at)->schema([
                                                 TextEntry::make('subject')->label('Subject')
                                                     ->size(TextEntry\TextEntrySize::Large)
@@ -420,17 +439,17 @@ class TicketResource extends Resource implements HasForms
                                                     TextEntry::make('description')->label('Description')->html()->grow(true)->prose()
                                                 ])
                                             ])->headerActions([
-                                            Action::make('download')->label(false)->color('primary')->icon('heroicon-m-printer')->outlined()->size(ActionSize::ExtraSmall)->extraAttributes(['class' => 'rounded-full pe-2'])
-                                                        ->url(route('summary-report.print', [
-                                                            'id' => $infolist->record->id
-                                                            ]), shouldOpenInNewTab: true),
+                                        Action::make('download')->label(false)->color('primary')->icon('heroicon-m-printer')->outlined()->size(ActionSize::ExtraSmall)->extraAttributes(['class' => 'rounded-full pe-2'])
+                                                    ->url(route('summary-report.print', [
+                                                        'id' => $infolist->record->id
+                                                        ]), shouldOpenInNewTab: true),
                                         Action::make('valid')->size(ActionSize::Small)
                                                 ->icon(fn(Ticket $record) => $record->is_verified === null ? 'heroicon-o-question-mark-circle' : ($record->is_verified == false ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle'))
                                                 ->color(fn(Ticket $record) => $record->is_verified === null ? 'warning' : ($record->is_verified == false ? 'danger' : 'success'))
                                                 ->outlined()
                                                 ->requiresConfirmation()
                                                 ->label(fn(Ticket $record) => $record->is_verified === null ? 'Belum  Terverified' : (($record->is_verified == false) ? 'Tidak  Verified' : 'Valid'))
-                                                 ->visible(fn(Ticket $record): bool => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen') && $record->is_verified === null)
+                                                 ->visible(fn(Ticket $record): bool => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen'))
                                                 ->disabled(fn(Ticket $record): bool => $record->is_verified === 1)
                                                 ->requiresConfirmation()
                                                 ->modal(true)
@@ -441,21 +460,91 @@ class TicketResource extends Resource implements HasForms
                                                                     <p class="text-sm text-gray-600 dark:text-gray-400">'. $infolist->record->description .'</p>
                                                                     </p>
                                                                     </span>'))
-                                                ->action(fn(Ticket $record) => $record->update([
-                                                        'is_verified' => true,
-                                                        'status' => 'in_progress',
-                                                        'reason' => null // reason = alasan tidak valid
+                                                ->form([
+                                             ToggleButtons::make('is_verified')
+                                                    ->boolean()
+                                                    ->label('Apakah Verified')
+                                                    ->inline()
+                                                    ->live() // Perubahan langsung terdeteksi (reactive)
+                                                    ->afterStateUpdated(fn (Set $set, $state) => $set('status', match($state) {
+                                                        true => 'in_progress',
+                                                        false => 'closed',
+                                                        default => 'open',
+                                                    })),
+                                            ToggleButtons::make('is_duplicate')
+                                                    ->boolean()->default(false)
+                                                    ->label('Apakah Duplicate')
+                                                    ->inline()->default(false)
+                                                    ->visible(fn (Get $get) => $get('is_verified') == null || $get('is_verified') == true )
+                                                    ->live()->afterStateUpdated(fn (Set $set, $state) => $set('reason', $state)),
+                                            Textarea::make('reason')->live()
+                                                    ->visible(fn (Get $get) => $get('is_verified') == false && $get('is_duplicate') == false )
+                                                    ->label('Alasan Tidak Valid')
+                                                    ->helperText('Alasan jika tidak verified.')
+                                                    ->rows(3),
+                                        Textarea::make('duplicate_details')->live()
+                                                    ->visible(fn (Get $get) => $get('is_duplicate') == true )
+                                                    ->label('Duplicate Details Ticket')
+                                                    ->helperText('Alasan jika tidak Duplicate.')
+                                                    ->rows(3),
 
-                                                    ]))
-                                                ->modalFooterActionsAlignment(Alignment::Center),
+                                          Radio::make('status')
+                                                ->label('Status Tiket')
+                                                ->live()
+                                                ->options([
+                                                    'open' => 'Open',
+                                                    'in_progress' => 'In Progress',
+                                                    'closed' => 'Closed',
+                                                ])
+                                                ->default('open')
+                                                ->helperText('Status tiket setelah verifikasi')
+                                                ->inline()
+                                                
+                                                ])
+                                                    ->action(function (Ticket $record, array $data) {
+                                                        $updateData = [
+                                                            'is_verified' => $data['is_verified'],
+                                                            'is_duplicate' => $data['is_duplicate'] ?? null,
+                                                            'reason' => $data['reason'] ?? null,
+                                                            'status' => $data['status'],
+                                                            'duplicate_details' =>  $data['duplicate_details'] ?? null ,
+                                                            'time_prosess_ticket' => null,
+                                                            'is_reward' => null,
+                                                        ];
+
+                                                        if ($data['status'] === 'closed') {
+                                                            $updateData['time_close_ticket'] = now();
+                                                            $updateData['is_reward'] = false;
+                                                        }
+
+                                                        if ($data['status'] === 'in_progress') {
+                                                            $updateData['time_prosess_ticket'] = now();
+                                                        }
+
+                                                    if (($data['is_duplicate']) == true) {
+                                                            $updateData['time_prosess_ticket'] = now();
+                                                            $updateData['duplicate_details'] = 'Insiden Telah di laporkan sebelum ini!';
+                                                        }
+                                                        $record->update($updateData);
+                                                    })
+                                                    
+
+                                            ->modalFooterActionsAlignment(Alignment::Center),
+                                            // Action::make('status_tickett')->size(ActionSize::Small)
+                                            // ->disabled(fn(Ticket $record) => $record->status === 'closed')->color(fn(Ticket $record) => $record->status === 'closed' ? 'gray' : 'success') ->label(fn($record) => $record->status === 'closed' ? 'Ticket Closed' : 'Status Open')
+                                            // ->visible(fn(Ticket $record): bool => auth()->user()->hasRole('user')),
+                                            // Colosing TIcket
                                         Action::make('close')->size(ActionSize::Small)
                                                 ->disabled(fn(Ticket $record) => $record->status === 'closed')
                                                 ->icon('heroicon-o-trash')->color(fn(Ticket $record) => $record->status === 'closed' ? 'gray' : 'danger')
                                                 ->requiresConfirmation()
-                                                ->label(fn($record) => $record->status === 'closed' ? 'Ticket Closed' : 'Close Ticket')
+                                                ->label(fn($record) => $record->status === 'closed' ? 'Ticket Closed' : 'Close Ticket')->requiresConfirmation()
+                                                ->modal(true)
+                                                ->modalIcon(false)
                                                 ->action(function (Ticket $record) {
                                                     $record->where('id', $record->id)->update([
                                                         'status' => 'closed',
+                                                        'time_close_ticket' => now()
                                                     ]);
                                                     $recipient = User::find($record->users_id);
                                                     $details = [
@@ -474,7 +563,7 @@ class TicketResource extends Resource implements HasForms
                                                         ->success()
                                                         ->sendToDatabase($recipient);
                                                 })
-                                            ->visible(auth()->user()->hasRole('super_admin') || auth()->user()->id == $infolist->record->agent_id),
+                                            ->visible(fn(): bool => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen')),
 
                                             ]),
                                                     ])->columnSpan(2),
@@ -502,12 +591,9 @@ class TicketResource extends Resource implements HasForms
                             ->schema([
                                 View::make('ticket_media')
                                     ->view('filament.pages.ticket.ticket-reward')
-                                    ->viewData(['data' => Ticket::find($infolist->record->id)]),
+                                    ->viewData(['data' => TicketAttachment::with('ticketreward')->where('ticket_id',$infolist->record->id)->first() ?? null]),
                             ]),
-                    ])->contained(false)->persistTabInQueryString('detail-ticket-tab'),
-                // Actions::make([
-
-                // ])->alignment(Alignment::End)->visible(auth()->user()->hasRole('super_admin') || auth()->user()->id == $infolist->record->agent_id),
+                    ])->contained(false),
             ]);
     }
 

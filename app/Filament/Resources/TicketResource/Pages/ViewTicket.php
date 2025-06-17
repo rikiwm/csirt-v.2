@@ -42,32 +42,32 @@ class ViewTicket extends ViewRecord
 
     protected ?string $heading = 'Detail Ticket';
 
-    public $defaultAction = 'onboarding';
+    // public $defaultAction = 'onboarding';
 
 
-    protected function onboardingAction(): Action
-    {
-        return Action::make('onboarding')->label('Give me a feedback')
-            ->visible(fn () => auth()->user()->id === $this->record->users_id)
-            ->hidden(fn () => $this->record->status !== 'closed')
-            ->form([
-                Section::make('feedback')->description('Rating this Responese?')->schema([
-                    Radio::make('feedback') ->label(false)
+    // protected function onboardingAction(): Action
+    // {
+    //     return Action::make('onboarding')->label('Give me a feedback')
+    //         ->visible(fn () => auth()->user()->id === $this->record->users_id)
+    //         ->hidden(fn () => $this->record->status !== 'closed')
+    //         ->form([
+    //             Section::make('feedback')->description('Rating this Responese?')->schema([
+    //                 Radio::make('feedback') ->label(false)
 
-                    ->options([
-                        '1' => '1',
-                        '2' => '2',
-                        '3' => '3',
-                        '4' => '4',
-                        '5' => '5',
-                    ])
-                    ->inline()
-                ])
+    //                 ->options([
+    //                     '1' => '1',
+    //                     '2' => '2',
+    //                     '3' => '3',
+    //                     '4' => '4',
+    //                     '5' => '5',
+    //                 ])
+    //                 ->inline()
+    //             ])
 
-            ])
-            ->modalFooterActionsAlignment(Alignment::Center)
-            ->modalWidth('xl');
-    }
+    //         ])
+    //         ->modalFooterActionsAlignment(Alignment::Center)
+    //         ->modalWidth('xl');
+    // }
 
     protected function getHeaderActions(): array
     {
@@ -81,6 +81,7 @@ class ViewTicket extends ViewRecord
                     ->viewData(['data' => Ticket::find($this->record->id)])->columnSpanFull(),
                     ])
                 ->modalSubmitAction(false),
+            // Gift Reward TIcket
             Action::make('sertifikat')->visible(fn () => $this->record->is_reward !== 1)->disabled( fn () => $this->record->status !== 'closed')
                     ->label('Gift Reward')->size(ActionSize::Small)
                     ->modal('Sertifikat')
@@ -103,15 +104,13 @@ class ViewTicket extends ViewRecord
                         ->action(function (array $data, $livewire) {
                             $record = $livewire->record;
                             $filePath = is_array($data['file_path']) ? $data['file_path'][0] : $data['file_path'];
-
                             TicketAttachment::updateOrCreate(
-                                ['ticket_id' => $record->id],
+                            ['ticket_id' => $record->id],
                                 [
                                     'user_id' => $data['user_id'],
                                     'file_path' => $filePath,
                                 ]
                             );
-
                             $record->update([
                                 'is_reward' => true,
                                 'is_duplicate' => false,

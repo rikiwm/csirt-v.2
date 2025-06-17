@@ -30,7 +30,7 @@ class MailSettings extends Page implements HasForms
 
     public function mount(): void
     {
-         $smtp = smtp_setting();
+        $smtp = smtp_setting();
         $this->form->fill([
             'status' => \App\Models\SettingWeb::where('key', 'smtp')->value('status') ?? true,
             'mail_host' => smtp_setting('mail_host', env('MAIL_HOST')),
