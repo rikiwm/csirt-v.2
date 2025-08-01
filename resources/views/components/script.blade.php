@@ -1,9 +1,9 @@
 
 @props(['csp_nonce' => ''])
-<script nonce="{{ $csp_nonce }}" src="{{ asset('frontend/js/core/popper.min.js')}}" type="text/javascript" ></script>
+<script nonce="{{ $csp_nonce ?? '' }}" src="{{ asset('frontend/js/core/popper.min.js')}}" type="text/javascript" ></script>
 <script nonce="{{ $csp_nonce }}" type="module" src="{{ asset('frontend/js/core/bootstrap.min.js') }}" type="text/javascript" ></script>
 <script nonce="{{ $csp_nonce }}" src="{{ asset('frontend/js/plugins/perfect-scrollbar.min.js') }}"></script>
-<script nonce="{{ $csp_nonce }}" src="{{ asset('frontend/js/material-kit.min.js')}}" type="text/javascript"  ></script>
+<script nonce="{{ $csp_nonce ?? '' }}" src="{{ asset('frontend/js/material-kit.min.js')}}" type="text/javascript"  ></script>
 <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12" ></script>
 <!-- ========== Js Section ========== -->
 
@@ -34,6 +34,14 @@
         showCursor: false
     });
     }
+</script>
+
+<script>
+      window.addEventListener("scroll", function() {
+      let scrollPosition = window.scrollY;
+      let zoomFactor = 1 - scrollPosition / (window.innerHeight * 5);
+      document.getElementById("zoomImage").style.transform = `scale(${zoomFactor})`;
+  });
 </script>
 
 

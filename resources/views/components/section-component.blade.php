@@ -11,7 +11,7 @@
             <div class="row">
                 <div class="py-3 mx-auto col-lg-11 ">
                     <!-- ========== Start title ========== -->
-                    <x-section-title class="{{ $class }} text-dark-blue opacity-8"
+                    <x-section-title class="{{ $class }} text-dark opacity-8"
                         style="font-family: 'Pixies', sans-serif; letter-spacing: 0rem; font-size: clamp(1rem, -0.4286rem + 4.5714vw, 2.5rem);">
                         <x-slot name="title">
                             {{ $section['value'][0]['data']['content'] ?? null }} <br>
@@ -37,15 +37,15 @@
                            @case('section-2')
                              <div class="text-center row justify-content-center my-sm-2">
                                 <div class="col-lg-6">
-                                    <span class="mb-3 badge bg-dark-blue">You made it possible.</span>
-                                    <p class="lead">Thank you to everyone for your support!.</p>
+                                    <span class="mb-3 badge bg-info-subtle  text-dark">You made it possible.</span>
+                                    <p class="lead">Thank you to everyone for your reports!.</p>
                                 </div>
                             </div>
                                @break
                            @case('section-3')
                             <div class="text-center row justify-content-center my-sm-2">
                                 <div class="col-lg-6">
-                                    <span class="mb-3 badge bg-dark-blue">We Open Bug Hunt</span>
+                                    <span class="mb-3 badge bg-info-subtle text-dark">We Open Bug Hunt</span>
                                     <p class="lead">By ourselves we are nothing, as a team, we can do anything.</p>
                                 </div>
                             </div>

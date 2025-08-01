@@ -83,10 +83,10 @@ class TicketResource extends Resource implements HasForms
                 '2xl' => 2
             ])
             ->schema([
-                Section::make('Instructions')->icon('heroicon-o-document-text')->collapsible()->collapsed()->schema([
-                    Placeholder::make('Tutorial')
+                Section::make('Rules')->icon('heroicon-o-document-text')->compact()->collapsible()->collapsed()->schema([
+                    Placeholder::make('')
                         ->content(new HtmlString('
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-2 gap-4 px-6">
                             <div>
                                 <h2 class="mb-2 text-lg font-semibold">Instructions</h2>
                                 <ul class="pl-4 list-disc">
@@ -111,7 +111,7 @@ class TicketResource extends Resource implements HasForms
                             ')),
 
                 ]),
-                Section::make('Topik')->icon('heroicon-m-tag')->schema([
+                Section::make('Topik')->compact()->icon('heroicon-m-queue-list')->schema([
                     TextInput::make('subject')
                         ->required()->helperText('Your subject here')
                         ->maxLength(255)
@@ -149,7 +149,7 @@ class TicketResource extends Resource implements HasForms
                         ])->hint('Description Vuln')->hintColor('warning')
                         ->required(),
                 ])->columnSpan(1),
-                Section::make('Category and Priority')->icon('heroicon-m-tag')
+                Section::make('Category and Priority')->compact()->icon('heroicon-o-queue-list')
                     ->schema([
                         Select::make('type_id')->label('Insiden Type')
                             ->required()->helperText('select type here')
@@ -183,7 +183,7 @@ class TicketResource extends Resource implements HasForms
                             ->required()
                             ->columnSpan(2)
                             ->label('Proof of Concept'),
-                            TextArea::make('recomendation')->columnSpan(3)->label('Recommendation Insiden')->maxLength(255)->hint('Recommendation Insiden : Opsional')->hintColor('warning'),
+                            TextArea::make('recomendation')->columnSpan(3)->rows(4)->label('Recommendation Insiden')->maxLength(255)->hint('Recommendation Insiden : Opsional')->hintColor('warning'),
                     ])->columnSpan(1),
 
             ]);
@@ -396,9 +396,9 @@ class TicketResource extends Resource implements HasForms
                                 Grid::make(3)
                                     ->schema([
                                         InfolistsSplit::make([
-                                            ComponentsSection::make(
-                                                $infolist->record->types[0]->name.' - '
-                                                )->description('Ticket Created : ' . $infolist->record->created_at)->schema([
+                                            ComponentsSection::make('')->icon('heroicon-m-calendar')
+                                            ->collapsible()
+                                            ->description('Created : ' . $infolist->record->created_at)->compact()->schema([
                                                 TextEntry::make('subject')->label('Subject')
                                                     ->size(TextEntry\TextEntrySize::Large)
                                                     ->weight(FontWeight::Bold),
@@ -478,7 +478,9 @@ class TicketResource extends Resource implements HasForms
 
                                             ]),
                                                     ])->columnSpan(2),
-                                                            ComponentsSection::make('chat')->description('Chat Form')->label('Form Message')->icon('heroicon-m-envelope')->schema([
+                                                            ComponentsSection::make('')
+                                                            ->collapsible()->collapsed()
+                                                            ->description('Chat Form')->compact()->label('Form Message')->icon('heroicon-m-envelope')->schema([
                                                                 View::make('filament.pages.ticket.ticket-chat')->extraAttributes(['class' => 'overflow-hidden overflow-y-auto'])
                                                                     ->viewData([
                                                                         'messages' => TicketMassage::where('ticket_id', $infolist->record->id)->with('user')->orderBy('created_at', 'desc')->get(),

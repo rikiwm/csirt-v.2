@@ -29,7 +29,7 @@ class GuestLayout extends Component
             return SettingWeb::query()->where('key','address')->first();
         });
 
-        return view('layouts.app',[
+        return view('layouts.guest',[
             'copyright'=> $setting,
             'alamat'=> $kontak,
             'navbar' => $nav

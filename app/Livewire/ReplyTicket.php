@@ -18,6 +18,7 @@ use Livewire\Component;
 use Filament\Resources\TicketResource\Pages\ViewTicket;
 use Illuminate\Support\Facades\Log;
 use Filament\Forms\Components\ToggleButtons;
+use Filament\Forms\Components\TextArea;
 use Illuminate\Support\Facades\Mail;
 
 class ReplyTicket extends Component implements HasForms
@@ -37,21 +38,22 @@ class ReplyTicket extends Component implements HasForms
     {
         return $form
             ->schema([
-                RichEditor::make('message')->columnSpan(1)
-                ->toolbarButtons([
-                    // 'blockquote',
-                    'bold',
-                    'bulletList',
-                    // 'codeBlock',
-                    // 'h2',
-                    // 'h3',
-                    // 'italic',
-                    'link',
-                    'orderedList',
-                    'redo',
-                    'strike',
-                    // 'underline',
-                    'undo',]),
+                TextArea::make('message')->required()->maxLength(65535)->columnSpan(2)->rows(2),
+                // RichEditor::make('message')->columnSpan(1)
+                // ->toolbarButtons([
+                //     // 'blockquote',
+                //     'bold',
+                //     'bulletList',
+                //     // 'codeBlock',
+                //     // 'h2',
+                //     // 'h3',
+                //     // 'italic',
+                //     'link',
+                //     'orderedList',
+                //     'redo',
+                //     'strike',
+                //     // 'underline',
+                //     'undo',]),
                     // ToggleButtons::make('status')
                     // ->inline()
                     // ->options([

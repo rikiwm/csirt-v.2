@@ -13,7 +13,7 @@ Route::prefix('/')->group(function () {
     Route::get('/post/{slug}', [ListController::class, 'list'])->name('post.detail')->middleware('postTrackVisitors');
 });
 Route::prefix('/')->group(function () {
-    Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('webTrackVisitors');
+    Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('nonce');
     Route::get('/{slug}', [HomeController::class, 'show'])->name('show');
     Route::get('/app/summary-report/print', [StaticController::class, 'print'])->name('summary-report.print');
 });

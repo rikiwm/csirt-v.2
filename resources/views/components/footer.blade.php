@@ -1,5 +1,5 @@
 @props(['setting'=>'','address'=>'','footer'=>'','appname'=>'','visitor'=>''])
-<div class="pt-4 mt-2 card card-body blur blur-rounded shadow-blur" style="z-index: 10;">
+<div class="container-fluid mt-4">
     <footer class="footer">
         <div class="px-lg-4 container-fluid">
         <div class="row">
@@ -156,23 +156,23 @@
 
             <div class="col-12">
 
-                <div class="">
-                    <ul class="justify-content-center d-flex ms-n3 nav">
+                <div class="mx-auto">
+                    <ul class="justify-content-center d-flex ms-n3 nav ">
                     <li class="nav-item">
-                        <a class="nav-link pe-1" href="https://www.facebook.com/" target="_blank">
-                            <i class="text-lg bi bi-facebook"></i>
+                        <a class="nav-link pe-1 text-info" href="https://www.facebook.com/" target="_blank">
+                            <i class="text-lg bi bi-facebook "></i>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link pe-1" href=""
+                        <a class="nav-link pe-1  text-primary" href=""
                         target="_blank">
                         <i class="text-lg bi bi-instagram opacity-8"></i>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link pe-1" href=""
+                        <a class="nav-link pe-1  text-danger" href=""
                         target="_blank">
                         <i class="text-lg bi bi-youtube opacity-8"></i>
                         </a>
@@ -180,35 +180,35 @@
                     </ul>
                 </div>
 
-                <div class="">
-                    <ul class="justify-content-center d-flex ms-n3 nav">
+                <div class="py-2">
+                    <ul class="justify-content-center d-flex ms-n1 nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="#"
+                            <a class="nav-link text-xs" href="#"
                             target="_blank">
                             Visitor : {{ $visitor['yearlyVisitors'] ?? null }}
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="#" target="_blank">
+                            <a class="nav-link text-xs" href="#" target="_blank">
                             Today : {{ $visitor['todayVisitors'] ?? null }}
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="#" target="_blank">
+                            <a class="nav-link text-xs" href="#" target="_blank">
                         Online : {{ $visitor['onlineVisitors'] ?? null }}
                             </a>
                         </li>
                     </ul>
                 </div>
                 <div class="text-center">
-                    <p class="my-1 text-sm text-dark font-weight-normal">
+                    <div class="text-xs text-secondary font-weight-normal mb-2">
                     All rights reserved. Copyright ©
                     {{ date('Y') ?? '2025' }}
                     {{ $footer[0]['value'][0]['data']['content'] ?? null }}
                     by <a href="" target="_blank">E-Govorment</a>.
-                    </p>
+                    </div>
                 </div>
             </div>
         </div>

@@ -9,15 +9,17 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="white">
-    <link rel="apple-touch-icon" href="{{ asset('frontend/img/cslogo.png') }}">
-
+    {{-- <link rel="apple-touch-icon" href="{{ asset('frontend/img/cslogo.png') }}"> --}}
+{{-- <script nonce="{{ $csp_nonce }}">
+    alert('Hello');
+</script> --}}
     {{-- <link rel="icon" type="image/x-icon" href="{{ asset('frontend/img/cslogo.png') }}" /> --}}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="Cache-Control" content="max-age=3600, must-revalidate">
     <title>CSIRT-PADANG</title>
     <link preload href="{{ asset('frontend/css/nucleo-icons.css') }}" rel="stylesheet" />
-    <link preload href="{{ asset('frontend/css/material-kit.css') }}" rel="stylesheet" />
+    <link  href="{{ asset('frontend/css/material-kit.css') }}" rel="stylesheet" />
     <link preload rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
     <link preload rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link preload href="https://fonts.cdnfonts.com/css/pixies" rel="stylesheet">
@@ -29,7 +31,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-    <style>
+    <style defer>
         @keyframes bounce {
         0%, 20%, 50%, 80%, 100% {
             transform: translateY(0);
@@ -43,20 +45,20 @@
         }
         .bounce {
         display: inline-block;
-        animation: bounce 2.2s infinite;
+        animation: bounce 1.2s infinite;
         }
     </style>
-    <style>
+    <style defer>
         .navbar {
         width: 100%;
         margin: auto;
         transition-property: width;
-        transition-duration: .5s ;
+        transition-duration: .2s ;
         }
         .navbar.shrink  {
         right: 0;
         left: 0;
-        width: 86%;
+        width: 94%;
         }
 
     </style>
@@ -106,15 +108,36 @@
         }
     </style>
 
-<body class="bg-white index-page"
-        style="background-image: url('{{ asset('frontend/img/blue.png') }}');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center top;">
+        <style>
+            html {
+scroll-behavior: smooth;
+}
+  .image-container {
+    position: relative;
+    width: auto;
+    border-radius: 18px;
+
+    overflow: hidden;
+}
+.image-container img {
+  padding: 10px;
+    width: 100%;
+    min-width: 500px;
+    border-radius: 18px;
+    object-fit: cover;
+    transition: transform 1s ease-out smooth;
+}
+
+</style>
+
+<body>
     <div class="container-xl top-0 position-sticky z-index-sticky">
         <div class="row">
           <div class="col-12">
             <x-navbar>
+                {{-- <x-slot name="logo">
+                  <img class="w-8" src="{{ asset('frontend/img/cslogo.png') }}" alt="web-logo" >
+                </x-slot> --}}
                 <x-slot name="content">
                     <ul class="navbar-nav navbar-nav-hover ms-auto justify-content-center">
                         @forelse ($navbar as $item)
@@ -158,13 +181,16 @@
     <header class="">
     @switch($route)
         @case('home')
-        <div class="relative mt-0 mb-0 page-header min-vh-90  ms-1 me-1 mt-lg-2 ms-lg-2 mb-lg-0 me-lg-1 rounded-4" >
+        <div class="relative mt-0 mb-0 page-header min-vh-90
+          {{-- ms-1 me-1 mt-lg-2 ms-lg-2 mb-lg-0 me-lg-1  --}}
+          rounded-bottom"
+           >
             <x-home.hero :name="$hero"/>
         </div>
         @break
         @default
-            <div class="relative mt-0 mb-0 page-header min-vh-35 ms-1 me-1 mt-lg-2 ms-lg-2 mb-lg-0 me-lg-1 rounded-4" style="background-image: url('https://csirt.padang.go.id/storage/image-property/mzvRlMVfbLiChlEzB1g9WIYZTEeuURXj5nI7iM9W.jpg')">
-          <span class="mask bg-gradient-faded-dark-blue opacity-6"></span>
+            <div class="relative mt-0 mb-0 page-header min-vh-35 ms-1 me-1 mt-lg-1 ms-lg-1 mb-lg-0 me-lg-1 rounded-4">
+                <span class="mask bg-gradient-faded-info opacity-4"></span>
             {{ $header ?? '' }}
             </div>
             @endswitch
@@ -184,23 +210,12 @@
         <x-footer :setting="$copyright" :address="$alamat" :footer="$footer" :visitor="$visitor ?? null" appname="{{ $appname ?? env('APP_NAME') }}"/>
     <!-- ========== End footer ========== -->
 
-        <x-script />
+    {{-- @include('components.script', ['csp_nonce' => $csp_nonce]) --}}
+
+        <x-script :csp_nonce="$csp_nonce ?? ''"/>
     @stack('script')
 
     @livewireScripts
-
-<script type="module" defer>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register("{{ asset('frontend/serviceworker.js') }}")
-            .then(function(registration) {
-                console.log("Service Worker registered with scope:", registration.scope);
-            })
-            .catch(function(error) {
-                console.log("Service Worker registration failed:", error);
-            });
-    }
-</script>
-
 
 
 </body>

@@ -17,7 +17,7 @@ use App\View\GuestLayout;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-
+use Illuminate\Support\Facades\View;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -34,6 +34,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+    // View::composer('*', function ($view) {
+    //     $nonce = base64_encode(random_bytes(16));
+    //     $view->with('csp_nonce', $nonce);
+    // });
         //
         Blade::component('layouts.app', AppLayout::class);
         Blade::component('layouts.guest', GuestLayout::class);

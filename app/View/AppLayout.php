@@ -12,9 +12,9 @@ use Illuminate\View\Component;
 
 class AppLayout extends Component
 {
-
     public function render(): View
     {
+
         $nav = Cache::remember('nav_menu', 3260, function () {
             return Menu::where('parent_id', null)
                 ->with('children')->where('is_active', true)
@@ -47,6 +47,7 @@ class AppLayout extends Component
             'hero'=> $hero,
             'footer'=> $footer,
             'navbar' => $nav,
+            // 'csp' => $nav,
             'visitor' => compact('todayVisitors', 'monthlyVisitors', 'yearlyVisitors', 'onlineVisitors')
         ]);
     }

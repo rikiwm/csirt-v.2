@@ -9,14 +9,14 @@
             </h1>
         </div>
         <div class="mx-auto my-auto text-center col-lg-7 col-11">
-            <span class="text-white text-uppercase display-6" id="typed"></span>
+            {{-- <span class="text-white text-uppercase display-6" id="typed"></span>
             <div class="bounce">
                 <i class="text-white material-symbols-rounded ms-2" aria-hidden="true"> swipe_down</i>
             </div>
             <div id="typed-strings">
                 <h1>EDUKASI</h1>
                 <h1>INFORMASI</h1>
-            </div>
+            </div> --}}
             <p class="mt-2 text-white text-md">
                 {{ $name['value'][1]['data']['desc'] ?? 'asd' }}
             </p>
