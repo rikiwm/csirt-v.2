@@ -34,13 +34,7 @@ class SettingWebResource extends Resource
     {
         return $form
         ->schema([
-            Section::make('Setup')->columns(1)->aside()->description(fn (Get $get) => match ($get('key')) {
-                'hero-section' => 'Hero Section',
-                'section-1' => 'Section 1',
-                'section-2' => 'Section 2',
-                'section-3' => 'Section 3',
-                'section-4' => 'Section 4',
-            })->schema([
+            Section::make('Setup')->columns(1)->aside()->schema([
                   Fieldset::make('Setup')->schema([
                  Select::make('key')->label('key')
                    ->options(function ($get) {
@@ -51,7 +45,7 @@ class SettingWebResource extends Resource
                         'section-2' => 'Section 2',
                         'section-3' => 'Section 3',
                         'section-4' => 'Section 4',
-                        // 'section-5' => 'Section 5',
+                        'smtp' => 'smtp',
                         // 'section-6' => 'Section 6',
                         // 'team-section' => 'Team',
                         // 'welcome' => 'View welcome',
@@ -62,7 +56,7 @@ class SettingWebResource extends Resource
                         // 'social' => 'Social',
                         // 'address' => 'Address',
                         // 'phone' => 'Phone',
-                        'smtp' => 'SMTP',
+                        'website-setup' => 'SMTP',
                     ];
                     $currentKey = $get('key');
                     if ($currentKey && !in_array($currentKey, $usedKeys)) {
@@ -110,7 +104,7 @@ class SettingWebResource extends Resource
                                     ->label('Paragraph')
                                     ->required(),
                             ]),
-                        Block::make('key')->label('like json array')
+                        Block::make('key')->label('Like Button / Href')
                             ->schema([
                                 TextInput::make('keys')
                                 ->label('Keys')
@@ -127,11 +121,8 @@ class SettingWebResource extends Resource
                             ])->columns(1),
 
                     ])->columnSpanFull(),
+                ])
             ])
-            ])
-
-
-
         ]);
     }
 

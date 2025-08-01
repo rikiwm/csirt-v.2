@@ -134,19 +134,24 @@ class CreateTicket extends CreateRecord
         return $this->getResource()::getUrl('index');
     }
 
- protected function getFormActions($save = 'Save', $visible = false): array
- {
-    if ($this->data['subject'] == null) {
-        $visible = true;
 
-    } else {
-        $this->visible = $visible;
+protected function getFormActions(): array
+{
+    $profile = Profile::where('users_id', auth()->id())->first();
+
+    if (!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen')) {
+        return [
+        $this->getCreateFormAction()->label('Save'),
+        $this->getCancelFormAction()->label('Cancel'),
+        ];
     }
-     return [
-         $this->getCreateFormAction()->label('Save'),
-         $this->getCancelFormAction()->label('Cancel')
-     ];
- }
+
+    return [
+        $this->getCreateFormAction()->label('Save'),
+        $this->getCancelFormAction()->label('Cancel'),
+    ];
+}
+    
 
 
 

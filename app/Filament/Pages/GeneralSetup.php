@@ -49,12 +49,12 @@ class GeneralSetup extends Page implements Forms\Contracts\HasForms
             'mail_from_address' => smtp_setting('mail_from_address', env('MAIL_FROM_ADDRESS')),
         ]);
         $fill = SettingWeb::where('key', 'website-setup')->first()->toArray();
-        $this->websiteForm = $fill['value'][0]['data'];
+        $this->websiteForm = $fill['value'][0]['data'] ?? [];
         $this->getFormAPI()->fill();
         $this->getFormOther()->fill();
     }
 
-    #[Lazy('getFormWebsite')]
+    // #[Lazy('getFormWebsite')]
     public function getFormWebsite(): Form
     {
         return $this->makeForm()
@@ -117,6 +117,7 @@ class GeneralSetup extends Page implements Forms\Contracts\HasForms
                     ])
                     ->statePath('websiteForm');
     }
+    
     public function getFormMail(): Form
     {
         return $this->makeForm()
@@ -142,7 +143,6 @@ class GeneralSetup extends Page implements Forms\Contracts\HasForms
             ->statePath('mailForm');
     }
 
-
     public function getFormOther(): Form
     {
         return $this->makeForm()
@@ -155,7 +155,7 @@ class GeneralSetup extends Page implements Forms\Contracts\HasForms
             ->statePath('otherForm');
     }
 
-       public function getFormAPI(): Form
+    public function getFormAPI(): Form
     {
         return $this->makeForm()
             ->schema([
@@ -258,7 +258,7 @@ class GeneralSetup extends Page implements Forms\Contracts\HasForms
 
     public function submitOther()
     {
-        $data = $this->getFormOther()->getState();
+        $generalData = $this->getFormOther()->getState();
            $jsonToStore = [
             [
                     'type' => 'pgp-setup',
@@ -342,6 +342,5 @@ class GeneralSetup extends Page implements Forms\Contracts\HasForms
         Artisan::call('config:clear');
         Artisan::call('cache:clear');
     }
-
 
 }
