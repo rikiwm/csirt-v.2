@@ -48,7 +48,8 @@ class PostResource extends Resource
     protected static ?string $model = Post::class;
 
     protected static ?string $recordTitleAttribute = 'title';
-
+    protected static ?string $navigationGroup = 'Management';
+    protected static ?string $navigationLabel = 'Postingan';
     protected static ?string $navigationIcon = 'heroicon-m-newspaper';
 
     public static function contentBuilderField(string $context = 'form'): ComponentsBuilder
@@ -56,19 +57,19 @@ class PostResource extends Resource
         return ComponentsBuilder::make('content')->blocks([
             Block::make('heading')->schema([
                 Grid::make($context === 'priview' ? 1 : 2)->schema([
-                                 TextInput::make('title')
-                                        ->label('Heading')
-                                        ->required(),
-                                Select::make('level')
-                                        ->options([
-                                            'h1' => 'Heading 1',
-                                            'h2' => 'Heading 2',
-                                            'h3' => 'Heading 3',
-                                            'h4' => 'Heading 4',
-                                            'h5' => 'Heading 5',
-                                            'h6' => 'Heading 6',
-                                        ]),
-                Checkbox::make('uppercase')
+                    TextInput::make('title')
+                        ->label('Heading')
+                        ->required(),
+                    Select::make('level')
+                        ->options([
+                            'h1' => 'Heading 1',
+                            'h2' => 'Heading 2',
+                            'h3' => 'Heading 3',
+                            'h4' => 'Heading 4',
+                            'h5' => 'Heading 5',
+                            'h6' => 'Heading 6',
+                        ]),
+                    Checkbox::make('uppercase')
                         ->columnSpanFull(),
                 ]),
 
@@ -94,20 +95,20 @@ class PostResource extends Resource
 
             Block::make('images')->schema([
                 FileUpload::make('image')
-                ->disk('public')
-                ->directory('post_image')
-                ->visibility('public')
-                ->multiple()
-                ->acceptedFileTypes(['application/pdf','jpg','jpeg','png'])
-                ->rules(['mimetypes:image/jpeg,image/png,application/pdf'])
-                ->image()
-                ->imageEditor()
-                ->imageEditorAspectRatios([
-                    null,
-                    '16:9',
-                    '4:3',
-                    '1:1',
-                ])
+                    ->disk('public')
+                    ->directory('post_image')
+                    ->visibility('public')
+                    ->multiple()
+                    ->acceptedFileTypes(['application/pdf', 'jpg', 'jpeg', 'png'])
+                    ->rules(['mimetypes:image/jpeg,image/png,application/pdf'])
+                    ->image()
+                    ->imageEditor()
+                    ->imageEditorAspectRatios([
+                        null,
+                        '16:9',
+                        '4:3',
+                        '1:1',
+                    ])
             ]),
 
         ])
@@ -128,8 +129,9 @@ class PostResource extends Resource
                             Select::make('menu_id')->required()->label('Menu')
                                 ->relationship(
                                     name: 'menu',
-                                    modifyQueryUsing: fn (Builder $query) => $query->where('type', 'list'),
-                                    titleAttribute: 'name')
+                                    modifyQueryUsing: fn(Builder $query) => $query->where('type', 'list'),
+                                    titleAttribute: 'name'
+                                )
                                 ->live(onBlur: true)
                                 ->afterStateUpdated(function ($state, callable $set) {
                                     $menu = \App\Models\Menu::find($state);
@@ -141,7 +143,7 @@ class PostResource extends Resource
                         ]),
                     Wizard\Step::make('Description')
                         ->schema([
-                            TextInput::make('title')->live(onBlur: true)->required()->columnSpanFull()->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
+                            TextInput::make('title')->live(onBlur: true)->required()->columnSpanFull()->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
                             TextInput::make('sub_title'),
                             Hidden::make('created_by')->default(auth()->user()->id),
                             Hidden::make('slug'),
@@ -158,19 +160,19 @@ class PostResource extends Resource
                             ])
                                 ->columnSpanFull()
                                 ->alignEnd(),
-                                self::contentBuilderField(),
+                            self::contentBuilderField(),
 
                         ]),
-                    ]),
+                ]),
                 Split::make([
 
                     Fieldset::make('Status')
-                    ->schema([
-                        Toggle::make('is_active')->required(),
-                        Toggle::make('is_featured'),
-                        // DateTimePicker::make('published_at')
-                        // ->hidden(fn (Get $get) => $get('status') !== 'published'),
-                    ])->grow(false),
+                        ->schema([
+                            Toggle::make('is_active')->required(),
+                            Toggle::make('is_featured'),
+                            // DateTimePicker::make('published_at')
+                            // ->hidden(fn (Get $get) => $get('status') !== 'published'),
+                        ])->grow(false),
                 ])->from('md'),
 
             ]);
@@ -179,7 +181,7 @@ class PostResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->striped()
-        ->query(Post::query()->with(['menu', 'categori']))
+            ->query(Post::query()->with(['menu', 'categori']))
             ->defaultSort('published_at', 'desc')
             ->columns([
                 //
@@ -232,23 +234,23 @@ class PostResource extends Resource
         return $infolist
             ->schema([
                 ComponentsFieldset::make('Content')
-                ->schema([
-                    RepeatableEntry::make('content')
                     ->schema([
-                      KeyValueEntry::make('content')->keyLabel('type')->valueLabel('data')
-                    ]),
-                ])->columns(1),
+                        RepeatableEntry::make('content')
+                            ->schema([
+                                KeyValueEntry::make('content')->keyLabel('type')->valueLabel('data')
+                            ]),
+                    ])->columns(1),
                 ComponentsFieldset::make('Judul')
-                ->schema([
-                    TextEntry::make('title')
-                    ->weight(FontWeight::Bold),
-                ])->columns(1),
+                    ->schema([
+                        TextEntry::make('title')
+                            ->weight(FontWeight::Bold),
+                    ])->columns(1),
                 ComponentsFieldset::make('Info Content')
-                ->schema([
-                    TextEntry::make('categori.name')->badge()->color('gray'),
-                    TextEntry::make('menu.name')->badge()->color('secondary')->label('Type'),
-                    IconEntry::make('is_active')->trueIcon('heroicon-o-check-circle')->falseIcon('heroicon-o-x-circle')->trueColor('success')->falseColor('danger'),
-            ])->columns(3)->grow(false),
+                    ->schema([
+                        TextEntry::make('categori.name')->badge()->color('gray'),
+                        TextEntry::make('menu.name')->badge()->color('secondary')->label('Type'),
+                        IconEntry::make('is_active')->trueIcon('heroicon-o-check-circle')->falseIcon('heroicon-o-x-circle')->trueColor('success')->falseColor('danger'),
+                    ])->columns(3)->grow(false),
 
 
 

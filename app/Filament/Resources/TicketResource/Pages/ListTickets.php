@@ -29,7 +29,7 @@ class ListTickets extends ListRecords
         $profile = Profile::where('users_id', auth()->id())->first();
         $hasProfile = $profile !== null;
         return [
-            Actions\CreateAction::make()
+            Actions\CreateAction::make()->hidden(fn() => auth()->user()->hasRole('agen'))
                 ->icon('heroicon-o-plus-circle')
                 ->url($hasProfile ? route('filament.admin.resources.tickets.create') : route('filament.admin.auth.profile', ['record' => $profile]))
                 ->label($hasProfile ? 'Create Ticket' : 'Lengkapi Data Profile Dulu'),
@@ -44,8 +44,7 @@ class ListTickets extends ListRecords
 
 
     public function getTabs(): array
-    {
-        {
+    { {
             $isAdmin = auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen');
             $userId = auth()->id();
             $statuses = ['open', 'in_progress', 'closed'];
@@ -62,13 +61,11 @@ class ListTickets extends ListRecords
                         ->icon($icons[$index])
                         ->badge($query->count())
                         ->badgeColor($badgeColors[$index])
-                        ->query(fn ($query) => $query->where('status', $status)),
+                        ->query(fn($query) => $query->where('status', $status)),
                 ];
             })->toArray();
 
             return $tabs;
-}
+        }
     }
-
-
 }

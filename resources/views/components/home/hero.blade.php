@@ -9,22 +9,22 @@
             </h1>
         </div>
         <div class="mx-auto my-auto text-center col-lg-7 col-11">
-            <span class="text-white text-uppercase display-6" id="typed"></span>
+            <!-- <span class="text-white text-uppercase display-6" id="typed"></span>
             <div class="bounce">
                 <i class="text-white material-symbols-rounded ms-2" aria-hidden="true"> swipe_down</i>
             </div>
             <div id="typed-strings">
                 <h1>EDUKASI</h1>
                 <h1>INFORMASI</h1>
-            </div>
+            </div> -->
             <p class="mt-2 text-white text-md">
                 {{ $name['value'][1]['data']['desc'] ?? 'asd' }}
             </p>
             <div class="mx-auto my-auto mb-2 text-center col-lg-7 col-11">
-                <a class="btn btn-sm btn-white rounded-xl me-2 text-capitalize"
-                    href="{{ url($name['value'][2]['data']['content'] ?? '#') }}">{{ $name['value'][2]['data']['keys'] ?? null }}
-                    Ticket</a>
-                <a class="btn btn-sm btn-outline-white rounded-xl text-capitalize"
+                <a class="btn btn-sm btn-white border rounded-xl me-2 text-capitalize py-2 text-md"
+                    href="{{ url($name['value'][2]['data']['content'] ?? '#') }}">{{ $name['value'][2]['data']['keys'] ?? 'Ticket' }}
+                </a>
+                <a class="btn btn-sm border rounded-xl text-capitalize py-2 text-sm text-dark"
                     href="{{ url($name['value'][3]['data']['content'] ?? '#') }}">{{ $name['value'][3]['data']['content'] ?? null }}</a>
             </div>
         </div>

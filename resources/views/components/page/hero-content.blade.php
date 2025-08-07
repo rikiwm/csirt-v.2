@@ -9,9 +9,9 @@
 ])
 <div class="container ">
     <div class="row justify-content-center">
-        <div class="mx-auto my-auto text-center col-lg-12 col-10">
+        <div class="mx-auto my-auto text-center col-lg-12 col-12">
             <div class="text-white display-4 font-weight-light ls-1"style="font-family: 'MinePlayer', sans-serif; font-weight: 100; letter-spacing: 0.1rem;">
-                {{ $title ?? '' }}
+                 {{ Str::limit($title ?? '', 28, preserveWords: true) }}
             </div>
         </div>
         <div class="mx-auto my-auto text-center col-lg-7 col-11">

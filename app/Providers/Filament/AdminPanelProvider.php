@@ -22,7 +22,8 @@ use Illuminate\Session\Middleware\StartSession;
 use App\Filament\Pages\Profile;
 use App\Filament\Pages\Auth\Register;
 use App\Filament\Pages\Dashboard;
-
+use App\Filament\Pages\SummaryReport;
+use App\Filament\Pages\SummaryReports;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -36,8 +37,7 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-
-        ->font('Inter', provider: GoogleFontProvider::class)
+            ->font('Noto Sans')
             ->default()
             ->favicon(asset('frontend/img/cslogo.png'))
             ->id('admin')
@@ -46,7 +46,7 @@ class AdminPanelProvider extends PanelProvider
             ->emailVerification(EmailVerificationPrompt::class)
             ->passwordReset()
             ->registration(Register::class)
-            ->spa()
+            ->spa(false)
             ->databaseNotifications()
             ->plugins([
                 FilamentPeekPlugin::make(),
@@ -58,6 +58,7 @@ class AdminPanelProvider extends PanelProvider
                 'gray' => Color::Zinc,
                 'info' => Color::rgb('rgb(214, 107, 143)'),
                 'primary' =>  Color::Gray,
+                'secondary' => Color::rgb('rgb(161, 161, 161)'),
                 'success' => Color::Teal,
                 'warning' => Color::Yellow,
             ])
@@ -74,6 +75,7 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 // Pages\Dashboard::class,
                 Dashboard::class,
+                SummaryReport::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
@@ -82,7 +84,6 @@ class AdminPanelProvider extends PanelProvider
                 \App\Filament\Widgets\ChartTiket::class,
                 \App\Filament\Widgets\TicketChartLine::class,
                 \App\Filament\Widgets\TicketCount::class,
-
             ])
             ->middleware([
                 EncryptCookies::class,

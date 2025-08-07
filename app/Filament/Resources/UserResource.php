@@ -30,8 +30,8 @@ class UserResource extends Resource
                 TextInput::make('email')->email()->required(),
                 TextInput::make('password')->password()->required(),
                 Select::make('roles')
-                        ->relationship('roles', 'name')->default('user')
-                        ->searchable(),
+                    ->relationship('roles', 'name')->default('user')
+                    ->searchable(),
             ]);
     }
 
@@ -42,7 +42,7 @@ class UserResource extends Resource
                 //
                 TextColumn::make('name'),
                 TextColumn::make('roles.name')->sortable()->searchable()->badge()->label('Role'),
-                TextColumn::make('email')->sortable()->searchable()->icon('heroicon-m-envelope-open')->copyable()->copyMessage(' email copied'),
+                TextColumn::make('email')->sortable()->searchable()->icon('heroicon-m-envelope-open')->copyable(true)->copyMessage(' email copied'),
                 TextColumn::make('email_verified_at')->date()->dateTimeTooltip()->icon('heroicon-m-check-circle')->color('success'),
                 TextColumn::make('created_at')->date()->dateTimeTooltip(),
                 TextColumn::make('updated_at')->since()->dateTimeTooltip(),
@@ -77,6 +77,4 @@ class UserResource extends Resource
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
-
-
 }

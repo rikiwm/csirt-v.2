@@ -4,10 +4,16 @@
         <div class="bg-transparent card card-plain rounded-3 ">
         <div class="p-0 mt-3 position-relative z-index-1">
             @php
-            $image = $data->content[1]['data']['image'] ?? [];
+                $imagePaths = [];
+                foreach ($data->content as $item) {
+                    $images = $item['data']['image'] ?? [];
+                    foreach ($images as $image) {
+                        $imagePaths[] = $image;
+                    }
+                }
             @endphp
             <a href="{{ route('post.detail', $data->slug) }}" class="d-block img-thumbnail">
-                @forelse ($image as $img)
+                @forelse ($imagePaths as $img)
                 <img src="{{ url('storage/' . $img ?? '') }}"
                 class="w-100 border-radius-lg" loading="lazy">
                 @break

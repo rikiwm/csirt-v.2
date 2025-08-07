@@ -1,25 +1,28 @@
-
 @props(['csp_nonce' => ''])
-<script nonce="{{ $csp_nonce }}" src="{{ asset('frontend/js/core/popper.min.js')}}" type="text/javascript" ></script>
-<script nonce="{{ $csp_nonce }}" type="module" src="{{ asset('frontend/js/core/bootstrap.min.js') }}" type="text/javascript" ></script>
-<script nonce="{{ $csp_nonce }}" src="{{ asset('frontend/js/plugins/perfect-scrollbar.min.js') }}"></script>
-<script nonce="{{ $csp_nonce }}" src="{{ asset('frontend/js/material-kit.min.js')}}" type="text/javascript"  ></script>
-<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12" ></script>
+<script defer nonce="{{ $csp_nonce }}" src="{{ asset('frontend/js/core/popper.min.js')}}" type="text/javascript">
+</script>
+<script nonce="{{ $csp_nonce }}" type="module" src="{{ asset('frontend/js/core/bootstrap.min.js') }}"
+    type="text/javascript"></script>
+<script defer nonce="{{ $csp_nonce }}" src="{{ asset('frontend/js/plugins/perfect-scrollbar.min.js') }}"
+    type="text/javascript"></script>
+<script defer nonce="{{ $csp_nonce }}" src="{{ asset('frontend/js/material-kit.min.js')}}" type="text/javascript">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
 <!-- ========== Js Section ========== -->
 
-<script nonce="{{ $csp_nonce }}" defer >
-    window.addEventListener("scroll", function () {
-        let navbar = document.querySelector(".navbar");
-        if (window.scrollY > 100) {
-            navbar.classList.add("shrink");
-        } else {
-            navbar.classList.remove("shrink");
-        }
-    });
+<script nonce="{{ $csp_nonce }}" defer>
+window.addEventListener("scroll", function() {
+    let navbar = document.querySelector(".navbar");
+    if (window.scrollY > 100) {
+        navbar.classList.add("shrink");
+    } else {
+        navbar.classList.remove("shrink");
+    }
+});
 </script>
 
 <script nonce="{{ $csp_nonce }}" type="text/javascript" defer>
-    if (document.getElementById('typed')) {
+if (document.getElementById('typed')) {
     var typed = new Typed("#typed", {
         stringsElement: '#typed-strings',
         fadeOut: false,
@@ -33,10 +36,15 @@
         loop: true,
         showCursor: false
     });
-    }
+}
 </script>
 
-
+<script>
+window.addEventListener("scroll", function() {
+    let scrollPosition = window.scrollY;
+    let zoomFactor = 1 - scrollPosition / (window.innerHeight * 5);
+    document.getElementById("zoomImage").style.transform = `scale(${zoomFactor})`;
+});
+</script>
 
 <!-- ========== Js Section ========== -->
-

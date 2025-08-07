@@ -7,13 +7,8 @@
     'share' => '',
 ])
 
-<section class="pt-3">
-    <div class="container">
-        <div class="row">
-            <div class="py-2 mx-auto col-lg-10 mt-n2">
-                <div class="row">
-                    <div class=" col-md-12 position-relative">
-                        @switch($data['slug'])
+<section class="pt-3 mx-auto">
+            @switch($data['slug'])
                             @case('faq')
                                    <div class="accordion" id="accordionRental">
                                         @foreach ($data['content'] as $key => $item)
@@ -66,11 +61,16 @@
                                 {{ $share }}
                                 <!-- ========== End btn share ========== -->
                         @endswitch
+    <!-- <div class="container">
+        <div class="row">
+            <div class="py-2 mx-auto col-lg-10 mt-n2">
+                <div class="row">
+                    <div class=" col-md-12 position-relative">
+                
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </section>
 
-{{-- <span class="mb-2 text-center badge text-dark bg-secondary">{{ $updated }}</span> --}}

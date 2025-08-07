@@ -23,38 +23,38 @@ class TicketCount extends BaseWidget
 
         // Query dasar untuk Ticket
         $baseQuery = Ticket::query()
-            ->when($startDate, fn (Builder $query) => $query->whereDate('created_at', '>=', $startDate))
-            ->when($endDate, fn (Builder $query) => $query->whereDate('created_at', '<=', $endDate))
+            ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate))
+            ->when($endDate, fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate))
             ->when(
                 !auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'),
-                fn (Builder $query) => $query->where('users_id', auth()->id())
+                fn(Builder $query) => $query->where('users_id', auth()->id())
             );
-       // Ambil data statistik berdasarkan minggu
-            $ticketCounts = DB::table('tickets')
-                ->selectRaw('
+        // Ambil data statistik berdasarkan minggu
+        $ticketCounts = DB::table('tickets')
+            ->selectRaw('
                     WEEK(created_at) as week,
                     SUM(CASE WHEN status = "open" THEN 1 ELSE 0 END) as open_count,
                     SUM(CASE WHEN status = "closed" THEN 1 ELSE 0 END) as closed_count
                 ')
-                ->when($startDate, fn ($query) => $query->whereDate('created_at', '>=', $startDate))
-                ->when($endDate, fn ($query) => $query->whereDate('created_at', '<=', $endDate))
-                ->when(
-                    !auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'),
-                    fn ($query) => $query->where('users_id', auth()->id())
-                )
-                ->groupBy('week')
-                ->orderBy('week')
-                ->get()
-                ->keyBy('week');
+            ->when($startDate, fn($query) => $query->whereDate('created_at', '>=', $startDate))
+            ->when($endDate, fn($query) => $query->whereDate('created_at', '<=', $endDate))
+            ->when(
+                !auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'),
+                fn($query) => $query->where('users_id', auth()->id())
+            )
+            ->groupBy('week')
+            ->orderBy('week')
+            ->get()
+            ->keyBy('week');
 
-            // Siapkan array data chart untuk 12 minggu terakhir
-            $dataOpen = [];
-            $dataClosed = [];
+        // Siapkan array data chart untuk 12 minggu terakhir
+        $dataOpen = [];
+        $dataClosed = [];
 
-            for ($i = 1; $i <= 7; $i++) {
-                $dataOpen[] = $ticketCounts[$i]->open_count ?? 0;
-                $dataClosed[] = $ticketCounts[$i]->closed_count ?? 0;
-            }
+        for ($i = 1; $i <= 7; $i++) {
+            $dataOpen[] = $ticketCounts[$i]->open_count ?? 0;
+            $dataClosed[] = $ticketCounts[$i]->closed_count ?? 0;
+        }
 
 
         return [
@@ -84,6 +84,4 @@ class TicketCount extends BaseWidget
                 ->descriptionIcon('heroicon-m-clock'),
         ];
     }
-
-
 }

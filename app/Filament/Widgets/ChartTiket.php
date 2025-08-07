@@ -7,30 +7,36 @@ use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 use App\Models\Ticket;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
+use Carbon\Carbon;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 
 class ChartTiket extends ChartWidget
 {
-    protected static ?string $heading = 'Bagan Laporan Insiden Tahunan';
+
+    use HasWidgetShield, InteractsWithPageFilters;
     protected static ?string $maxHeight = '300px';
-    use HasWidgetShield;
+
     protected function getData(): array
     {
+
+        $startDate = $this->filters['startDate'] ?? null;
+        $endDate = $this->filters['endDate'] ?? null;
         $data = Trend::model(Ticket::class)
-        ->between(
-            start: now()->startOfYear(),
-            end: now()->endOfYear(),
-        )
-        ->perMonth()
-        ->count();
-            return [
-                'datasets' => [
-                    [
-                        'label' => 'Total Insiden',
-                        'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
-                    ],
+            ->between(
+                start: $startDate ? Carbon::parse($startDate) : now()->startOfYear(),
+                end: $endDate ? Carbon::parse($endDate) : now()->endOfYear(),
+            )
+            ->perMonth()
+            ->count();
+        return [
+            'datasets' => [
+                [
+                    'label' => 'Total Insiden',
+                    'data' => $data->map(fn(TrendValue $value) => $value->aggregate),
                 ],
-                'labels' => $data->map(fn (TrendValue $value) => $value->date),
-            ];
+            ],
+            'labels' => $data->map(fn(TrendValue $value) => $value->date),
+        ];
     }
 
     protected function getType(): string
@@ -38,12 +44,12 @@ class ChartTiket extends ChartWidget
         return 'bar';
     }
 
-     protected function getOptions(): array
+    protected function getOptions(): array
     {
         return [
             'plugins' => [
                 'legend' => [
-                    'display' => false,
+                    'display' => true,
                 ],
                 'tooltip' => [
                     'enabled' => true,
@@ -75,8 +81,8 @@ class ChartTiket extends ChartWidget
             'categoryPercentage' => 0.8, // Adjust category width
         ];
     }
-     public function getDescription(): ?string
+    public function getDescription(): ?string
     {
-        return 'The number of tickets created per month, categorized by priority.';
+        return 'Bagan Laporan Insiden Tahunan';
     }
 }

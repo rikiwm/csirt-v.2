@@ -5,7 +5,7 @@
     </x-slot>
 
     <div class="p-0 mx-4 card card-body blur blur-rounded-lg shadow-blur mx-md-7 mt-n6 ">
-        <section class="py-3 mx-4">
+        <section class=" mx-auto">
             <div class="container">
                 @isset($top)
                     
@@ -51,7 +51,7 @@
                 </div>
             </div>
         </section>
-        <hr class="my-4 horizontal dark">
+        <hr class="my-2 horizontal dark">
 
         {{-- <section class="py-4 my-2">
             <div class="container">

@@ -22,84 +22,63 @@ use App\Filament\Widgets\TicketCount;
 
 class Dashboard extends BaseDashboard
 {
+
     use HasFiltersAction, HasFiltersForm;
     protected int | string | array $columnSpan = 'full';
     protected static bool $isLazy = false;
 
+    public function persistsFiltersInSession(): bool
+    {
+        return false;
+    }
     protected function getHeaderActions(): array
     {
         return [
 
-            FilterAction::make('filter')
+            FilterAction::make('filter')->modal(true)->modalDescription()
                 ->icon('heroicon-o-calendar')
                 ->form([
                     DatePicker::make('startDate')
-                    ->prefix('Star')
-                    ->suffixActions([
-                        ActionsAction::make('reset')->icon('heroicon-o-trash')
-                        ->action(fn (callable $set) => $set('startDate', null)),
-                    ])
-                    ->native(false)
-                    ->afterStateUpdated(fn ($state, callable $set) => $set('endDate', $state))->live(onBlur:true),
+                        ->prefix('Star')
+                        ->suffixActions([
+                            ActionsAction::make('reset')->icon('heroicon-o-trash')
+                                ->action(fn(callable $set) => $set('startDate', null)),
+                        ])
+                        ->native(false)
+                        ->afterStateUpdated(fn($state, callable $set) => $set('endDate', $state))->live(onBlur: true),
 
-                DatePicker::make('endDate')
-                    ->prefix('End')
-                    ->suffixActions([
+                    DatePicker::make('endDate')
+                        ->prefix('End')
+                        ->suffixActions([
+                            ActionsAction::make('reset')->icon('heroicon-o-trash')
+                                ->action(fn(callable $set) => $set('endDate', null)),
+                        ])
+                        ->native(false)->default(null)
+                        ->minDate(fn($get) => $get('startDate')),
+                    Select::make('type_id')->label('insiden')
+                        ->options(fn() => Type::pluck('name', 'id'))
+                        ->preload()
+                        ->suffixActions([
+                            ActionsAction::make('reset')->icon('heroicon-o-trash')
+                                ->action(fn(callable $set) => $set('type_id', null)),
+                        ])
+                        ->searchable(),
+                    Select::make('priority')->multiple()->options([
+                        'low' => 'Low',
+                        'medium' => 'Medium',
+                        'high' => 'High',
+                        'urgent' => 'Urgent',
+                    ])->suffixActions([
                         ActionsAction::make('reset')->icon('heroicon-o-trash')
-                        ->action(fn (callable $set) => $set('endDate', null)),
-                    ])
-                    ->native(false)->default(null)
-                    ->minDate(fn ($get) => $get('startDate')),
-                Select::make('type_id')->label('insiden')
-                    ->options(fn () => Type::pluck('name', 'id'))
-                    ->preload()
-                    ->suffixActions([
-                        ActionsAction::make('reset')->icon('heroicon-o-trash')
-                        ->action(fn (callable $set) => $set('type_id', null)),
-                    ])
-                    ->searchable(),
-                Select::make('priority')->multiple()->options([
-                    'low' => 'Low',
-                    'medium' => 'Medium',
-                    'high' => 'High',
-                    'urgent' => 'Urgent',
-                ])->suffixActions([
-                    ActionsAction::make('reset')->icon('heroicon-o-trash')
-                    ->action(fn (callable $set) => $set('priority', null)),
-                ]),
+                            ->action(fn(callable $set) => $set('priority', null)),
+                    ]),
                 ])
 
 
         ];
     }
-     public function getColumns(): int | string | array
+    public function getColumns(): int | string | array
     {
         return 3;
     }
-    // protected function getHeaderWidgets(): array
-    // {
-    //     return [
-    //         TicketCount::class
-    //     ];
-    // }
-
-    // protected function getFooterWidgets(): array
-    // {
-    //     return [
-    //         ];
-    // }
-
-
-    // public function filtersForm(Form $form): Form
-    // {
-    //     return $form
-    //         ->schema([
-    //             Section::make()
-    //                 ->schema([
-    //                     DatePicker::make('startDate')->prefix('Starts'),
-    //                 ])
-    //                 ->columns(3)
-
-    //         ]);
-    // }
 }

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 class TicketChartLine extends ChartWidget
 {
     use HasWidgetShield, InteractsWithPageFilters;
-    protected static ?string $heading = 'Bagan Laporan Insiden oleh Terverifikasi dan Tidak Terverifikasi';
+    protected static ?string $description = 'Bagan Laporan Insiden oleh Terverifikasi dan Tidak Terverifikasi';
     protected static ?string $maxHeight = '300px';
     protected function getData(): array
     {
@@ -20,21 +20,21 @@ class TicketChartLine extends ChartWidget
         $endDate = $this->filters['endDate'] ?? null;
 
         $ticketCounts = DB::table('tickets')
-        ->selectRaw('
+            ->selectRaw('
             MONTH(created_at) as month,
             SUM(CASE WHEN is_verified = "1" THEN 1 ELSE 0 END) as verified_count,
             SUM(CASE WHEN is_verified = "0" THEN 1 ELSE 0 END) as not_verified_count
         ')
-        ->when($startDate, fn ($query) => $query->whereDate('created_at', '>=', $startDate))
-        ->when($endDate, fn ($query) => $query->whereDate('created_at', '<=', $endDate))
-        ->when(
-            !auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'),
-            fn ($query) => $query->where('users_id', auth()->id())
-        )
-        ->groupBy('month')
-        ->orderBy('month')
-        ->get()
-        ->keyBy('month');
+            ->when($startDate, fn($query) => $query->whereDate('created_at', '>=', $startDate))
+            ->when($endDate, fn($query) => $query->whereDate('created_at', '<=', $endDate))
+            ->when(
+                !auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'),
+                fn($query) => $query->where('users_id', auth()->id())
+            )
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get()
+            ->keyBy('month');
 
         $dataOpen = [];
         $dataClosed = [];
@@ -68,10 +68,6 @@ class TicketChartLine extends ChartWidget
     protected function getType(): string
     {
         return 'line';
-    }
-    public function getDescription(): ?string
-    {
-        return 'The number of blog posts published per month.';
     }
 
     public function getOptions(): array

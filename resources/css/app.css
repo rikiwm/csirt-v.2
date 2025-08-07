@@ -31,6 +31,27 @@
     }
 
 
+        html {
+      scroll-behavior: smooth;
+      }
+        .image-container {
+          position: relative;
+          width: auto;
+          border-radius: 18px;
+
+          overflow: hidden;
+      }
+      .image-container img {
+        padding: 10px;
+          width: 100%;
+          min-width: 500px;
+          border-radius: 18px;
+          object-fit: cover;
+          transition: transform 1s ease-out smooth;
+      }
+
+
+
 :root,
 [data-bs-theme=light] {
   --bs-blue: #63B3ED;

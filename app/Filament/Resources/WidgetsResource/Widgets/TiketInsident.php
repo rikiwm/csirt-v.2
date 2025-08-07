@@ -2,36 +2,79 @@
 
 namespace App\Filament\Resources\WidgetsResource\Widgets;
 
-
+use App\Models\Ticket;
 use Illuminate\Support\Facades\DB;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
+use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
-use Filament\Forms\Components\Builder;
+use Flowframe\Trend\Trend;
+use Flowframe\Trend\TrendValue;
+use Illuminate\Support\Facades\Session;
+use Livewire\Attributes\On;
+
 class TiketInsident extends ChartWidget
 {
     use HasWidgetShield;
-    protected static ?string $heading = 'Bagan Laporan Insiden Berdasarkan Prioritas';
+    // protected static ?string $description = 'Bagan Laporan Insiden Berdasarkan Prioritas';
     protected static ?string $maxHeight = '300px';
-    use InteractsWithPageFilters;
+    protected static ?string $pollingInterval = null;
+    protected static ?int $sort = -4;
+    public $selectedYear;
+
+    // protected function getData(): array
+    // {
+
+    //     return [
+    //         'datasets' => [
+    //             [
+    //                 'label' => "Data Tahun $year",
+    //                 'data' => array_map(fn($i) => rand(10, 90), range(1, 12)),
+    //             ],
+    //         ],
+    //         'labels' => [
+    //             'Jan',
+    //             'Feb',
+    //             'Mar',
+    //             'Apr',
+    //             'May',
+    //             'Jun',
+    //             'Jul',
+    //             'Aug',
+    //             'Sep',
+    //             'Oct',
+    //             'Nov',
+    //             'Dec',
+    //         ],
+    //     ];
+    // }
+
+    #[On('selectedYear')]
+    public function updatedSelectedYear($value)
+    {
+        $this->selectedYear = $value;
+    }
+
+    protected function getListeners(): array
+    {
+        return ['selectedYear' => 'updatedSelectedYear'];
+    }
     protected function getData(): array
     {
-           $startDate = $this->filters['startDate'] ?? null;
-        $endDate = $this->filters['endDate'] ?? null;
+        $year = $this->selectedYear ?? now()->year;
 
         $ticketCounts = DB::table('tickets')
             ->selectRaw('
-                MONTH(created_at) as month,
-                SUM(CASE WHEN priority = "low" THEN 1 ELSE 0 END) as low,
-                SUM(CASE WHEN priority = "medium" THEN 1 ELSE 0 END) as medium,
-                SUM(CASE WHEN priority = "high" THEN 1 ELSE 0 END) as high,
-                SUM(CASE WHEN priority = "urgent" THEN 1 ELSE 0 END) as urgent
-            ')
-            ->when($startDate, fn ($query) => $query->whereDate('created_at', '>=', $startDate))
-            ->when($endDate, fn ($query) => $query->whereDate('created_at', '<=', $endDate))
+                    MONTH(created_at) as month,
+                    SUM(CASE WHEN priority = "low" THEN 1 ELSE 0 END) as low,
+                    SUM(CASE WHEN priority = "medium" THEN 1 ELSE 0 END) as medium,
+                    SUM(CASE WHEN priority = "high" THEN 1 ELSE 0 END) as high,
+                    SUM(CASE WHEN priority = "urgent" THEN 1 ELSE 0 END) as urgent
+                ')
+            ->when($year, fn($query) => $query->whereYear('created_at',  $year))
             ->when(
                 !auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'),
-                fn ($query) => $query->where('users_id', auth()->id())
+                fn($query) => $query->where('users_id', auth()->id())
             )
             ->groupBy('month')
             ->orderBy('month')
@@ -39,9 +82,18 @@ class TiketInsident extends ChartWidget
             ->keyBy('month');
 
         $labels = [
-            1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
-            5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug',
-            9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec',
+            1 => 'Jan',
+            2 => 'Feb',
+            3 => 'Mar',
+            4 => 'Apr',
+            5 => 'May',
+            6 => 'Jun',
+            7 => 'Jul',
+            8 => 'Aug',
+            9 => 'Sep',
+            10 => 'Oct',
+            11 => 'Nov',
+            12 => 'Dec',
         ];
 
         $lowData = [];
@@ -96,8 +148,9 @@ class TiketInsident extends ChartWidget
         return 'line';
     }
 
-  public function getDescription(): ?string
+    public function getDescription(): string
     {
-        return 'The number of tickets created per month, categorized by priority.';
+        $year =  $year = $this->selectedYear ?? now()->year;
+        return 'Bagan Laporan Insiden Berdasarkan Prioritas ' . $year . '.';
     }
 }

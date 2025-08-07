@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Support\Enums\ActionSize;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -24,31 +25,38 @@ use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
+use Filament\View\LegacyComponents\Widget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
+use Spatie\Image\Enums\AlignPosition;
+
 class SummaryReports extends Component implements HasForms, HasTable
 {
-     use InteractsWithForms;
-     use InteractsWithTable;
-     protected static bool $isLazy = false;
+    use InteractsWithForms;
+    use InteractsWithTable;
+    use InteractsWithPageFilters;
+    protected static bool $isLazy = false;
 
-     protected ?string $heading = 'Response Time Insidenr';
-     protected ?string $description = 'An overview of some analytics.';
-     public $type,$insiden,$total,$closed,$open,$valid,$invalid,$avg;
+    protected ?string $heading = 'Response Time Insidenr';
+    protected ?string $description = 'An overview of some analytics.';
+    public $type, $insiden, $total, $closed, $open, $valid, $invalid, $avg;
 
-      public function mount()
-      {
-        $this->insiden = Type::pluck('name','id');
-      }
+
+
+    public function mount()
+    {
+        $this->insiden = Type::pluck('name', 'id');
+    }
     public function table(Table $table): Table
     {
         return $table
-            ->query(Ticket::query()->select('id','code','subject','users_id','agent_id','created_at','status','priority')->with(['users', 'useragen', 'types'])
-            ->when(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'), function ($query) {
-                $query->where('users_id', auth()->id());
-            }))
+            ->query(Ticket::query()->select('id', 'code', 'subject', 'users_id', 'agent_id', 'created_at', 'status', 'priority')->with(['users', 'useragen', 'types'])
+                ->when(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'), function ($query) {
+                    $query->where('users_id', auth()->id());
+                }))
             ->columns([
                 TextColumn::make('code'),
                 TextColumn::make('users.name')->label('Nama')->sortable()->searchable(),
@@ -56,90 +64,118 @@ class SummaryReports extends Component implements HasForms, HasTable
                 TextColumn::make('subject')->limit(50),
                 TextColumn::make('types.name')->limit(50)->badge()->color('primary'),
                 TextColumn::make('priority')->badge()
-                ->color(fn (string $state): string => match ($state) {
-                    'low' => 'secondary',
-                    'medium' => 'info',
-                    'high' => 'warning',
-                    'urgent' => 'danger',
-                }),
+                    ->color(fn(string $state): string => match ($state) {
+                        'low' => 'secondary',
+                        'medium' => 'info',
+                        'high' => 'warning',
+                        'urgent' => 'danger',
+                    }),
                 TextColumn::make('status')->badge()
-                ->color(fn (string $state): string => match ($state) {
-                    'open' => 'secondary',
-                    'in_progress' => 'warning',
-                    'closed' => 'success',
-                }),
+                    ->color(fn(string $state): string => match ($state) {
+                        'open' => 'secondary',
+                        'in_progress' => 'warning',
+                        'closed' => 'success',
+                    }),
                 TextColumn::make('created_at')->date(),
                 TextColumn::make('response_time')->label('Response Time')
-                ->getStateUsing(fn ($record): ?string => $this->avgresponsetime($record->id)),
+                    ->getStateUsing(fn($record): ?string => $this->avgresponsetime($record->id)),
             ])
             // ->filters([
 
             // ])
             ->filters([
                 SelectFilter::make('status')
-                ->multiple()->options([
-                    'open' => 'Open',
-                    'in_progress' => 'In Progress',
-                    'closed' => 'Closed',
-                ])
-                ->default('draft')
-                ->selectablePlaceholder(false),
+                    ->multiple()->options([
+                        'open' => 'Open',
+                        'in_progress' => 'In Progress',
+                        'closed' => 'Closed',
+                    ])
+                    ->default('draft')
+                    ->selectablePlaceholder(false),
                 SelectFilter::make('priority')->multiple()->options([
                     'low' => 'Low',
                     'medium' => 'Medium',
                     'high' => 'High',
                     'urgent' => 'Urgent',
                 ])
-                ->selectablePlaceholder(false),
+                    ->selectablePlaceholder(false),
                 SelectFilter::make('types.name')
-                ->relationship('types', 'name')->searchable()
-                ->label('Insident')->options(
-                    fn() => Type::query()->pluck('name','id'))
+                    ->relationship('types', 'name')->searchable()
+                    ->label('Insident')->options(
+                        fn() => Type::query()->pluck('name', 'id')
+                    )
                     ->multiple()
                     ->selectablePlaceholder(false),
+                //   Filter::make('created_at_range')
+                //     ->form([
+                //         DatePicker::make('created_from')->label('Dari Tanggal'),
+                //         DatePicker::make('created_until')->label('Sampai Tanggal'),
+                //     ])
+                //     ->query(function (Builder $query, array $data): Builder {
+                //         return $query
+                //             ->when($data['created_from'], fn ($q) => $q->whereDate('created_at', '>=', $data['created_from']))
+                //             ->when($data['created_until'], fn ($q) => $q->whereDate('created_at', '<=', $data['created_until']));
+                //     })
+                //     ->label('Filter Tanggal'),
                 Filter::make('created_at')
-                        ->form([
-                                DatePicker::make('from'),
-                                DatePicker::make('until'),
+                    ->form([
+                        DatePicker::make('from'),
+                        DatePicker::make('until'),
 
-                        ])
-                        ->indicateUsing(function (array $data): array {
-                            $indicators = [];
-                            if ($data['from'] ?? null) {
-                                $indicators[] = Indicator::make('Created from ' . Carbon::parse($data['from'])->toFormattedDateString())
-                                    ->removeField('from');
-                            }
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['from'], fn($q) => $q->whereDate('created_at', '>=', $data['from']))
+                            ->when($data['until'], fn($q) => $q->whereDate('created_at', '<=', $data['until']));
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['from'] ?? null) {
+                            $indicators[] = Indicator::make('Created from ' . Carbon::parse($data['from'])->toFormattedDateString())
+                                ->removeField('from');
+                        }
 
-                            if ($data['until'] ?? null) {
-                                $indicators[] = Indicator::make('Created until ' . Carbon::parse($data['until'])->toFormattedDateString())
-                                    ->removeField('until');
-                            }
+                        if ($data['until'] ?? null) {
+                            $indicators[] = Indicator::make('Created until ' . Carbon::parse($data['until'])->toFormattedDateString())
+                                ->removeField('until');
+                        }
 
-                            return $indicators;
-                        })->columns(2),
+                        return $indicators;
+                    })->columns(2),
 
 
-            ], layout: FiltersLayout::AboveContentCollapsible)
+            ], layout: FiltersLayout::Modal)
             ->filtersFormWidth(MaxWidth::FourExtraLarge)
             ->filtersTriggerAction(
-                fn (Action $action) => $action
+                fn(Action $action) => $action
                     ->button()->color('primary')
                     ->label('Filter Data'),
             )->deselectAllRecordsWhenFiltered(false)
+            ->headerActions([
+                Action::make('Export Excel')->size(ActionSize::ExtraSmall)->outlined()
+                    ->label('Export to Excel')
+                    ->icon('heroicon-o-arrow-down-on-square')
+                    ->action('exportExcel'),
+
+                Action::make('Export PDF')->size(ActionSize::ExtraSmall)->outlined()
+                    ->label('Export to PDF')
+                    ->icon('heroicon-o-document')
+                    ->action('exportPdf'),
+            ])
             ->actions([
                 // ...
             ])
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('Export')
-                    ->label('Export To PDF')
+                        ->label('Export To PDF')
                         ->icon('heroicon-m-arrow-down-tray')
                         ->openUrlInNewTab()
                         ->deselectRecordsAfterCompletion()
                         ->action(function (Collection $tickets) {
                             return response()->streamDownload(function () use ($tickets) {
                                 echo Pdf::loadHTML(
-                                    Blade::render('filament.pages.ticket.ticket-print',compact('tickets'))
+                                    Blade::render('filament.pages.ticket.ticket-print', compact('tickets'))
                                 )->stream();
                             }, 'users.pdf');
                         }),
@@ -147,7 +183,7 @@ class SummaryReports extends Component implements HasForms, HasTable
             ]);
     }
 
-    public function avgresponsetime($ticketId= null)
+    public function avgresponsetime($ticketId = null)
     {
         $averageResponseTime = Ticket::where('status', 'closed')
             ->where('tickets.id', $ticketId)
@@ -177,37 +213,36 @@ class SummaryReports extends Component implements HasForms, HasTable
     }
     public function filter(BaseFilter $filter)
     {
-            return $filter;
+        return $filter;
     }
     public function render()
     {
         try {
             $avg = $this->avgClosed();
-
         } catch (\Exception $e) {
             $avg = 'Kosong';
         }
 
         $tickets = Ticket::query()->with('types');
 
-                $this->closed = (clone $tickets)->where('status', 'closed')->count();
-                $this->open = (clone $tickets)->where('status', 'open')->count();
-                $this->valid = (clone $tickets)->where('is_verified', true)->count();
-                $this->invalid = (clone $tickets)->where('is_verified', false)->count();
-                if ($this->type) {
-                    $this->total = (clone $tickets)
-                        ->whereHas('types', function ($query) {
-                            $query->whereIn('type_id', (array) $this->type);
-                        })
-                        ->count();
-                }else {
-                $this->total = (clone $tickets)->count();
-                }
+        $this->closed = (clone $tickets)->where('status', 'closed')->count();
+        $this->open = (clone $tickets)->where('status', 'open')->count();
+        $this->valid = (clone $tickets)->where('is_verified', true)->count();
+        $this->invalid = (clone $tickets)->where('is_verified', false)->count();
+        if ($this->type) {
+            $this->total = (clone $tickets)
+                ->whereHas('types', function ($query) {
+                    $query->whereIn('type_id', (array) $this->type);
+                })
+                ->count();
+        } else {
+            $this->total = (clone $tickets)->count();
+        }
 
         return view('livewire.summary-reports');
     }
 
-    private function avgClosed($ticketId= null)
+    private function avgClosed($ticketId = null)
     {
         $averageResponseTime = Ticket::where('status', 'closed')
             ->join('ticket_massages as first_message', function ($join) {
