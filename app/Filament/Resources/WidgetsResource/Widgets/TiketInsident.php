@@ -22,32 +22,6 @@ class TiketInsident extends ChartWidget
     protected static ?int $sort = -4;
     public $selectedYear;
 
-    // protected function getData(): array
-    // {
-
-    //     return [
-    //         'datasets' => [
-    //             [
-    //                 'label' => "Data Tahun $year",
-    //                 'data' => array_map(fn($i) => rand(10, 90), range(1, 12)),
-    //             ],
-    //         ],
-    //         'labels' => [
-    //             'Jan',
-    //             'Feb',
-    //             'Mar',
-    //             'Apr',
-    //             'May',
-    //             'Jun',
-    //             'Jul',
-    //             'Aug',
-    //             'Sep',
-    //             'Oct',
-    //             'Nov',
-    //             'Dec',
-    //         ],
-    //     ];
-    // }
 
     #[On('selectedYear')]
     public function updatedSelectedYear($value)

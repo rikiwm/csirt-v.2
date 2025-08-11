@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 class TicketCount extends BaseWidget
 {
     use InteractsWithPageFilters;
+    protected static ?string $pollingInterval = null;
 
 
     protected function getStats(): array

@@ -128,45 +128,48 @@ class TicketResource extends Resource implements HasForms
                             ')),
 
                 ]),
-                Section::make('Topik')->icon('heroicon-m-tag')->schema([
-                    TextInput::make('subject')
-                        ->required()->helperText('Your subject here')
-                        ->maxLength(255)
-                        ->validationMessages([
-                            'required' => 'The :attribute not valid.',
-                        ])->columnSpan(1),
-                    TextInput::make('domain')->placeholder('Ex: contoh.contoh.go.id')
-                        ->required()->helperText('domain Vuln')
-                        ->maxLength(255)
-                        ->validationMessages([
-                            'required' => 'The :attribute not valid.',
-                        ]),
-                    RichEditor::make('description')->columnSpan(2)
-                        ->toolbarButtons([
-                            'attachFiles',
-                            'blockquote',
-                            'bold',
-                            'bulletList',
-                            'codeBlock',
-                            'h2',
-                            'h3',
-                            'italic',
-                            'link',
-                            'orderedList',
-                            'redo',
-                            'strike',
-                            'underline',
-                            'undo',
-                        ])
-                        ->fileAttachmentsDisk('public')
-                        ->fileAttachmentsDirectory('attachments_ticket')
-                        ->fileAttachmentsVisibility('private')
-                        ->validationMessages([
-                            'required' => 'The :attribute not valid.',
-                        ])->hint('Description Vuln')->hintColor('warning')
-                        ->required(),
-                ])->columnSpan(1),
+                Section::make('Topik')->icon('heroicon-m-tag')
+                    ->compact()
+                    ->schema([
+                        TextInput::make('subject')
+                            ->required()->helperText('Your subject here')
+                            ->maxLength(255)
+                            ->validationMessages([
+                                'required' => 'The :attribute not valid.',
+                            ])->columnSpan(1),
+                        TextInput::make('domain')->placeholder('Ex: contoh.contoh.go.id')
+                            ->required()->helperText('domain Vuln')
+                            ->maxLength(255)
+                            ->validationMessages([
+                                'required' => 'The :attribute not valid.',
+                            ]),
+                        RichEditor::make('description')->columnSpan(2)
+                            ->toolbarButtons([
+                                'attachFiles',
+                                'blockquote',
+                                'bold',
+                                'bulletList',
+                                'codeBlock',
+                                'h2',
+                                'h3',
+                                'italic',
+                                'link',
+                                'orderedList',
+                                'redo',
+                                'strike',
+                                'underline',
+                                'undo',
+                            ])
+                            ->fileAttachmentsDisk('public')
+                            ->fileAttachmentsDirectory('attachments_ticket')
+                            ->fileAttachmentsVisibility('private')
+                            ->validationMessages([
+                                'required' => 'The :attribute not valid.',
+                            ])->hint('Description Vuln')->hintColor('warning')
+                            ->required(),
+                    ])->columnSpan(1),
                 Section::make('Category and Priority')->icon('heroicon-m-tag')
+                    ->compact()
                     ->schema([
                         Select::make('type_id')->label('Insiden Type')
                             ->required()->helperText('select type here')
@@ -394,6 +397,9 @@ class TicketResource extends Resource implements HasForms
         if (auth()->user()->hasRole('super_admin')) {
             $query->withTrashed();
         }
+        //  if (auth()->user()->hasRole('agen')) {
+        //      $query->where('useragen', auth()->id());
+        // }
         return $query;
     }
 
@@ -416,164 +422,168 @@ class TicketResource extends Resource implements HasForms
                                         InfolistsSplit::make([
                                             ComponentsSection::make(
                                                 $infolist->record->types[0]->name . ' - ' . Str::upper($infolist->record->domain) ?? null
-                                            )->description('Ticket Created : ' . $infolist->record->created_at)->schema([
-                                                TextEntry::make('subject')->label('Subject')
-                                                    ->size(TextEntry\TextEntrySize::Large)
-                                                    ->weight(FontWeight::Bold),
-                                                Fieldset::make('Ticket')
-                                                    ->schema([
-                                                        TextEntry::make('status')->icon('heroicon-o-check-circle'),
-                                                        TextEntry::make('priority')->label('Priority')->badge()->color(fn(string $state): string => match ($state) {
-                                                            'low' => 'secondary',
-                                                            'medium' => 'info',
-                                                            'high' => 'warning',
-                                                            'urgent' => 'danger'
-                                                        })->grow(true)->icon('heroicon-o-check-circle'),
-                                                        TextEntry::make('types.name')->label('Insident')->badge()->grow(true)->icon('heroicon-o-check-circle'),
-                                                        TextEntry::make('users.name')->grow(true)->icon('heroicon-o-check-circle'),
-                                                        TextEntry::make('users.email')->grow(true)->icon('heroicon-o-check-circle'),
-                                                        TextEntry::make('created_at')->date()->grow(true)->icon('heroicon-o-check-circle'),
-                                                    ]),
-                                                Fieldset::make('description')->schema([
-                                                    TextEntry::make('description')->label('Description')->html()->grow(true)->prose()
-                                                ])
-                                            ])->headerActions([
-                                                Action::make('download')->label(false)->color('primary')->icon('heroicon-m-printer')->outlined()->size(ActionSize::ExtraSmall)->extraAttributes(['class' => 'rounded-full pe-2'])
-                                                    ->url(route('summary-report.print', [
-                                                        'id' => $infolist->record->id
-                                                    ]), shouldOpenInNewTab: true),
-                                                Action::make('valid')->size(ActionSize::Small)
-                                                    ->icon(fn(Ticket $record) => $record->is_verified === null ? 'heroicon-o-question-mark-circle' : ($record->is_verified == false ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle'))
-                                                    ->color(fn(Ticket $record) => $record->is_verified === null ? 'warning' : ($record->is_verified == false ? 'danger' : 'success'))
-                                                    ->outlined()
-                                                    ->requiresConfirmation()
-                                                    ->label(fn(Ticket $record) => $record->is_verified === null ? 'Belum  Terverified' : (($record->is_verified == false) ? 'Tidak  Verified' : 'Valid'))
-                                                    ->visible(fn(Ticket $record): bool => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen'))
-                                                    ->disabled(fn(Ticket $record): bool => $record->is_verified === 1)
-                                                    ->requiresConfirmation()
-                                                    ->modal(true)
-                                                    ->modalIcon(false)
-                                                    ->modalHeading('Insident Ticket : ' . $infolist->record->types[0]->name)
-                                                    ->modalDescription('Subject : ' . $infolist->record->subject)->modalContent(new HtmlString('
+                                            )->description('Ticket Created : ' . $infolist->record->created_at)
+                                                ->compact()
+                                                ->schema([
+                                                    TextEntry::make('subject')->label('Subject')
+                                                        ->size(TextEntry\TextEntrySize::Large)
+                                                        ->weight(FontWeight::Bold),
+                                                    Fieldset::make('Ticket')
+                                                        ->schema([
+                                                            TextEntry::make('status')->icon('heroicon-o-check-circle'),
+                                                            TextEntry::make('priority')->label('Priority')->badge()->color(fn(string $state): string => match ($state) {
+                                                                'low' => 'secondary',
+                                                                'medium' => 'info',
+                                                                'high' => 'warning',
+                                                                'urgent' => 'danger'
+                                                            })->grow(true)->icon('heroicon-o-check-circle'),
+                                                            TextEntry::make('types.name')->label('Insident')->badge()->grow(true)->icon('heroicon-o-check-circle'),
+                                                            TextEntry::make('users.name')->grow(true)->icon('heroicon-o-check-circle'),
+                                                            TextEntry::make('users.email')->grow(true)->icon('heroicon-o-check-circle'),
+                                                            TextEntry::make('created_at')->date()->grow(true)->icon('heroicon-o-check-circle'),
+                                                        ]),
+                                                    Fieldset::make('description')->schema([
+                                                        TextEntry::make('description')->label('Description')->html()->grow(true)->prose()
+                                                    ])
+                                                ])->headerActions([
+                                                    Action::make('download')->label(false)->color('primary')->icon('heroicon-m-printer')->outlined()->size(ActionSize::ExtraSmall)->extraAttributes(['class' => 'rounded-full pe-2'])
+                                                        ->url(route('summary-report.print', [
+                                                            'id' => $infolist->record->id
+                                                        ]), shouldOpenInNewTab: true),
+                                                    Action::make('valid')->size(ActionSize::Small)
+                                                        ->icon(fn(Ticket $record) => $record->is_verified === null ? 'heroicon-o-question-mark-circle' : ($record->is_verified == false ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle'))
+                                                        ->color(fn(Ticket $record) => $record->is_verified === null ? 'warning' : ($record->is_verified == false ? 'danger' : 'success'))
+                                                        ->outlined()
+                                                        ->requiresConfirmation()
+                                                        ->label(fn(Ticket $record) => $record->is_verified === null ? 'Belum  Terverified' : (($record->is_verified == false) ? 'Tidak  Verified' : 'Valid'))
+                                                        ->visible(fn(Ticket $record): bool => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen'))
+                                                        ->disabled(fn(Ticket $record): bool => $record->is_verified === 1)
+                                                        ->requiresConfirmation()
+                                                        ->modal(true)
+                                                        ->modalIcon(false)
+                                                        ->modalHeading('Insident Ticket : ' . $infolist->record->types[0]->name)
+                                                        ->modalDescription('Subject : ' . $infolist->record->subject)->modalContent(new HtmlString('
                                                                     <span class="text-sm text-gray-600 dark:text-gray-400">
                                                                     <p class="text-sm text-gray-600 dark:text-gray-400">' . $infolist->record->description . '</p>
                                                                     </p>
                                                                     </span>'))
-                                                    ->form([
-                                                        ToggleButtons::make('is_verified')
-                                                            ->boolean()
-                                                            ->label('Apakah Verified')
-                                                            ->inline()
-                                                            ->live() // Perubahan langsung terdeteksi (reactive)
-                                                            ->afterStateUpdated(fn(Set $set, $state) => $set('status', match ($state) {
-                                                                true => 'in_progress',
-                                                                false => 'closed',
-                                                                default => 'open',
-                                                            })),
-                                                        ToggleButtons::make('is_duplicate')
-                                                            ->boolean()->default(false)
-                                                            ->label('Apakah Duplicate')
-                                                            ->inline()->default(false)
-                                                            ->visible(fn(Get $get) => $get('is_verified') == null || $get('is_verified') == true)
-                                                            ->live()->afterStateUpdated(fn(Set $set, $state) => $set('reason', $state)),
-                                                        Textarea::make('reason')->live()
-                                                            ->visible(fn(Get $get) => $get('is_verified') == false && $get('is_duplicate') == false)
-                                                            ->label('Alasan Tidak Valid')
-                                                            ->helperText('Alasan jika tidak verified.')
-                                                            ->rows(3),
-                                                        Textarea::make('duplicate_details')->live()
-                                                            ->visible(fn(Get $get) => $get('is_duplicate') == true)
-                                                            ->label('Duplicate Details Ticket')
-                                                            ->helperText('Alasan jika tidak Duplicate.')
-                                                            ->rows(3),
+                                                        ->form([
+                                                            ToggleButtons::make('is_verified')
+                                                                ->boolean()
+                                                                ->label('Apakah Verified')
+                                                                ->inline()
+                                                                ->live() // Perubahan langsung terdeteksi (reactive)
+                                                                ->afterStateUpdated(fn(Set $set, $state) => $set('status', match ($state) {
+                                                                    true => 'in_progress',
+                                                                    false => 'closed',
+                                                                    default => 'open',
+                                                                })),
+                                                            ToggleButtons::make('is_duplicate')
+                                                                ->boolean()->default(false)
+                                                                ->label('Apakah Duplicate')
+                                                                ->inline()->default(false)
+                                                                ->visible(fn(Get $get) => $get('is_verified') == null || $get('is_verified') == true)
+                                                                ->live()->afterStateUpdated(fn(Set $set, $state) => $set('reason', $state)),
+                                                            Textarea::make('reason')->live()
+                                                                ->visible(fn(Get $get) => $get('is_verified') == false && $get('is_duplicate') == false)
+                                                                ->label('Alasan Tidak Valid')
+                                                                ->helperText('Alasan jika tidak verified.')
+                                                                ->rows(3),
+                                                            Textarea::make('duplicate_details')->live()
+                                                                ->visible(fn(Get $get) => $get('is_duplicate') == true)
+                                                                ->label('Duplicate Details Ticket')
+                                                                ->helperText('Alasan jika tidak Duplicate.')
+                                                                ->rows(3),
 
-                                                        Radio::make('status')
-                                                            ->label('Status Tiket')
-                                                            ->live()
-                                                            ->options([
-                                                                'open' => 'Open',
-                                                                'in_progress' => 'In Progress',
-                                                                'closed' => 'Closed',
-                                                            ])
-                                                            ->default('open')
-                                                            ->helperText('Status tiket setelah verifikasi')
-                                                            ->inline()
+                                                            Radio::make('status')
+                                                                ->label('Status Tiket')
+                                                                ->live()
+                                                                ->options([
+                                                                    'open' => 'Open',
+                                                                    'in_progress' => 'In Progress',
+                                                                    'closed' => 'Closed',
+                                                                ])
+                                                                ->default('open')
+                                                                ->helperText('Status tiket setelah verifikasi')
+                                                                ->inline()
 
-                                                    ])
-                                                    ->action(function (Ticket $record, array $data) {
-                                                        $updateData = [
-                                                            'is_verified' => $data['is_verified'],
-                                                            'is_duplicate' => $data['is_duplicate'] ?? null,
-                                                            'reason' => $data['reason'] ?? null,
-                                                            'status' => $data['status'],
-                                                            'duplicate_details' =>  $data['duplicate_details'] ?? null,
-                                                            'time_prosess_ticket' => null,
-                                                            'is_reward' => null,
-                                                        ];
+                                                        ])
+                                                        ->action(function (Ticket $record, array $data) {
+                                                            $updateData = [
+                                                                'is_verified' => $data['is_verified'],
+                                                                'is_duplicate' => $data['is_duplicate'] ?? null,
+                                                                'reason' => $data['reason'] ?? null,
+                                                                'status' => $data['status'],
+                                                                'duplicate_details' =>  $data['duplicate_details'] ?? null,
+                                                                'time_prosess_ticket' => null,
+                                                                'is_reward' => null,
+                                                            ];
 
-                                                        if ($data['status'] === 'closed') {
-                                                            $updateData['time_close_ticket'] = now();
-                                                            $updateData['is_reward'] = false;
-                                                        }
+                                                            if ($data['status'] === 'closed') {
+                                                                $updateData['time_close_ticket'] = now();
+                                                                $updateData['is_reward'] = false;
+                                                            }
 
-                                                        if ($data['status'] === 'in_progress') {
-                                                            $updateData['time_prosess_ticket'] = now();
-                                                        }
+                                                            if ($data['status'] === 'in_progress') {
+                                                                $updateData['time_prosess_ticket'] = now();
+                                                            }
 
-                                                        if (($data['is_duplicate']) == true) {
-                                                            $updateData['time_prosess_ticket'] = now();
-                                                            $updateData['duplicate_details'] = 'Insiden Telah di laporkan sebelum ini!';
-                                                        }
-                                                        $record->update($updateData);
-                                                    })
+                                                            if (($data['is_duplicate']) == true) {
+                                                                $updateData['time_prosess_ticket'] = now();
+                                                                $updateData['duplicate_details'] = 'Insiden Telah di laporkan sebelum ini!';
+                                                            }
+                                                            $record->update($updateData);
+                                                        })
 
 
-                                                    ->modalFooterActionsAlignment(Alignment::Center),
-                                                // Action::make('status_tickett')->size(ActionSize::Small)
-                                                // ->disabled(fn(Ticket $record) => $record->status === 'closed')->color(fn(Ticket $record) => $record->status === 'closed' ? 'gray' : 'success') ->label(fn($record) => $record->status === 'closed' ? 'Ticket Closed' : 'Status Open')
-                                                // ->visible(fn(Ticket $record): bool => auth()->user()->hasRole('user')),
-                                                // Colosing TIcket
-                                                Action::make('close')->size(ActionSize::Small)
-                                                    ->disabled(fn(Ticket $record) => $record->status === 'closed')
-                                                    ->icon('heroicon-o-trash')->color(fn(Ticket $record) => $record->status === 'closed' ? 'gray' : 'danger')
-                                                    ->requiresConfirmation()
-                                                    ->label(fn($record) => $record->status === 'closed' ? 'Ticket Closed' : 'Close Ticket')->requiresConfirmation()
-                                                    ->modal(true)
-                                                    ->modalIcon(false)
-                                                    ->action(function (Ticket $record) {
-                                                        $record->where('id', $record->id)->update([
-                                                            'status' => 'closed',
-                                                            'time_close_ticket' => now()
-                                                        ]);
-                                                        $recipient = User::find($record->users_id);
-                                                        $details = [
-                                                            'name' => $recipient->name,
-                                                            'body' =>  [
-                                                                'code' => '',
-                                                                'subject' => $record->subject,
-                                                                'description' => $record->subject,
-                                                                'priority' => '',
-                                                                'link' => '',
-                                                            ],
-                                                        ];
-                                                        Mail::to($recipient)->queue(new \App\Mail\TicketRespons($details));
-                                                        Notification::make('close')->title('Ticket Is Closed')
-                                                            ->body('Ticket Telah di Tutup')
-                                                            ->success()
-                                                            ->sendToDatabase($recipient);
-                                                    })
-                                                    ->visible(fn(): bool => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen')),
+                                                        ->modalFooterActionsAlignment(Alignment::Center),
+                                                    // Action::make('status_tickett')->size(ActionSize::Small)
+                                                    // ->disabled(fn(Ticket $record) => $record->status === 'closed')->color(fn(Ticket $record) => $record->status === 'closed' ? 'gray' : 'success') ->label(fn($record) => $record->status === 'closed' ? 'Ticket Closed' : 'Status Open')
+                                                    // ->visible(fn(Ticket $record): bool => auth()->user()->hasRole('user')),
+                                                    // Colosing TIcket
+                                                    Action::make('close')->size(ActionSize::Small)
+                                                        ->disabled(fn(Ticket $record) => $record->status === 'closed')
+                                                        ->icon('heroicon-o-trash')->color(fn(Ticket $record) => $record->status === 'closed' ? 'gray' : 'danger')
+                                                        ->requiresConfirmation()
+                                                        ->label(fn($record) => $record->status === 'closed' ? 'Ticket Closed' : 'Close Ticket')->requiresConfirmation()
+                                                        ->modal(true)
+                                                        ->modalIcon(false)
+                                                        ->action(function (Ticket $record) {
+                                                            $record->where('id', $record->id)->update([
+                                                                'status' => 'closed',
+                                                                'time_close_ticket' => now()
+                                                            ]);
+                                                            $recipient = User::find($record->users_id);
+                                                            $details = [
+                                                                'name' => $recipient->name,
+                                                                'body' =>  [
+                                                                    'code' => '',
+                                                                    'subject' => $record->subject,
+                                                                    'description' => $record->subject,
+                                                                    'priority' => '',
+                                                                    'link' => '',
+                                                                ],
+                                                            ];
+                                                            Mail::to($recipient)->queue(new \App\Mail\TicketRespons($details));
+                                                            Notification::make('close')->title('Ticket Is Closed')
+                                                                ->body('Ticket Telah di Tutup')
+                                                                ->success()
+                                                                ->sendToDatabase($recipient);
+                                                        })
+                                                        ->visible(fn(): bool => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen')),
 
-                                            ]),
+                                                ]),
                                         ])->columnSpan(2),
-                                        ComponentsSection::make('chat')->description('Chat Form')->label('Form Message')->icon('heroicon-m-envelope')->schema([
-                                            View::make('filament.pages.ticket.ticket-chat')->extraAttributes(['class' => 'overflow-hidden overflow-y-auto'])
-                                                ->viewData([
-                                                    'messages' => TicketMassage::where('ticket_id', $infolist->record->id)->with('user')->orderBy('created_at', 'desc')->get(),
-                                                    'record' => $infolist->record,
-                                                    'statuse' => $infolist->record->status
-                                                ])->columnSpanFull()
-                                        ])->columnSpan(1)
+                                        ComponentsSection::make('Chat')
+                                            ->compact()
+                                            ->icon('heroicon-m-envelope')->schema([
+                                                View::make('filament.pages.ticket.ticket-chat')->extraAttributes(['class' => 'overflow-hidden overflow-y-auto'])
+                                                    ->viewData([
+                                                        'messages' => TicketMassage::where('ticket_id', $infolist->record->id)->with('user')->orderBy('created_at', 'desc')->get(),
+                                                        'record' => $infolist->record,
+                                                        'statuse' => $infolist->record->status
+                                                    ])->columnSpanFull()
+                                            ])->columnSpan(1)
                                     ]),
                             ]),
                         Tabs\Tab::make('Proof Of Concept')->icon('heroicon-m-bell')

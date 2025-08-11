@@ -19,6 +19,7 @@ class TicketOverview extends BaseWidget
     // protected static ?string $heading = 'Bagan Laporan Insiden Tahunan';
     // protected static ?string $pollingInterval = '50s';
     protected ?string $description = 'An overview of some Ticket.';
+    protected static ?string $pollingInterval = null;
 
 
 

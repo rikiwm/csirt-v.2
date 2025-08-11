@@ -31,7 +31,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\On;
 use Spatie\Image\Enums\AlignPosition;
+use Illuminate\Contracts\View\View;
 
 class SummaryReports extends Component implements HasForms, HasTable
 {
@@ -39,11 +41,10 @@ class SummaryReports extends Component implements HasForms, HasTable
     use InteractsWithTable;
     use InteractsWithPageFilters;
     protected static bool $isLazy = false;
-
     protected ?string $heading = 'Response Time Insidenr';
     protected ?string $description = 'An overview of some analytics.';
     public $type, $insiden, $total, $closed, $open, $valid, $invalid, $avg;
-
+    public $selectedYear;
 
 
     public function mount()
@@ -185,8 +186,11 @@ class SummaryReports extends Component implements HasForms, HasTable
 
     public function avgresponsetime($ticketId = null)
     {
+        $year = $this->selectedYear ?? now()->year;
+
         $averageResponseTime = Ticket::where('status', 'closed')
             ->where('tickets.id', $ticketId)
+            // ->when($year, fn($query) => $query->whereYear('created_at',  $year))
             ->join('ticket_massages as first_message', function ($join) {
                 $join->on('tickets.id', '=', 'first_message.ticket_id')
                     ->whereRaw('first_message.id = (
@@ -217,13 +221,16 @@ class SummaryReports extends Component implements HasForms, HasTable
     }
     public function render()
     {
+        $year = $this->selectedYear ?? now()->year;
+
+
         try {
             $avg = $this->avgClosed();
         } catch (\Exception $e) {
             $avg = 'Kosong';
         }
 
-        $tickets = Ticket::query()->with('types');
+        $tickets = Ticket::query()->with('types')->when($year, fn($query) => $query->whereYear('created_at',  $year));
 
         $this->closed = (clone $tickets)->where('status', 'closed')->count();
         $this->open = (clone $tickets)->where('status', 'open')->count();
@@ -242,9 +249,23 @@ class SummaryReports extends Component implements HasForms, HasTable
         return view('livewire.summary-reports');
     }
 
-    private function avgClosed($ticketId = null)
+    #[On('selectedYear')]
+    public function updatedSelectedYear($value)
     {
+        $this->selectedYear = $value;
+    }
+
+    protected function getListeners(): array
+    {
+        return ['selectedYear' => 'updatedSelectedYear'];
+    }
+
+    function avgClosed($ticketId = null)
+    {
+        $year = $this->selectedYear ?? now()->year;
+
         $averageResponseTime = Ticket::where('status', 'closed')
+            // ->when($year, fn($query) => $query->whereYear('created_at',  $year))
             ->join('ticket_massages as first_message', function ($join) {
                 $year = Carbon::now()->format('Y') ?? date('Y');
                 $join->on('tickets.id', '=', 'first_message.ticket_id')

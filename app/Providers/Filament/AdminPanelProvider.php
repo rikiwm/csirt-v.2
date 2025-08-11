@@ -57,23 +57,22 @@ class AdminPanelProvider extends PanelProvider
                 'danger' => Color::Pink,
                 'gray' => Color::Zinc,
                 'info' => Color::rgb('rgb(214, 107, 143)'),
-                'primary' =>  Color::Gray,
-                'secondary' => Color::rgb('rgb(161, 161, 161)'),
-                'success' => Color::Teal,
-                'warning' => Color::Yellow,
+                'primary' =>  Color::rgb('rgb(13, 168, 224)'),
+                'secondary' => Color::rgb('rgb(199, 171, 47)'),
+
             ])
             ->profile(isSimple: false, page: Profile::class)
-            ->maxContentWidth(MaxWidth::Full)
-            ->brandName('CSIRT-V2')
-            // ->brandLogo(asset('https://csirt.padang.go.id/storage/image-property/fKyvMUuQq843IVHaaiXuh8Lum2tdRc3xYJrJ7Bzh.png'))
-            // ->brandLogoHeight('2rem')
+            ->maxContentWidth(MaxWidth::ScreenTwoExtraLarge)
+            ->brandLogo(asset('frontend/cslgo.png'))
+            ->brandLogoHeight('2rem')
             ->sidebarCollapsibleOnDesktop()
-            ->topNavigation()
-            ->topbar(true)
+            ->sidebarFullyCollapsibleOnDesktop()
+            ->sidebarWidth('16rem')
+            // ->topNavigation()
+            // ->topbar(true)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                // Pages\Dashboard::class,
                 Dashboard::class,
                 SummaryReport::class,
             ])

@@ -6,25 +6,32 @@ use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\On;
 
 class TicketChart extends ChartWidget
 {
     use HasWidgetShield, InteractsWithPageFilters;
     protected static ?string $maxHeight = '300px';
+    protected static ?string $pollingInterval = null;
+    public $selectedYear;
+
+
     public function getData(): array
     {
 
-        $startDate = $this->filters['startDate'] ?? null;
-        $endDate = $this->filters['endDate'] ?? null;
+        // $startDate = $this->filters['startDate'] ?? null;
+        // $endDate = $this->filters['endDate'] ?? null;
 
+        $year = $this->selectedYear ?? now()->year;
         $ticketCounts = DB::table('tickets')
             ->selectRaw('
             MONTH(created_at) as month,
             SUM(CASE WHEN status = "open" THEN 1 ELSE 0 END) as open_count,
             SUM(CASE WHEN status = "closed" THEN 1 ELSE 0 END) as closed_count
         ')
-            ->when($startDate, fn($query) => $query->whereDate('created_at', '>=', $startDate))
-            ->when($endDate, fn($query) => $query->whereDate('created_at', '<=', $endDate))
+            ->when($year, fn($query) => $query->whereYear('created_at',  $year))
+            // ->when($startDate, fn($query) => $query->whereDate('created_at', '>=', $startDate))
+            // ->when($endDate, fn($query) => $query->whereDate('created_at', '<=', $endDate))
             ->when(
                 !auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'),
                 fn($query) => $query->where('users_id', auth()->id())
@@ -70,19 +77,21 @@ class TicketChart extends ChartWidget
         return 'bar';
     }
 
-    // protected function getFilters(): ?array
-    // {
-    //     return [
-    //         'today' => 'startDate',
-    //         'week' => 'endDate',
-    //         'month' => 'Last month',
-    //         'year' => 'This year',
-    //     ];
-    // }
+    #[On('selectedYear')]
+    public function updatedSelectedYear($value)
+    {
+        $this->selectedYear = $value;
+    }
+
+    protected function getListeners(): array
+    {
+        return ['selectedYear' => 'updatedSelectedYear'];
+    }
 
     public function getDescription(): ?string
     {
-        return 'Bagan Laporan Insiden Tiket Terbuka dan Tiket Tertutup';
+        $year =  $year = $this->selectedYear ?? now()->year;
+        return 'Bagan Laporan Insiden Tiket Terbuka dan Tiket Tertutup.' . $year . '.';
     }
 
     protected function getOptions(): array

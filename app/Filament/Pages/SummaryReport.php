@@ -33,13 +33,23 @@ class SummaryReport extends Page
 
     public $selectedYear;
 
+
+    public function getHeader(): ?View
+    {
+        return view('filament.header.header', [
+            'title' => 'Ticket Report ' . $this->selectedYear,
+            'subtitle' => 'Rekap laporan Tiket ' . $this->selectedYear,
+            'background' => null,
+        ]);
+    }
+
     public function mount()
     {
         $this->selectedYear = request('selectedYear') ?? now()->year;
         Session::put('selectedYear', $this->selectedYear);
     }
 
-    // Share state ke Livewire Widget
+    // Share state ke Widget
     public function updated($propertyName)
     {
         if ($propertyName === 'selectedYear') {
@@ -51,7 +61,6 @@ class SummaryReport extends Page
 
     protected function getHeaderWidgets(): array
     {
-
         return [
             \App\Filament\Resources\WidgetsResource\Widgets\TiketInsident::class,
             TicketChart::class
