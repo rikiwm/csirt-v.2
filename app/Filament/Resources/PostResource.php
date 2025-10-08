@@ -75,6 +75,24 @@ class PostResource extends Resource
 
             ]),
 
+                 Block::make('images')->schema([
+                        FileUpload::make('image')
+                            ->disk('public')
+                            ->directory('post_image')
+                            ->visibility('public')
+                            ->multiple()
+                            // ->acceptedFileTypes(['application/pdf', 'jpg', 'jpeg', 'png'])
+                            // ->rules(['mimetypes:image/jpeg,image/png,application/pdf'])
+                            ->image()
+                            ->imageEditor()
+                            ->imageEditorAspectRatios([
+                                null,
+                                '16:9',
+                                '4:3',
+                                '1:1',
+                            ])
+            ]),
+
             Block::make('paragraph')->schema([
                 RichEditor::make('content')
                     ->toolbarButtons([
@@ -93,23 +111,7 @@ class PostResource extends Resource
                     ]),
             ]),
 
-            Block::make('images')->schema([
-                FileUpload::make('image')
-                    ->disk('public')
-                    ->directory('post_image')
-                    ->visibility('public')
-                    ->multiple()
-                    ->acceptedFileTypes(['application/pdf', 'jpg', 'jpeg', 'png'])
-                    ->rules(['mimetypes:image/jpeg,image/png,application/pdf'])
-                    ->image()
-                    ->imageEditor()
-                    ->imageEditorAspectRatios([
-                        null,
-                        '16:9',
-                        '4:3',
-                        '1:1',
-                    ])
-            ]),
+       
 
         ])
             ->columnSpanFull()
@@ -125,7 +127,6 @@ class PostResource extends Resource
                 Wizard::make([
                     Wizard\Step::make('Post')
                         ->schema([
-
                             Select::make('menu_id')->required()->label('Menu')
                                 ->relationship(
                                     name: 'menu',
@@ -150,10 +151,8 @@ class PostResource extends Resource
                             DatePicker::make('published_at')->required(),
                             Select::make('categori_id')->relationship('categori', 'name')->preload()->searchable(),
                             // RichEditor::make('content')->columnSpanFull()->required(),
-                        ])->columns(2),
-                    Wizard\Step::make('Content')
-                        ->schema([
-                            Actions::make([
+
+                                 Actions::make([
                                 InlinePreviewAction::make()
                                     ->label('Preview Content Blocks')
                                     ->builderName('content'),
@@ -162,7 +161,8 @@ class PostResource extends Resource
                                 ->alignEnd(),
                             self::contentBuilderField(),
 
-                        ]),
+                        ])->columns(2),
+          
                 ]),
                 Split::make([
 

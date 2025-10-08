@@ -31,8 +31,8 @@ class Register extends BaseRegister
                         $this->getEmailFormComponent(),
                         $this->getPasswordFormComponent(),
                         $this->getPasswordConfirmationFormComponent(),
-                        TextInput::make('profiles.job')->label('Job'),
-                        Textarea::make('profiles.address')->label('Address'),
+                        TextInput::make('profiles.job')->label('Job')->required(),
+                        Textarea::make('profiles.address')->label('Address')->required(),
                         Placeholder::make('role')->label(false)->content(
                             new HtmlString('<a href="/"  class="underline">Back Home</a>')
                          ),

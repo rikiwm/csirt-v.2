@@ -54,5 +54,9 @@ class Ticket extends Model implements HasMedia
         return $this->hasOne(User::class,'id','agent_id');
     }
 
+    public function rewward(): BelongsTo
+    {
+        return $this->belongsTo(TicketAttachment::class,'ticket_id','id');
+    }
 
 }

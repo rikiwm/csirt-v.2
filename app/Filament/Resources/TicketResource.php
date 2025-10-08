@@ -199,7 +199,7 @@ class TicketResource extends Resource implements HasForms
                             ->rules(['mimetypes:image/jpeg,image/png,application/pdf', 'max:2048'])
                             ->validationMessages([
                                 'required' => 'The :attribute not Valid.',
-                            ])
+                            ])->preserveFilenames()
                             ->required()
                             ->columnSpan(2)
                             ->label('Proof of Concept'),
@@ -446,15 +446,26 @@ class TicketResource extends Resource implements HasForms
                                                         TextEntry::make('description')->label('Description')->html()->grow(true)->prose()
                                                     ])
                                                 ])->headerActions([
+                                                 
                                                     Action::make('download')->label(false)->color('primary')->icon('heroicon-m-printer')->outlined()->size(ActionSize::ExtraSmall)->extraAttributes(['class' => 'rounded-full pe-2'])
                                                         ->url(route('summary-report.print', [
                                                             'id' => $infolist->record->id
                                                         ]), shouldOpenInNewTab: true),
+                                                Action::make('Tidak Valid')->label("Tidak Valid")->color('danger')->icon('heroicon-m-x-circle')->outlined()->size(ActionSize::ExtraSmall)->extraAttributes(['class' => 'rounded-full pe-2'])
+                                                    ->visible(fn() => $infolist->record->is_verified === 0 && !auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'))->modal(true)
+                                                        ->modalIcon(false)
+                                                        ->modalHeading('Insident Ticket : ' . $infolist->record->types[0]->name)
+                                                        ->modalDescription('Subject : ' . $infolist->record->subject)->modalContent(new HtmlString('
+                                                                    <span class="text-sm text-gray-600 dark:text-gray-400">
+                                                                    <p class="text-sm text-gray-600 dark:text-gray-400">TidaK Valid</p>
+                                                                    <hr>
+                                                                    <p class="text-sm text-gray-600 dark:text-gray-400">' . $infolist->record->reason . '</p>
+                                                                    </p>
+                                                                    </span>'))->modalSubmitAction(false),
                                                     Action::make('valid')->size(ActionSize::Small)
                                                         ->icon(fn(Ticket $record) => $record->is_verified === null ? 'heroicon-o-question-mark-circle' : ($record->is_verified == false ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle'))
                                                         ->color(fn(Ticket $record) => $record->is_verified === null ? 'warning' : ($record->is_verified == false ? 'danger' : 'success'))
                                                         ->outlined()
-                                                        ->requiresConfirmation()
                                                         ->label(fn(Ticket $record) => $record->is_verified === null ? 'Belum  Terverified' : (($record->is_verified == false) ? 'Tidak  Verified' : 'Valid'))
                                                         ->visible(fn(Ticket $record): bool => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen'))
                                                         ->disabled(fn(Ticket $record): bool => $record->is_verified === 1)
@@ -528,7 +539,7 @@ class TicketResource extends Resource implements HasForms
                                                                 $updateData['time_prosess_ticket'] = now();
                                                             }
 
-                                                            if (($data['is_duplicate']) == true) {
+                                                            if (isset($data['is_duplicate']) && $data['is_duplicate'] == true) {
                                                                 $updateData['time_prosess_ticket'] = now();
                                                                 $updateData['duplicate_details'] = 'Insiden Telah di laporkan sebelum ini!';
                                                             }
@@ -596,7 +607,9 @@ class TicketResource extends Resource implements HasForms
                             ]),
 
                         Tabs\Tab::make('Get Reward')
-                            ->hidden(fn(Ticket $record) => $record->is_reward === null || $record->is_reward === false)->icon('heroicon-m-bell')->iconPosition(IconPosition::After)
+                            ->hidden(fn(Ticket $record) => $record->is_reward === null || $record->is_reward === 0 && $record->is_verified === 1)
+                            ->visible(fn(Ticket $record) => $record->is_reward === 1 && $record->is_verified === 1)
+                            ->icon('heroicon-m-bell')->iconPosition(IconPosition::After)
                             ->schema([
                                 View::make('ticket_media')
                                     ->view('filament.pages.ticket.ticket-reward')

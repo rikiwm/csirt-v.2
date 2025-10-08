@@ -82,7 +82,9 @@ class ViewTicket extends ViewRecord
                     ])
                 ->modalSubmitAction(false),
             // Gift Reward TIcket
-            Action::make('sertifikat')->visible(fn () => $this->record->is_reward !== 1)->disabled( fn () => $this->record->status !== 'closed')
+            Action::make('sertifikat')
+            ->visible(fn () => $this->record->is_reward === 1 && $this->record->is_verified === 1)
+            ->disabled( fn () => $this->record->status !== 'closed')
                     ->label('Gift Reward')->size(ActionSize::Small)
                     ->modal('Sertifikat')
                     ->modalHeading('Sertifikat Apresiasi')
@@ -98,8 +100,7 @@ class ViewTicket extends ViewRecord
                             ->directory('ticket_reward')
                             ->visibility('public')
                             ->label('Upload Sertifikat')
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf'])
-                            ->required(),
+                            // ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf']),
                     ])
                         ->action(function (array $data, $livewire) {
                             $record = $livewire->record;

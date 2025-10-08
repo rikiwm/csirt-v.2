@@ -37,6 +37,7 @@
                                     </div>
                             @break
                             @default
+                            
                              <div class="p-lg-2 text-dark ">
                                 @foreach ($data['content'] as $item)
                                     @if ($item['type'] == 'heading')
