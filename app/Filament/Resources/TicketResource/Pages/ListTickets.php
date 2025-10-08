@@ -49,7 +49,7 @@ class ListTickets extends ListRecords
             $isAdmin = auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('agen');
             $userId = auth()->id();
             $statuses = ['open', 'in_progress', 'closed'];
-            $icons = $isAdmin ? ['heroicon-m-lock-open', 'heroicon-m-clock', 'heroicon-m-lock-closed'] : ['heroicon-m-bug-ant', 'heroicon-m-bug-ant', 'heroicon-m-bug-ant'];
+            $icons = $isAdmin ? ['heroicon-m-lock-open', 'heroicon-m-clock', 'heroicon-m-lock-closed'] : ['heroicon-m-lock-open', 'heroicon-o-clock', 'heroicon-o-lock-closed'];
             $badgeColors = ['primary', 'success', 'success'];
 
             $tabs = collect($statuses)->mapWithKeys(function ($status, $index) use ($isAdmin, $userId, $icons, $badgeColors) {

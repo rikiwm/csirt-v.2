@@ -31,6 +31,7 @@ class SummaryReport extends Page
 {
     use HasPageShield, HasFiltersAction, HasFiltersForm;
     protected ?string $heading = 'Ticket Analysis';
+    protected static ?string $navigationGroup = 'Sumaary & Report';
     protected ?string $subheading = 'Ticket Analysis';
     protected static ?string $navigationIcon = 'heroicon-m-presentation-chart-line';
     protected static string $view = 'filament.pages.summary-report';

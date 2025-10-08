@@ -46,7 +46,7 @@ use Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction;
 class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
-
+    protected static ?string $navigationGroup = 'Management';
     protected static ?string $recordTitleAttribute = 'title';
 
     protected static ?string $navigationIcon = 'heroicon-m-newspaper';

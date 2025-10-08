@@ -23,6 +23,7 @@ use Filament\Forms\Components\Grid;
 class GeneralSetup extends Page implements Forms\Contracts\HasForms
 {
     use HasPageShield,Forms\Concerns\InteractsWithForms;
+        protected static ?string $navigationGroup = 'Settings';
     protected static ?string $navigationIcon = 'heroicon-s-cog';
     protected static ?string $title = 'Configuration';
     protected ?string $heading = 'Configuration';

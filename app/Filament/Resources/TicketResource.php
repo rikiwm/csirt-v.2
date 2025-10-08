@@ -407,7 +407,6 @@ class TicketResource extends Resource implements HasForms
                 'lg' => 1,
             ])
             ->schema([
-
                 Tabs::make('Tabs')
                     ->tabs([
                         Tabs\Tab::make('Ticket Detail')->icon('heroicon-m-bell')
@@ -415,7 +414,7 @@ class TicketResource extends Resource implements HasForms
                                 Grid::make(3)
                                     ->schema([
                                         InfolistsSplit::make([
-                                            ComponentsSection::make('')->icon('heroicon-m-calendar')
+                                            ComponentsSection::make('Details')->icon('heroicon-m-calendar')
                                             ->collapsible()
                                             ->description('Created : ' . $infolist->record->created_at)->compact()->schema([
                                                 TextEntry::make('subject')->label('Subject')
@@ -461,44 +460,44 @@ class TicketResource extends Resource implements HasForms
                                                                     </p>
                                                                     </span>'))
                                                 ->form([
-                                             ToggleButtons::make('is_verified')
-                                                    ->boolean()
-                                                    ->label('Apakah Verified')
-                                                    ->inline()
-                                                    ->live() // Perubahan langsung terdeteksi (reactive)
-                                                    ->afterStateUpdated(fn (Set $set, $state) => $set('status', match($state) {
-                                                        true => 'in_progress',
-                                                        false => 'closed',
-                                                        default => 'open',
-                                                    })),
-                                            ToggleButtons::make('is_duplicate')
-                                                    ->boolean()->default(false)
-                                                    ->label('Apakah Duplicate')
-                                                    ->inline()->default(false)
-                                                    ->visible(fn (Get $get) => $get('is_verified') == null || $get('is_verified') == true )
-                                                    ->live()->afterStateUpdated(fn (Set $set, $state) => $set('reason', $state)),
-                                            Textarea::make('reason')->live()
-                                                    ->visible(fn (Get $get) => $get('is_verified') == false && $get('is_duplicate') == false )
-                                                    ->label('Alasan Tidak Valid')
-                                                    ->helperText('Alasan jika tidak verified.')
-                                                    ->rows(3),
-                                        Textarea::make('duplicate_details')->live()
-                                                    ->visible(fn (Get $get) => $get('is_duplicate') == true )
-                                                    ->label('Duplicate Details Ticket')
-                                                    ->helperText('Alasan jika tidak Duplicate.')
-                                                    ->rows(3),
+                                                        ToggleButtons::make('is_verified')
+                                                                ->boolean()
+                                                                ->label('Apakah Verified')
+                                                                ->inline()
+                                                                ->live() // Perubahan langsung terdeteksi (reactive)
+                                                                ->afterStateUpdated(fn (Set $set, $state) => $set('status', match($state) {
+                                                                    true => 'in_progress',
+                                                                    false => 'closed',
+                                                                    default => 'open',
+                                                                })),
+                                                        ToggleButtons::make('is_duplicate')
+                                                                ->boolean()->default(false)
+                                                                ->label('Apakah Duplicate')
+                                                                ->inline()->default(false)
+                                                                ->visible(fn (Get $get) => $get('is_verified') == null || $get('is_verified') == true )
+                                                                ->live()->afterStateUpdated(fn (Set $set, $state) => $set('reason', $state)),
+                                                        Textarea::make('reason')->live()
+                                                                ->visible(fn (Get $get) => $get('is_verified') == false && $get('is_duplicate') == false )
+                                                                ->label('Alasan Tidak Valid')
+                                                                ->helperText('Alasan jika tidak verified.')
+                                                                ->rows(3),
+                                                    Textarea::make('duplicate_details')->live()
+                                                                ->visible(fn (Get $get) => $get('is_duplicate') == true )
+                                                                ->label('Duplicate Details Ticket')
+                                                                ->helperText('Alasan jika tidak Duplicate.')
+                                                                ->rows(3),
 
-                                          Radio::make('status')
-                                                ->label('Status Tiket')
-                                                ->live()
-                                                ->options([
-                                                    'open' => 'Open',
-                                                    'in_progress' => 'In Progress',
-                                                    'closed' => 'Closed',
-                                                ])
-                                                ->default('open')
-                                                ->helperText('Status tiket setelah verifikasi')
-                                                ->inline()
+                                                    Radio::make('status')
+                                                            ->label('Status Tiket')
+                                                            ->live()
+                                                            ->options([
+                                                                'open' => 'Open',
+                                                                'in_progress' => 'In Progress',
+                                                                'closed' => 'Closed',
+                                                            ])
+                                                            ->default('open')
+                                                            ->helperText('Status tiket setelah verifikasi')
+                                                            ->inline()
 
                                                 ])
                                                     ->action(function (Ticket $record, array $data) {
@@ -567,16 +566,16 @@ class TicketResource extends Resource implements HasForms
 
                                             ]),
                                                     ])->columnSpan(2),
-                                                            ComponentsSection::make('')
-                                                            ->collapsible()->collapsed()
-                                                            ->description('Chat Form')->compact()->label('Form Message')->icon('heroicon-m-envelope')->schema([
-                                                                View::make('filament.pages.ticket.ticket-chat')->extraAttributes(['class' => 'overflow-hidden overflow-y-auto'])
-                                                                    ->viewData([
-                                                                        'messages' => TicketMassage::where('ticket_id', $infolist->record->id)->with('user')->orderBy('created_at', 'desc')->get(),
-                                                                        'record' => $infolist->record,
-                                                                        'statuse' => $infolist->record->status
-                                                                    ])->columnSpanFull()
-                                                            ])->columnSpan(1)
+                                            ComponentsSection::make('')
+                                            ->collapsible()->collapsed()
+                                            ->description('Chat Form')->compact()->label('Form Message')->icon('heroicon-m-envelope')->schema([
+                                                View::make('filament.pages.ticket.ticket-chat')->extraAttributes(['class' => 'overflow-hidden overflow-y-auto'])
+                                                    ->viewData([
+                                                        'messages' => TicketMassage::where('ticket_id', $infolist->record->id)->with('user')->orderBy('created_at', 'desc')->get(),
+                                                        'record' => $infolist->record,
+                                                        'statuse' => $infolist->record->status
+                                                    ])->columnSpanFull()
+                                            ])->columnSpan(1)
                                                         ]),
                                                 ]),
                         Tabs\Tab::make('Proof Of Concept')->icon('heroicon-m-bell')
