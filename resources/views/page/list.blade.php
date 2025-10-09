@@ -5,25 +5,24 @@
     </x-slot>
 
     <div class="p-0 mx-4 card card-body blur blur-rounded-lg shadow-blur mx-md-7 mt-n6 ">
-        <section class=" mx-auto">
+        <section class="py-4">
             <div class="container">
                 @isset($top)
-                    
-                <div class="row">
-                    <div class="mx-auto mb-2 text-center col-12 col-lg-8">
-                        <span class="mb-0 badge badge-info">Penting</span>
-                        <h2> {{ $top->title ?? '-' }}</h2>
-                        <p class="text-dark">
-                            {{-- @dd($top->content[1]['data']['content']) --}}
-                            {!! Str::limit($top->content[1]['data']['content'], 160) ?? '-' !!}
-                        </p>
-                        <a href="{{ route('post.detail', $top->slug ?? '') }}"
-                            class="mt-2 text-sm justify-content-end icon-move-right d-flex align-items-center">Baca
-                            <i class="material-symbols-rounded ms-2">east</i>
-                        </a>
+                    <div class="row">
+                        <div class="mx-auto mb-2 text-center col-12 col-lg-8">
+                            <span class="mb-0 badge badge-info">Penting</span>
+                            <h2> {{ $top->title ?? '-' }}</h2>
+                            <p class="text-dark">
+                                {{-- @dd($top->content[1]['data']['content']) --}}
+                                {!! Str::limit($top->content[1]['data']['content'], 160) ?? '-' !!}
+                            </p>
+                            <a href="{{ route('post.detail', $top->slug ?? '') }}"
+                                class="mt-2 text-sm justify-content-end icon-move-right d-flex align-items-center">Baca
+                                <i class="material-symbols-rounded ms-2">east</i>
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <hr class="horizontal dark d-md-block d-none">
+                    <hr class="horizontal dark d-md-block d-none">
                 @endisset
 
                 <div class="row">

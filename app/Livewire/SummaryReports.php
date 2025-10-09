@@ -11,10 +11,11 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\ActionSize;
 use Filament\Support\Enums\MaxWidth;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Widgets\Concerns\InteractsWithPageFilters;
-use Livewire\Component;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\BaseFilter;
@@ -22,40 +23,54 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\BulkAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\View\LegacyComponents\Widget;
-use Filament\Widgets\StatsOverviewWidget\Stat;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
-use Spatie\Image\Enums\AlignPosition;
-use Illuminate\Contracts\View\View;
+use Livewire\Component;
 
 class SummaryReports extends Component implements HasForms, HasTable
 {
     use InteractsWithForms;
-    use InteractsWithTable;
     use InteractsWithPageFilters;
-    protected static bool $isLazy = false;
-    protected ?string $heading = 'Response Time Insidenr';
-    protected ?string $description = 'An overview of some analytics.';
-    public $type, $insiden, $total, $closed, $open, $valid, $invalid, $avg;
-    public $selectedYear;
+    use InteractsWithTable;
 
+    protected static bool $isLazy = false;
+
+    protected ?string $heading = 'Response Time Insidenr';
+
+    protected ?string $description = 'An overview of some analytics.';
+
+    public $type;
+
+    public $insiden;
+
+    public $total;
+
+    public $closed;
+
+    public $open;
+
+    public $valid;
+
+    public $invalid;
+
+    public $avg;
+
+    public $selectedYear;
 
     public function mount()
     {
         $this->insiden = Type::pluck('name', 'id');
     }
+
     public function table(Table $table): Table
     {
         return $table
             ->query(Ticket::query()->select('id', 'code', 'subject', 'users_id', 'agent_id', 'created_at', 'status', 'priority')->with(['users', 'useragen', 'types'])
-                ->when(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('agen'), function ($query) {
+                ->when(! auth()->user()->hasRole('super_admin') && ! auth()->user()->hasRole('agen'), function ($query) {
                     $query->where('users_id', auth()->id());
                 }))
             ->columns([
@@ -65,21 +80,21 @@ class SummaryReports extends Component implements HasForms, HasTable
                 TextColumn::make('subject')->limit(50),
                 TextColumn::make('types.name')->limit(50)->badge()->color('primary'),
                 TextColumn::make('priority')->badge()
-                    ->color(fn(string $state): string => match ($state) {
+                    ->color(fn (string $state): string => match ($state) {
                         'low' => 'secondary',
                         'medium' => 'info',
                         'high' => 'warning',
                         'urgent' => 'danger',
                     }),
                 TextColumn::make('status')->badge()
-                    ->color(fn(string $state): string => match ($state) {
+                    ->color(fn (string $state): string => match ($state) {
                         'open' => 'secondary',
                         'in_progress' => 'warning',
                         'closed' => 'success',
                     }),
                 TextColumn::make('created_at')->date(),
                 TextColumn::make('response_time')->label('Response Time')
-                    ->getStateUsing(fn($record): ?string => $this->avgresponsetime($record->id)),
+                    ->getStateUsing(fn ($record): ?string => $this->avgresponsetime($record->id)),
             ])
             // ->filters([
 
@@ -103,7 +118,7 @@ class SummaryReports extends Component implements HasForms, HasTable
                 SelectFilter::make('types.name')
                     ->relationship('types', 'name')->searchable()
                     ->label('Insident')->options(
-                        fn() => Type::query()->pluck('name', 'id')
+                        fn () => Type::query()->pluck('name', 'id')
                     )
                     ->multiple()
                     ->selectablePlaceholder(false),
@@ -126,29 +141,28 @@ class SummaryReports extends Component implements HasForms, HasTable
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
-                            ->when($data['from'], fn($q) => $q->whereDate('created_at', '>=', $data['from']))
-                            ->when($data['until'], fn($q) => $q->whereDate('created_at', '<=', $data['until']));
+                            ->when($data['from'], fn ($q) => $q->whereDate('created_at', '>=', $data['from']))
+                            ->when($data['until'], fn ($q) => $q->whereDate('created_at', '<=', $data['until']));
                     })
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['from'] ?? null) {
-                            $indicators[] = Indicator::make('Created from ' . Carbon::parse($data['from'])->toFormattedDateString())
+                            $indicators[] = Indicator::make('Created from '.Carbon::parse($data['from'])->toFormattedDateString())
                                 ->removeField('from');
                         }
 
                         if ($data['until'] ?? null) {
-                            $indicators[] = Indicator::make('Created until ' . Carbon::parse($data['until'])->toFormattedDateString())
+                            $indicators[] = Indicator::make('Created until '.Carbon::parse($data['until'])->toFormattedDateString())
                                 ->removeField('until');
                         }
 
                         return $indicators;
                     })->columns(2),
 
-
             ], layout: FiltersLayout::Modal)
             ->filtersFormWidth(MaxWidth::FourExtraLarge)
             ->filtersTriggerAction(
-                fn(Action $action) => $action
+                fn (Action $action) => $action
                     ->button()->color('primary')
                     ->label('Filter Data'),
             )->deselectAllRecordsWhenFiltered(false)
@@ -161,7 +175,9 @@ class SummaryReports extends Component implements HasForms, HasTable
                 Action::make('Export PDF')->size(ActionSize::ExtraSmall)->outlined()
                     ->label('Export to PDF')
                     ->icon('heroicon-o-document')
-                    ->action('exportPdf'),
+                    ->action('exportPdf')->url(fn () => route('summary-report.print', [
+                        'selectedYear' => $this->selectedYear,
+                    ]))->openUrlInNewTab(),
             ])
             ->actions([
                 // ...
@@ -213,16 +229,18 @@ class SummaryReports extends Component implements HasForms, HasTable
         if ($averageResponseTime === null) {
             return 'N/A';
         }
-        return gmdate("i:s", $averageResponseTime);
+
+        return gmdate('i:s', $averageResponseTime);
     }
+
     public function filter(BaseFilter $filter)
     {
         return $filter;
     }
+
     public function render()
     {
         $year = $this->selectedYear ?? now()->year;
-
 
         try {
             $avg = $this->avgClosed();
@@ -230,7 +248,7 @@ class SummaryReports extends Component implements HasForms, HasTable
             $avg = 'Kosong';
         }
 
-        $tickets = Ticket::query()->with('types')->when($year, fn($query) => $query->whereYear('created_at',  $year));
+        $tickets = Ticket::query()->with('types')->when($year, fn ($query) => $query->whereYear('created_at', $year));
 
         $this->closed = (clone $tickets)->where('status', 'closed')->count();
         $this->open = (clone $tickets)->where('status', 'open')->count();
@@ -260,7 +278,7 @@ class SummaryReports extends Component implements HasForms, HasTable
         return ['selectedYear' => 'updatedSelectedYear'];
     }
 
-    function avgClosed($ticketId = null)
+    public function avgClosed($ticketId = null)
     {
         $year = $this->selectedYear ?? now()->year;
 
@@ -273,7 +291,7 @@ class SummaryReports extends Component implements HasForms, HasTable
                     SELECT MIN(id)
                     FROM ticket_massages
                     WHERE ticket_massages.ticket_id = tickets.id
-                    OR YEAR(first_message.created_at) = ' . $year . '
+                    OR YEAR(first_message.created_at) = '.$year.'
                     )');
             })
             ->join('ticket_massages as first_reply', function ($join) {
@@ -291,6 +309,7 @@ class SummaryReports extends Component implements HasForms, HasTable
         if ($averageResponseTime === null) {
             return 'N/A';
         }
-        return gmdate("i:s", $averageResponseTime);
+
+        return gmdate('i:s', $averageResponseTime);
     }
 }

@@ -2,38 +2,45 @@
 
 namespace App\Filament\Pages;
 
-use Filament\Pages\Page;
 use App\Models\SettingWeb;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\TextArea;
 use Filament\Forms\Components\ToggleButtons;
+use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use Filament\Pages\Page;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Grid;
 
 class GeneralSetup extends Page implements Forms\Contracts\HasForms
 {
-    use HasPageShield, Forms\Concerns\InteractsWithForms;
+    use Forms\Concerns\InteractsWithForms, HasPageShield;
+
+    protected static ?string $navigationGroup = 'Settings';
+
     protected static ?string $navigationIcon = 'heroicon-s-cog';
+
     protected static ?string $title = 'Configuration';
+
     protected ?string $heading = 'Configuration';
+
     protected ?string $subheading = 'Configuration General';
+
     protected static ?string $navigationGroupLabel = 'Configuration';
+
     protected static string $view = 'filament.pages.general-setup';
+
     protected static bool $isLazy = true;
 
     public ?array $websiteForm = [];
+
     public ?array $mailForm = [];
+
     public ?array $otherForm = [];
     // public ?array $apiForm = [];
 
@@ -111,11 +118,10 @@ class GeneralSetup extends Page implements Forms\Contracts\HasForms
                         Tabs\Tab::make('Footer')->icon('heroicon-m-globe-alt')
                             ->schema([
                                 Section::make('Footer Settings')->aside()->description('Footer Settings')->columns(3)->schema([
-                                    TextInput::make('link')->label('Lnk')
-
+                                    TextInput::make('link')->label('Lnk'),
 
                                 ]),
-                            ])
+                            ]),
                     ]),
 
             ])
@@ -170,7 +176,6 @@ class GeneralSetup extends Page implements Forms\Contracts\HasForms
     //             ]),
     //         ])->statePath('apiForm');
     // }
-
 
     public function submitWebsite()
     {
@@ -241,7 +246,7 @@ class GeneralSetup extends Page implements Forms\Contracts\HasForms
         ];
 
         foreach ($jsonToStore[0]['data'] as $key => $value) {
-            if (!is_null($value)) {
+            if (! is_null($value)) {
                 $this->setEnvValue($key, $value);
             }
         }

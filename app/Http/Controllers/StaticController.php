@@ -6,9 +6,9 @@ use App\Models\Categori;
 use App\Models\Menu;
 use App\Models\Page;
 use App\Models\Ticket;
-use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Dompdf\Image\Cache;
+use Illuminate\Http\Request;
 
 class StaticController extends Controller
 {
@@ -16,32 +16,32 @@ class StaticController extends Controller
 
     public function faq()
     {
-        $menu = Cache::remember('faq_menu', 1260, function() {
+        $menu = Cache::remember('faq_menu', 1260, function () {
             return Menu::where('slug', 'faq')->first();
         });
-        $data = Cache::remember('faq_data', 60, function() {
+        $data = Cache::remember('faq_data', 60, function () {
             return Page::query()->where('menu_id', $menu->id)->first();
         });
 
-        $category = Categori::query()->where('id', $data['data']['categori_id'] ?? null )->select('name','description')->first();
-        if (!$category) {
-            $category = Categori::query()->select('name','description')->get();
+        $category = Categori::query()->where('id', $data['data']['categori_id'] ?? null)->select('name', 'description')->first();
+        if (! $category) {
+            $category = Categori::query()->select('name', 'description')->get();
         }
 
-        return view('page.faq',[
-        'category' => $category ?? null,
-        'title' => $menu['slug'],
-        'data' => $data
-    ]);
+        return view('page.faq', [
+            'category' => $category ?? null,
+            'title' => $menu['slug'],
+            'data' => $data,
+        ]);
     }
 
     public function print(Request $request)
     {
-// dd($request->id);
-        $tickets = Ticket::with('users','types')->where('id',$request->id)
-        ->select('id', 'subject', 'description','code','created_at','users_id','priority')->get();
-// dd($tickets);
-        $pdf = Pdf::loadView('filament.pages.ticket.ticket-print',compact('tickets'));
+        // dd($request->all());
+        $tickets = Ticket::with('users', 'types')->where('id', $request->id)->get();
+        // dd($tickets);
+        $pdf = Pdf::loadView('filament.pages.ticket.ticket-print', compact('tickets'));
+
         return $pdf->stream();
 
     }
